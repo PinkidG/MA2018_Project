@@ -1,8 +1,8 @@
-#\<Name der Applikation>
+# \<Name der Applikation>
 
-###Idee
+### Idee
 
-###Motivation
+### Motivation
 
-###Beschreibung
+### Beschreibung
 

@@ -29,7 +29,7 @@ Funktion | Beschreibung
 _Benutzer- / Rollenverwaltung_ | Sowohl Ärzte als auch Patienten können sich in der App anmelden. Je nach Benutzergruppe stehen ihnen verschieden Funktionen zur Verfügung, wie die administrative Verwaltung von Fragen. Auch eine Authentisierung beim Starten der App muss erfolgen.
 _Videobotschaften (Videoplattform)_ | Verschieden Informationsvideos sollen von Ärzten direkt erstellt und versendet werden können. Diese stehen zur Aufklärung für alle Nutzer zur Verfügung.
 _Frage- und Antwortforum_ | Nutzer können medizinische Fragen über ein Forum stellen. Diese werden von Ärzten des Uni-Klinikums beantwortet. Außerdem ist eine Suchfunktion für bereits gestellte ähnliche Fragen verfügbar. Diese lassen sich mithilfe von `Tags` klassifizieren.
-_Patientendatei (Patiententagebuch)_ | Patienten sind in der Lage Informationen in ein Profil einzutragen, welches mit Ärzten geteilt werden kann. Neben desundheitlichen/körperlichen Angaben können auch Verläufe von Krankheiten oder Genesungen dokumentiert werden.
+_Patientendatei (Patiententagebuch)_ | Patienten sind in der Lage Informationen in ein Profil einzutragen, welches mit Ärzten geteilt werden kann. Neben gesundheitlichen/körperlichen Angaben können auch Verläufe von Krankheiten oder Genesungen dokumentiert werden.
 
 Zusätzlich zu den genannten Funktionen stehen weiter Features im Backlog, die bei frühzeitigem Erreichen der Ziele ebenfalls umgesetzt werden können. Dazu zählt eine direkte und private Nachrichtenkommunikation mit Ärzten sowie eine Kalendarimplementierung, die eine eine selbständige Terminplanung von Patienten erlaubt.
 

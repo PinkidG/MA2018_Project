@@ -13,13 +13,14 @@ function generateToken(user) {
 
 function setUserInfo(request) {
     return {
-        id: request.profile.id,
+        _id: request._id,
+        userId: request.userId,
         firstName: request.profile.firstName,
         lastName: request.profile.lastName,
         email: request.email,
         role: request.role,
-        dateOfBirth: request.dateOfBirth,
-        gender: request.gender
+        dateOfBirth: request.profile.dateOfBirth,
+        gender: request.profile.gender
     };
 }
 
@@ -43,6 +44,7 @@ exports.login = function(req, res, next) {
 exports.register = function(req, res, next) {
     // Check for registration errors
     const email = req.body.email;
+    const role = req.body.role;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const password = req.body.password;
@@ -74,12 +76,10 @@ exports.register = function(req, res, next) {
 
         // If email is unique and password was provided, create account
         let user = new User({
-            id: id,
             email: email,
             password: password,
-            profile: { firstName: firstName, lastName: lastName },
-            dateOfBirth: dateOfBirth,
-            gender: gender
+            profile: { firstName: firstName, lastName: lastName, dateOfBirth: dateOfBirth, gender: gender },
+            role: role
         });
 
         user.save(function(err, user) {

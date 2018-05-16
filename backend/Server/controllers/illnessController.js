@@ -15,7 +15,7 @@ function setIllnessInfo(request) {
 //========================================
 exports.register = function(req, res, next) {
     // Check for registration errors
-    const id = req.body.id;
+    //const id = req.body.id;
     const name = req.body.name;
     const description = req.body.description;
 
@@ -39,7 +39,6 @@ exports.register = function(req, res, next) {
 
         // If email is unique and password was provided, create account
         let illness = new Illness({
-            id: id,
             name: name,
             description: description
         });

@@ -1,20 +1,16 @@
 const mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    bcrypt = require('bcrypt-nodejs');
+    bcrypt = require('bcrypt-nodejs'),
+    AutoIncrement = require('mongoose-sequence')(mongoose);
 
-import DS from 'ember-data';
+var relationship = require("mongoose-relationship");
+
 
 //================================
 // User Schema
 //================================
 const UserSchema = new Schema({
-    id: {
-        type: Number,
-        primaryKey: true,
-        allowNull: false,
-        autoIncrement: true,
-        unique: true
-    },
+    userId: Number,
     email: {
         type: String,
         lowercase: true,
@@ -29,18 +25,28 @@ const UserSchema = new Schema({
         firstName: { type: String },
         lastName: { type: String },
         gender: { type: String },
-        dateOfBirth: { type: Date }
+        dateOfBirth: { type: String }
     },
     role: {
         type: String,
         enum: ['Patient', 'Doctor', 'Admin'],
         required: true
     },
+    illnesses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Illness',
+        childPath: "users"
+    }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
 }, {
     timestamps: true
 });
+
+UserSchema.plugin(relationship, {
+    relationshipPathName: 'illnesses'
+});
+UserSchema.plugin(AutoIncrement, { inc_field: 'userId' })
 
 // Pre-save of user to database, hash password if password is modified or new
 UserSchema.pre('save', function(next) {
@@ -70,9 +76,5 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 };
 
 //Testen mit mongoose-relationship
-
-export default DS.Model.extend({
-    illness: DS.hasMany(Illness, {through: 'illnessPerUser'})
-)}
 
 module.exports = mongoose.model('User', UserSchema);

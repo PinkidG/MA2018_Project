@@ -1,6 +1,5 @@
 "use strict"
 const jwt = require('jsonwebtoken'),
-    crypto = require('crypto'),
     User = require('../models/user'),
     config = require('../config/main');
 
@@ -14,11 +13,13 @@ function generateToken(user) {
 
 function setUserInfo(request) {
     return {
-        _id: request._id,
+        id: request.profile.id,
         firstName: request.profile.firstName,
         lastName: request.profile.lastName,
         email: request.email,
         role: request.role,
+        dateOfBirth: request.dateOfBirth,
+        gender: request.gender
     };
 }
 
@@ -33,7 +34,7 @@ exports.login = function(req, res, next) {
         token: 'JWT ' + generateToken(userInfo),
         user: userInfo
     });
-}
+};
 
 
 //========================================
@@ -45,6 +46,8 @@ exports.register = function(req, res, next) {
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const password = req.body.password;
+    const dateOfBirth = req.body.dateOfBirth;
+    const gender = req.body.gender;
 
     // Return error if no email provided
     if (!email) {
@@ -71,9 +74,12 @@ exports.register = function(req, res, next) {
 
         // If email is unique and password was provided, create account
         let user = new User({
+            id: id,
             email: email,
             password: password,
-            profile: { firstName: firstName, lastName: lastName }
+            profile: { firstName: firstName, lastName: lastName },
+            dateOfBirth: dateOfBirth,
+            gender: gender
         });
 
         user.save(function(err, user) {
@@ -92,13 +98,13 @@ exports.register = function(req, res, next) {
             });
         });
     });
-}
+};
 
 exports.roleAuthorization = function(role) {
     return function(req, res, next) {
         const user = req.user;
 
-        User.findById(user._id, function(err, foundUser) {
+        User.findById(user.id, function(err, foundUser) {
             if (err) {
                 res.status(422).json({ error: 'No user was found.' });
                 return next(err);
@@ -113,4 +119,4 @@ exports.roleAuthorization = function(role) {
             return next('Unauthorized');
         })
     }
-}
+};

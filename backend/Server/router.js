@@ -1,4 +1,5 @@
 const AuthenticationController = require('./controllers/authentication'),
+    IllnessController = require('./controllers/illnessController'),
     express = require('express'),
     passportService = require('./config/passport'),
     passport = require('passport');
@@ -10,9 +11,8 @@ const requireLogin = passport.authenticate('local', { session: false });
 
 // Constants for role types
 const REQUIRE_ADMIN = "Admin",
-    REQUIRE_OWNER = "Owner",
-    REQUIRE_CLIENT = "Client",
-    REQUIRE_MEMBER = "Member";
+    REQUIRE_PATIENT = "Patient",
+    REQUIRE_DOCTOR = "Doctor";
 
 module.exports = function(app) {
     // Initializing route groups
@@ -31,6 +31,9 @@ module.exports = function(app) {
 
     // Login route
     authRoutes.post('/login', requireLogin, AuthenticationController.login);
+
+    // Illness route
+    apiRoutes.post('/illness', requireAuth, IllnessController.register);
 
     app.get('/', requireAuth, function(req, res) {
         res.send('Relax. We will put the home page here later.');

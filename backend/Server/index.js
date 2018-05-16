@@ -5,6 +5,8 @@ const express = require('express'),
     logger = require('morgan'),
     mongoose = require('mongoose'),
     config = require('./config/main');
+    Illness = require('./models/illness');
+    User = require('./models/user');
 const router = require('./router');
 
 // Database Connection
@@ -26,6 +28,10 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
+
+// Mapping between user and illness through illnessPerUser
+//User.hasMany(Illness, {through: 'illnessPerUser'});
+//Illness.hasMany(User, {through: 'illnessPerUser'});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

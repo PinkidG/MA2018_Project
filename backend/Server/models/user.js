@@ -2,10 +2,19 @@ const mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     bcrypt = require('bcrypt-nodejs');
 
+import DS from 'ember-data';
+
 //================================
 // User Schema
 //================================
 const UserSchema = new Schema({
+    id: {
+        type: Number,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true,
+        unique: true
+    },
     email: {
         type: String,
         lowercase: true,
@@ -33,7 +42,6 @@ const UserSchema = new Schema({
     timestamps: true
 });
 
-
 // Pre-save of user to database, hash password if password is modified or new
 UserSchema.pre('save', function(next) {
     const user = this,
@@ -60,5 +68,11 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
         cb(null, isMatch);
     });
 };
+
+//Testen mit mongoose-relationship
+
+export default DS.Model.extend({
+    illness: DS.hasMany(Illness, {through: 'illnessPerUser'})
+)}
 
 module.exports = mongoose.model('User', UserSchema);

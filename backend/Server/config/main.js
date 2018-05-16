@@ -5,4 +5,4 @@ module.exports = {
     'database': 'mongodb://localhost:27017',
     // Setting port for server
     'port': process.env.PORT || 3000
-}
+};

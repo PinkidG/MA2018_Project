@@ -1,6 +1,7 @@
 const AuthenticationController = require('./controllers/authentication'),
     IllnessController = require('./controllers/illnessController'),
-    express = require('express'),
+    UserController = require('./controllers/userController')
+express = require('express'),
     passportService = require('./config/passport'),
     passport = require('passport');
 
@@ -40,6 +41,7 @@ module.exports = function(app) {
     // User route
     apiRoutes.get('/users', requireAuth, AuthenticationController.getAll);
     apiRoutes.get('/user/:id', requireAuth, AuthenticationController.getUser);
+    apiRoutes.post('/user/:id/addIllness/:illnessId', requireAuth, UserController.addIllness);
 
     app.get('/', requireAuth, function(req, res) {
         res.send('Server is up and Running');

@@ -20,7 +20,8 @@ function setUserInfo(request) {
         email: request.email,
         role: request.role,
         dateOfBirth: request.profile.dateOfBirth,
-        gender: request.profile.gender
+        gender: request.profile.gender,
+        illnesses: request.illnesses
     };
 }
 
@@ -123,30 +124,33 @@ exports.roleAuthorization = function(role) {
 
 exports.getAll = function(req, res, next) {
 
-    User.find(function(err, result) {
+    User.find().populate({
+            path: 'illnesses',
+            select: '-_id -users -__v',
+            options: { limit: 5 }
+        })
+        .exec(function(err, result) {
 
-        if (err) { return next(err); }
+            if (err) { return next(err); }
 
-        res.status(200).json({
-            User: result
-        });
+            res.status(200).json({
+                User: result
+            });
 
-    })
+        })
 };
 
 exports.getUser = function(req, res) {
 
-        const id = req.params.id;
+    const id = req.params.id;
 
-        if (req.user.role == "Doctor"){
+    if (req.user.role == "Doctor" || req.user.role == "Admin") {
 
+        res.status(200).json({
 
-
-            res.status(200).json({
-
-                User: setUserInfo(result)
-            });
-        } else {
-            return res.status(422).send({ error: 'Unauthorized' });
-        }
+            User: setUserInfo(result)
+        });
+    } else {
+        return res.status(422).send({ error: 'Unauthorized' });
+    }
 };

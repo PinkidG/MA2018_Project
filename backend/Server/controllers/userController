@@ -1,0 +1,59 @@
+"use strict"
+const User = require('../models/user'),
+    config = require('../config/main');
+
+function setUserInfo(request) {
+    return {
+        _id: request._id,
+        userId: request.userId,
+        firstName: request.profile.firstName,
+        lastName: request.profile.lastName,
+        email: request.email,
+        role: request.role,
+        dateOfBirth: request.profile.dateOfBirth,
+        gender: request.profile.gender
+    };
+}
+
+
+//========================================
+// Append Illness Route
+//========================================
+exports.addIllness = function(req, res) {
+
+    Illness.findOne({ illnessId: req.params.illnessId }, function(err, illness) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        if (illness == null) {
+            return res.status(422).send({ error: 'Illness not found.' });
+        }
+
+        req.user.illnesses.push(illness)
+
+        req.user.save(function(err, user) {
+            if (err) {
+                return res.status(503).send({
+                    error: 'Save error!',
+                    description: err.message
+                });
+            }
+
+            // Subscribe member to Mailchimp list
+            // mailchimp.subscribeToNewsletter(user.email);
+
+            // Respond with JWT if user was created
+
+            let userInfo = setUserInfo(user);
+
+            res.status(201).json({
+                user: userInfo
+            });
+        });
+
+    });
+};

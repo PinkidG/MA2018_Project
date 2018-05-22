@@ -4,9 +4,9 @@ const Illness = require('../models/illness'),
 
 function setIllnessInfo(request) {
     return {
-        id: request.profile.id,
-        name: request.profile.name,
-        description: request.profile.description
+        id: request.id,
+        name: request.name,
+        description: request.description
     };
 }
 
@@ -53,4 +53,18 @@ exports.register = function(req, res, next) {
             });
         });
     });
+};
+
+
+exports.getAll = function(req, res, next) {
+
+    Illness.find(function(err, result) {
+
+        if (err) { return next(err); }
+
+        res.status(200).json({
+            illness: result
+        });
+
+    })
 };

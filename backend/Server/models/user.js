@@ -3,7 +3,6 @@ const mongoose = require('mongoose'),
     bcrypt = require('bcrypt-nodejs'),
     AutoIncrement = require('mongoose-sequence')(mongoose);
 
-var relationship = require("mongoose-relationship");
 
 
 //================================
@@ -34,17 +33,12 @@ const UserSchema = new Schema({
     },
     illnesses: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Illness',
-        childPath: "users"
+        ref: 'Illness'
     }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
 }, {
     timestamps: true
-});
-
-UserSchema.plugin(relationship, {
-    relationshipPathName: 'illnesses'
 });
 UserSchema.plugin(AutoIncrement, { inc_field: 'userId' })
 

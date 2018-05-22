@@ -35,6 +35,8 @@ module.exports = function(app) {
     // Illness route
     apiRoutes.post('/illness', requireAuth, IllnessController.register);
 
+    apiRoutes.get('/illnesses', requireAuth, IllnessController.getAll);
+
     app.get('/', requireAuth, function(req, res) {
         res.send('Relax. We will put the home page here later.');
     });

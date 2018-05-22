@@ -34,11 +34,11 @@ module.exports = function(app) {
 
     // Illness route
     apiRoutes.post('/illness', requireAuth, IllnessController.register);
-
     apiRoutes.get('/illnesses', requireAuth, IllnessController.getAll);
+    apiRoutes.get('/illness/:id', requireAuth, IllnessController.getById);
 
     app.get('/', requireAuth, function(req, res) {
-        res.send('Relax. We will put the home page here later.');
+        res.send('Server is up and Running');
     });
 
     // Set url for API group routes

@@ -4,7 +4,7 @@ const Illness = require('../models/illness'),
 
 function setIllnessInfo(request) {
     return {
-        id: request.id,
+        id: request.illnessId,
         name: request.name,
         description: request.description
     };
@@ -30,7 +30,12 @@ exports.register = function(req, res, next) {
     }
 
     Illness.findOne({ name: name }, function(err, existingIllness) {
-        if (err) { return next(err); }
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
 
         // If illness is not unique, return error
         if (existingIllness) {
@@ -45,9 +50,7 @@ exports.register = function(req, res, next) {
 
         illness.save(function(err, illness) {
             if (err) { return next(err); }
-
             let illnessInfo = setIllnessInfo(illness);
-
             res.status(201).json({
                 illness: illnessInfo
             });
@@ -60,11 +63,44 @@ exports.getAll = function(req, res, next) {
 
     Illness.find(function(err, result) {
 
-        if (err) { return next(err); }
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        var array = [];
+
+        result.forEach(function(element) {
+            array.push(setIllnessInfo(element))
+        });
 
         res.status(200).json({
-            illness: result
+            illness: array
         });
 
     })
+};
+
+exports.getById = function(req, res, next) {
+
+    const id = req.params.id
+
+    Illness.findOne({ illnessId: id }, function(err, illness) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        if (illness == null) {
+            return res.status(422).send({ error: 'Illness not found.' });
+        }
+        // If illness is not unique, return error
+        res.status(200).json({
+            illness: setIllnessInfo(illness)
+        });
+    });
 };

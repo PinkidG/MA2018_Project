@@ -120,3 +120,33 @@ exports.roleAuthorization = function(role) {
         })
     }
 };
+
+exports.getAll = function(req, res, next) {
+
+    User.find(function(err, result) {
+
+        if (err) { return next(err); }
+
+        res.status(200).json({
+            User: result
+        });
+
+    })
+};
+
+exports.getUser = function(req, res) {
+
+        const id = req.params.id;
+
+        if (req.user.role == "Doctor"){
+
+
+
+            res.status(200).json({
+
+                User: setUserInfo(result)
+            });
+        } else {
+            return res.status(422).send({ error: 'Unauthorized' });
+        }
+};

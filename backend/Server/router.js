@@ -37,6 +37,10 @@ module.exports = function(app) {
     apiRoutes.get('/illnesses', requireAuth, IllnessController.getAll);
     apiRoutes.get('/illness/:id', requireAuth, IllnessController.getById);
 
+    // User route
+    apiRoutes.get('/users', requireAuth, AuthenticationController.getAll);
+    apiRoutes.get('/user/:id', requireAuth, AuthenticationController.getUser);
+
     app.get('/', requireAuth, function(req, res) {
         res.send('Server is up and Running');
     });

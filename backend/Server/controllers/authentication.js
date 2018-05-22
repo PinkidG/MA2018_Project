@@ -167,7 +167,34 @@ exports.getUser = function(req, res) {
             }
             // If User is not unique, return error
             res.status(200).json({
-                illness: setUserInfo(user)
+                User: setUserInfo(user)
+            });
+        });
+
+    } else {
+        return res.status(422).send({ error: 'Unauthorized' });
+    }
+};
+
+exports.getUserByName = function(req, res) {
+
+    const name = req.params.name;
+
+    if (req.user.role == "Doctor"){
+
+        User.findOne({ "profile.lastName": name }, function(err, user) {
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+            if (user == null) {
+                return res.status(422).send({ error: 'User not found.' });
+            }
+            // If User is not unique, return error
+            res.status(200).json({
+                User: setUserInfo(user)
             });
         });
 

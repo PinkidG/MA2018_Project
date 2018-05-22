@@ -40,6 +40,7 @@ module.exports = function(app) {
     // User route
     apiRoutes.get('/users', requireAuth, AuthenticationController.getAll);
     apiRoutes.get('/user/:id', requireAuth, AuthenticationController.getUser);
+    apiRoutes.get('/usern/:name', requireAuth, AuthenticationController.getUserByName);
 
     app.get('/', requireAuth, function(req, res) {
         res.send('Server is up and Running');

@@ -123,30 +123,55 @@ exports.roleAuthorization = function(role) {
 
 exports.getAll = function(req, res, next) {
 
+    if (req.user.role == "Doctor"){
+
     User.find(function(err, result) {
 
-        if (err) { return next(err); }
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
 
-        res.status(200).json({
-            User: result
+        var array = [];
+
+        result.forEach(function(element) {
+            array.push(setUserInfo(element))
         });
 
-    })
+        res.status(200).json({
+            User: array
+        });
+    });
+    } else {
+        return res.status(422).send({ error: 'Unauthorized' });
+    }
 };
 
 exports.getUser = function(req, res) {
 
-        const id = req.params.id;
+    const id = req.params.id;
 
-        if (req.user.role == "Doctor"){
+    if (req.user.role == "Doctor"){
 
-
-
+        User.findOne({ userId: id }, function(err, user) {
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+            if (user == null) {
+                return res.status(422).send({ error: 'User not found.' });
+            }
+            // If User is not unique, return error
             res.status(200).json({
-
-                User: setUserInfo(result)
+                illness: setUserInfo(user)
             });
-        } else {
-            return res.status(422).send({ error: 'Unauthorized' });
-        }
+        });
+
+    } else {
+        return res.status(422).send({ error: 'Unauthorized' });
+    }
 };

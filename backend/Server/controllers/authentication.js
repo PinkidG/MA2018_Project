@@ -20,8 +20,8 @@ function setUserInfo(request) {
         email: request.email,
         role: request.role,
         dateOfBirth: request.profile.dateOfBirth,
-        gender: request.profile.gender,
-        illnesses: request.illnesses
+        illnesses: request.illnesses,
+        gender: request.profile.gender
     };
 }
 
@@ -124,20 +124,33 @@ exports.roleAuthorization = function(role) {
 
 exports.getAll = function(req, res, next) {
 
-    User.find().populate({
+    if (req.user.role == "Doctor"  || req.user.role == "Admin") {
+
+        User.find().populate({
             path: 'illnesses',
-            select: '-_id -users -__v',
-            options: { limit: 5 }
-        })
-        .exec(function(err, result) {
+            select: '-_id -users -__v'
+        }).exec(function(err, result) {
 
-            if (err) { return next(err); }
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
 
-            res.status(200).json({
-                User: result
+            var array = [];
+
+            result.forEach(function(element) {
+                array.push(setUserInfo(element))
             });
 
-        })
+            res.status(200).json({
+                User: array
+            });
+        });
+    } else {
+        return res.status(422).send({ error: 'Unauthorized' });
+    }
 };
 
 exports.getUser = function(req, res) {
@@ -146,10 +159,26 @@ exports.getUser = function(req, res) {
 
     if (req.user.role == "Doctor" || req.user.role == "Admin") {
 
-        res.status(200).json({
+        User.findOne({ userId: id }).populate({
+            path: 'illnesses',
+            select: '-_id -users -__v'
+        }).exec(function(err, user) {
 
-            User: setUserInfo(result)
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+            if (user == null) {
+                return res.status(422).send({ error: 'User not found.' });
+            }
+            // If User is not unique, return error
+            res.status(200).json({
+                illness: setUserInfo(user)
+            });
         });
+
     } else {
         return res.status(422).send({ error: 'Unauthorized' });
     }

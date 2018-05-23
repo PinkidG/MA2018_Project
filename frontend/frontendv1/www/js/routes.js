@@ -36,7 +36,7 @@ angular.module('app.routes', [])
   })
 
   .state('login', {
-    url: '/page5',
+    url: '/login',
     templateUrl: 'templates/login.html',
     controller: 'loginCtrl'
   })
@@ -99,7 +99,7 @@ angular.module('app.routes', [])
     controller: 'fragenCtrl'
   })
 
-$urlRouterProvider.otherwise('/side-menu21/home')
+$urlRouterProvider.otherwise('/login')
 
 
 });

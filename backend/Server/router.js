@@ -1,6 +1,7 @@
 const AuthenticationController = require('./controllers/authentication'),
     IllnessController = require('./controllers/illnessController'),
     UserController = require('./controllers/userController'),
+    TreatmentController = require('./controllers/treatmentController'),
     express = require('express'),
     passportService = require('./config/passport'),
     passport = require('passport');
@@ -37,6 +38,12 @@ module.exports = function(app) {
     apiRoutes.post('/illness', requireAuth, IllnessController.register);
     apiRoutes.get('/illnesses', requireAuth, IllnessController.getAll);
     apiRoutes.get('/illness/:id', requireAuth, IllnessController.getById);
+    apiRoutes.post('/illness/:id/addTreatment/:treatmentId', requireAuth, IllnessController.addTreatment);
+
+    // Treatment route
+    apiRoutes.post('/treatment', requireAuth, TreatmentController.register);
+    apiRoutes.get('/treatments', requireAuth, TreatmentController.getAll);
+    apiRoutes.get('/treatment/:id', requireAuth, TreatmentController.getById);
 
     // User route
     apiRoutes.get('/users', requireAuth, UserController.getAll);

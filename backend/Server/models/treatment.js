@@ -5,12 +5,12 @@ const mongoose = require('mongoose'),
 
 Schema = mongoose.Schema;
 
-var relationship = require("mongoose-relationship");
+ var relationship = require("mongoose-relationship");
 //================================
 // Illness Schema
 //================================
-const IllnessSchema = new Schema({
-    illnessId: {
+const TreatmentSchema = new Schema({
+    treatmentId: {
         type: Number
     },
     name: {
@@ -22,21 +22,17 @@ const IllnessSchema = new Schema({
         type: String,
         required: true
     },
-    treatments: [{
+    illnesses: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Treatment'
-    }],
-    users: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        childPath: "illnesses"
+        ref: 'Illness',
+        childPath: "treatments"
     }],
 });
 
-IllnessSchema.plugin(relationship, {
-    relationshipPathName: 'users'
+TreatmentSchema.plugin(relationship, {
+    relationshipPathName: 'illnesses'
 });
 
-IllnessSchema.plugin(AutoIncrement, { inc_field: 'illnessId' });
+TreatmentSchema.plugin(AutoIncrement, { inc_field: 'treatmentId' });
 
-module.exports = mongoose.model('Illness', IllnessSchema);
+module.exports = mongoose.model('Treatment', TreatmentSchema);

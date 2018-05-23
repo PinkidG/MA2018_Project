@@ -1,7 +1,7 @@
 const AuthenticationController = require('./controllers/authentication'),
     IllnessController = require('./controllers/illnessController'),
-    UserController = require('./controllers/userController')
-express = require('express'),
+    UserController = require('./controllers/userController'),
+    express = require('express'),
     passportService = require('./config/passport'),
     passport = require('passport');
 
@@ -39,9 +39,9 @@ module.exports = function(app) {
     apiRoutes.get('/illness/:id', requireAuth, IllnessController.getById);
 
     // User route
-    apiRoutes.get('/users', requireAuth, AuthenticationController.getAll);
-    apiRoutes.get('/user/:id', requireAuth, AuthenticationController.getUser);
-    apiRoutes.get('/usern/:name', requireAuth, AuthenticationController.getUserByName);
+    apiRoutes.get('/users', requireAuth, UserController.getAll);
+    apiRoutes.get('/user/:id', requireAuth, UserController.getUser);
+    apiRoutes.get('/usern/:name', requireAuth, UserController.getUserByName);
     apiRoutes.post('/user/:id/addIllness/:illnessId', requireAuth, UserController.addIllness);
 
     app.get('/', requireAuth, function(req, res) {

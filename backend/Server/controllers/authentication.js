@@ -112,101 +112,12 @@ exports.roleAuthorization = function(role) {
             }
 
             // If user is found, check role.
-            if (foundUser.role == role) {
+            if (foundUser.role === role) {
                 return next();
             }
 
             res.status(401).json({ error: 'You are not authorized to view this content.' });
             return next('Unauthorized');
         })
-    }
-};
-
-exports.getAll = function(req, res, next) {
-
-    if (req.user.role == "Doctor"  || req.user.role == "Admin") {
-
-        User.find().populate({
-            path: 'illnesses',
-            select: '-_id -users -__v'
-        }).exec(function(err, result) {
-
-            if (err) {
-                return res.status(403).send({
-                    error: 'Request error!.',
-                    description: err.message
-                });
-            }
-
-            var array = [];
-
-            result.forEach(function(element) {
-                array.push(setUserInfo(element))
-            });
-
-            res.status(200).json({
-                User: array
-            });
-        });
-    } else {
-        return res.status(422).send({ error: 'Unauthorized' });
-    }
-};
-
-exports.getUser = function(req, res) {
-
-    const id = req.params.id;
-
-    if (req.user.role == "Doctor" || req.user.role == "Admin") {
-
-        User.findOne({ userId: id }).populate({
-            path: 'illnesses',
-            select: '-_id -users -__v'
-        }).exec(function(err, user) {
-
-            if (err) {
-                return res.status(403).send({
-                    error: 'Request error!.',
-                    description: err.message
-                });
-            }
-            if (user == null) {
-                return res.status(422).send({ error: 'User not found.' });
-            }
-            // If User is not unique, return error
-            res.status(200).json({
-                User: setUserInfo(user)
-            });
-        });
-
-    } else {
-        return res.status(422).send({ error: 'Unauthorized' });
-    }
-};
-
-exports.getUserByName = function(req, res) {
-
-    const name = req.params.name;
-
-    if (req.user.role == "Doctor"){
-
-        User.findOne({ "profile.lastName": name }, function(err, user) {
-            if (err) {
-                return res.status(403).send({
-                    error: 'Request error!.',
-                    description: err.message
-                });
-            }
-            if (user == null) {
-                return res.status(422).send({ error: 'User not found.' });
-            }
-            // If User is not unique, return error
-            res.status(200).json({
-                User: setUserInfo(user)
-            });
-        });
-
-    } else {
-        return res.status(422).send({ error: 'Unauthorized' });
     }
 };

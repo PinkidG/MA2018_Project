@@ -1,7 +1,6 @@
 "use strict"
 const Illness = require('../models/illness'),
-    Treatment = require('../models/treatment'),
-    config = require('../config/main');
+    Treatment = require('../models/treatment');
 
 function setIllnessInfo(request) {
     return {
@@ -16,8 +15,6 @@ function setIllnessInfo(request) {
 // Add Illness
 //========================================
 exports.register = function(req, res, next) {
-    // Check for registration errors
-    //const id = req.body.id;
     const name = req.body.name;
     const description = req.body.description;
 
@@ -92,7 +89,10 @@ exports.getById = function(req, res, next) {
 
     const id = req.params.id;
 
-    Illness.findOne({ illnessId: id }, function(err, illness) {
+    Illness.findOne({ illnessId: id }).populate({
+        path: 'treatments',
+        select: '-_id -illnesses -__v'
+    }).exec(function(err, illness) {
         if (err) {
             return res.status(403).send({
                 error: 'Request error!.',

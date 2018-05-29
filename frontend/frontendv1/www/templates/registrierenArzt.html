@@ -2,7 +2,7 @@
   <ion-content padding="true" class="has-header">
     <form id="registrierenArzt-form5" class="list">
       <ion-list id="registrierenArzt-list5">
-          <label class = "item item-input item-select">
+          <label class = "item item-input item-select" ng-model="user.gender">
               <div class = "input-label">
                  Geschlecht wählen...
               </div>
@@ -33,7 +33,7 @@
           <input type="password" placeholder="">
         </label>
       </ion-list>
-      <a id="registrierenArzt-button11" class="button button-stable button-block">Registrieren</a>
+      <a id="registrierenArzt-button11" class="button button-stable button-block" ng-click="signup()">Registrieren</a>
     </form>
   </ion-content>
 </ion-view>

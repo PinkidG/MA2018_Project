@@ -97,13 +97,34 @@ function ($scope, $stateParams) {
 
 }])
    
-.controller('registrierenArztCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+.controller('registrierenArztCtrl', 
+function($scope, AuthService, $ionicPopup, $state) {
 
+  $scope.user = {
+    gender: '',
+    lastName: '',
+    firstName: '',
+    email: '',
+    dateOfBirth: '',
+    password: ''
+  };
+ 
+  $scope.signup = function() {
+    AuthService.register($scope.user).then(function(msg) {
+      $state.go('menPatient.home');
+      var alertPopup = $ionicPopup.alert({
+        title: 'Register success!',
+        template: msg
+      });
+    }, function(errMsg) {
+      var alertPopup = $ionicPopup.alert({
+        title: 'Register failed!',
+        template: errMsg
+      });
+    });
+  };
 
-}])
+})
    
 .controller('arztCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -151,7 +172,7 @@ function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS) {
 
     $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
       AuthService.logout();
-      $state.go('outside.login');
+      $state.go('login');
       var alertPopup = $ionicPopup.alert({
         title: 'Session Lost!',
         template: 'Sorry, You have to login again.'

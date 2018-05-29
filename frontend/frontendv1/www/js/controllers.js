@@ -1,4 +1,4 @@
-angular.module('app.controllers', [])
+angular.module('app.controllers', ['ngCordova'])
   
 .controller('homeCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -25,7 +25,7 @@ function ($scope, $stateParams) {
 }])
    
 .controller('loginCtrl',
-function ($scope, AuthService, $ionicPopup, $state) {
+function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
 
     $scope.user = {
         email: '',
@@ -46,28 +46,46 @@ function ($scope, AuthService, $ionicPopup, $state) {
     // When button is clicked, the popup will be shown...
    $scope.showPopup = function() {
     $scope.data = {}
-  
-    // Custom popup
-    var myPopup = $ionicPopup.show({
-       title: 'Title',
-       subTitle: 'Subtitle',
-       scope: $scope,
-    
-       buttons: [
-          { text: 'Cancel' }, {
-             text: '<b>Patient</b>',
-             type: 'button-positive',
-             onTap: function(e) {
-              $state.go('registrierenPatient');
-             }
-          }
-       ]
+
+    $cordovaDialogs.confirm('message', 'Auswählen', ['Arzt','Patient'])
+    .then(function(buttonIndex) {
+      // no button = 0, 'OK' = 1, 'Cancel' = 2
+      var btnIndex = buttonIndex;
+
+      if (btnIndex == 1) {
+        $state.go('registrierenArzt');
+      } else if (btnIndex == 2) {
+        $state.go('registrierenPatient');
+      }
     });
 
-    myPopup.then(function(res) {
-       console.log('Tapped!', res);
-    });    
- };
+  
+    // // Custom popup
+    // var myPopup = $ionicPopup.show({
+    //    title: 'Title',
+    //    subTitle: 'Subtitle',
+    //    scope: $scope,
+    
+    //    buttons: [
+    //       { text: '<b>Arzt</b>',
+    //       type: 'button-positive',
+    //       onTap: function(e) {
+    //        $state.go('registrierenArzt');
+    //       }
+    //     }, {
+    //          text: '<b>Patient</b>',
+    //          type: 'button-positive',
+    //          onTap: function(e) {
+    //           $state.go('registrierenPatient');
+    //          }
+    //       }
+    //    ]
+//     });
+
+//     myPopup.then(function(res) {
+//        console.log('Tapped!', res);
+//     });    
+  };
 
 })
    

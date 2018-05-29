@@ -2,28 +2,38 @@
   <ion-content padding="true" class="has-header">
     <form id="registrierenArzt-form5" class="list">
       <ion-list id="registrierenArzt-list5">
-        <label class="item item-input" id="registrierenArzt-input14">
+          <label class = "item item-input item-select">
+              <div class = "input-label">
+                 Geschlecht wählen...
+              </div>
+             
+              <select>
+                 <option selected>Männlich</option>
+                 <option>Weiblich</option>
+              </select>
+           </label>
+        <label class="item item-input" id="registrierenArzt-input14" ng-model="user.lastName">
           <span class="input-label">Name</span>
           <input type="text" placeholder="">
         </label>
-        <label class="item item-input" id="registrierenArzt-input15">
+        <label class="item item-input" id="registrierenArzt-input15" ng-model="user.firstName">
           <span class="input-label">Vorname</span>
           <input type="text" placeholder="">
         </label>
-        <label class="item item-input" id="registrierenArzt-input16">
+        <label class="item item-input" id="registrierenArzt-input16" ng-model="user.email">
           <span class="input-label">Email</span>
           <input type="email" placeholder="">
         </label>
-        <label class="item item-input" id="registrierenArzt-input17">
+        <label class="item item-input" id="registrierenArzt-input17" ng-model="user.dateOfBirth">
           <span class="input-label">Geburtsdatum</span>
           <input type="date" placeholder="">
         </label>
-        <label class="item item-input" id="registrierenArzt-input18">
+        <label class="item item-input" id="registrierenArzt-input18" ng-model="user.password">
           <span class="input-label">Passwort</span>
           <input type="password" placeholder="">
         </label>
       </ion-list>
-      <a ui-sref="menPatient.home()" id="registrierenArzt-button11" class="button button-stable button-block">Registrieren</a>
+      <a id="registrierenArzt-button11" class="button button-stable button-block">Registrieren</a>
     </form>
   </ion-content>
 </ion-view>

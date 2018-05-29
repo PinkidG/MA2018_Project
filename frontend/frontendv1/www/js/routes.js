@@ -42,7 +42,7 @@ angular.module('app.routes', [])
   })
 
   .state('registrierenPatient', {
-    url: '/signupPatient',
+    url: '/registerPatient',
     templateUrl: 'templates/registrierenPatient.html',
     controller: 'registrierenPatientCtrl'
   })

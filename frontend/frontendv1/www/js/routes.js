@@ -7,10 +7,10 @@ angular.module('app.routes', [])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    
 
-      .state('menPatient.home', {
-    url: '/home',
+
+      .state('men.home', {
+    url: '/home-patient',
     views: {
       'side-menu21': {
         templateUrl: 'templates/home.html',
@@ -19,7 +19,17 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menPatient.tagebuch', {
+  .state('men.patient', {
+    url: '/patient-overview',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/patient.html',
+        controller: 'patientCtrl'
+      }
+    }
+  })
+
+  .state('men.tagebuch', {
     url: '/patientdiary',
     views: {
       'side-menu21': {
@@ -29,20 +39,20 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menPatient', {
-    url: '/side-menu21',
-    templateUrl: 'templates/menPatient.html',
-    controller: 'menPatientCtrl'
+  .state('men', {
+    url: '/side-menu',
+    templateUrl: 'templates/men.html',
+    controller: 'menCtrl'
   })
 
   .state('login', {
-    url: '/page5',
+    url: '/login',
     templateUrl: 'templates/login.html',
     controller: 'loginCtrl'
   })
 
   .state('registrierenPatient', {
-    url: '/signupPatient',
+    url: '/registerPatient',
     templateUrl: 'templates/registrierenPatient.html',
     controller: 'registrierenPatientCtrl'
   })
@@ -53,8 +63,8 @@ angular.module('app.routes', [])
     controller: 'registrierenArztCtrl'
   })
 
-  .state('menPatient.arzt', {
-    url: '/profil',
+  .state('men.arzt', {
+    url: '/doctor',
     views: {
       'side-menu21': {
         templateUrl: 'templates/arzt.html',
@@ -63,8 +73,8 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menPatient.videos', {
-    url: '/page10',
+  .state('men.videos', {
+    url: '/videos',
     views: {
       'side-menu21': {
         templateUrl: 'templates/videos.html',
@@ -73,7 +83,7 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menPatient.video', {
+  .state('men.video', {
     url: '/Video',
     views: {
       'side-menu21': {
@@ -83,8 +93,8 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('menPatient.frage', {
-    url: '/page12',
+  .state('men.frage', {
+    url: '/question',
     views: {
       'side-menu21': {
         templateUrl: 'templates/frage.html',
@@ -93,13 +103,65 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('fragen', {
-    url: '/page13',
-    templateUrl: 'templates/fragen.html',
-    controller: 'fragenCtrl'
+  .state('men.suche', {
+    url: '/search',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/suche.html',
+        controller: 'sucheCtrl'
+      }
+    }
   })
 
-$urlRouterProvider.otherwise('/side-menu21/home')
+  .state('registrieren', {
+    url: '/register-decide',
+    templateUrl: 'templates/registrieren.html',
+    controller: 'registrierenCtrl'
+  })
+
+  .state('suchergebnis', {
+    url: '/searchresult',
+    templateUrl: 'templates/suchergebnis.html',
+    controller: 'suchergebnisCtrl'
+  })
+
+  .state('men.fragen', {
+    url: '/questions',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/fragen.html',
+        controller: 'fragenCtrl'
+      }
+    }
+  })
+
+  .state('home2', {
+    url: '/home-doctor',
+    templateUrl: 'templates/home2.html',
+    controller: 'home2Ctrl'
+  })
+
+  .state('men.patienten', {
+    url: '/patients-overview',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/patienten.html',
+        controller: 'patientenCtrl'
+      }
+    }
+  })
+
+  .state('men.neuenPatientenZuweisen', {
+    url: '/searchpatient',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/neuenPatientenZuweisen.html',
+        controller: 'neuenPatientenZuweisenCtrl'
+      }
+    }
+  })
+  $urlRouterProvider.otherwise('/login')
+
 
 
 });

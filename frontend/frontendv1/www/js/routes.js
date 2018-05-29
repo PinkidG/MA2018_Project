@@ -7,7 +7,7 @@ angular.module('app.routes', [])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    
+
 
       .state('men.home', {
     url: '/home-patient',
@@ -52,13 +52,13 @@ angular.module('app.routes', [])
   })
 
   .state('registrierenPatient', {
-    url: '/signupPatient',
+    url: '/registerPatient',
     templateUrl: 'templates/registrierenPatient.html',
     controller: 'registrierenPatientCtrl'
   })
 
   .state('registrierenArzt', {
-    url: '/signupDoctor',
+    url: '/registerDoctor',
     templateUrl: 'templates/registrierenArzt.html',
     controller: 'registrierenArztCtrl'
   })
@@ -160,8 +160,8 @@ angular.module('app.routes', [])
       }
     }
   })
+  $urlRouterProvider.otherwise('/login')
 
-$urlRouterProvider.otherwise('/side-menu/home-patient')
 
 
 });

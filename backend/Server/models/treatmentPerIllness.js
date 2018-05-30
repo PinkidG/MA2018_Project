@@ -2,9 +2,9 @@ const mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 //================================
-// TreatmentPerUser Schema for n:m mapping between treatment and illness
+// TreatmentPerIllness Schema for n:m mapping between treatment and illness
 //================================
-const TreatmentPerUserSchema = new Schema({
+const TreatmentPerIllnessSchema = new Schema({
     id: {
         type: Number,
         primaryKey: true,
@@ -26,4 +26,4 @@ const TreatmentPerUserSchema = new Schema({
     },
 });
 
-module.exports = mongoose.model('TreatmentPerUser', TreatmentPerUserSchema);
+module.exports = mongoose.model('TreatmentPerIllness', TreatmentPerIllnessSchema);

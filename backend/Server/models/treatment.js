@@ -7,7 +7,7 @@ Schema = mongoose.Schema;
 
  var relationship = require("mongoose-relationship");
 //================================
-// Illness Schema
+// Treatment Schema
 //================================
 const TreatmentSchema = new Schema({
     treatmentId: {

@@ -2,6 +2,8 @@ const AuthenticationController = require('./controllers/authentication'),
     IllnessController = require('./controllers/illnessController'),
     UserController = require('./controllers/userController'),
     TreatmentController = require('./controllers/treatmentController'),
+    TopicController = require('./controllers/topicController'),
+    EntryController = require('./controllers/entryController'),
     express = require('express'),
     passportService = require('./config/passport'),
     passport = require('passport');
@@ -50,6 +52,17 @@ module.exports = function(app) {
     apiRoutes.get('/user/:id', requireAuth, UserController.getUser);
     apiRoutes.get('/usern/:name', requireAuth, UserController.getUserByName);
     apiRoutes.post('/user/:id/addIllness/:illnessId', requireAuth, UserController.addIllness);
+
+    // Topic route
+    apiRoutes.post('/topic', requireAuth, TopicController.register);
+    apiRoutes.get('/topics', requireAuth, TopicController.getAll);
+    apiRoutes.get('/topic/:id', requireAuth, TopicController.getById);
+    apiRoutes.post('/topic/:id/entry/:entryId', requireAuth, TopicController.addEntry);
+
+    // Entry route
+    apiRoutes.post('/entry', requireAuth, EntryController.register);
+    apiRoutes.get('/entries', requireAuth, EntryController.getAll);
+    apiRoutes.get('/entry/:id', requireAuth, EntryController.getById);
 
     app.get('/', requireAuth, function(req, res) {
         res.send('Server is up and Running');

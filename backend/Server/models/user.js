@@ -35,6 +35,10 @@ const UserSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Illness'
     }],
+    entries: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Entry'
+    }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
 }, {

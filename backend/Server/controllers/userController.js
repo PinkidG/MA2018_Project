@@ -2,7 +2,10 @@
 const User = require('../models/user');
 
 function setUserInfo(request) {
-    return {
+
+
+
+    var userInfo = {
         userId: request.userId,
         firstName: request.profile.firstName,
         lastName: request.profile.lastName,
@@ -14,7 +17,86 @@ function setUserInfo(request) {
         treatments: request.treatments,
         entries: request.entries
     };
+
+    if(userInfo.role !== "Patient"){
+        userInfo["users"] = request.users
+    }
+
+
+    return userInfo
 }
+
+
+
+exports.addUserToUser = function(req, res) {
+
+    
+    const userId = req.params.userId;
+    const myUser = req.user;
+
+    if (myUser.role === "Patient"){
+        return res.status(422).send({
+            error: 'Request error!.',
+            description: "Not allowed!"
+        });
+    }
+
+    User.findOne({ userId: userId})
+    .populate({path: 'users', select: '-_id -users -__v -password -entries'})
+    .lean()
+    .exec(function(err, user) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+        if (user == null) {
+            return res.status(422).send({ error: 'User  not found.' });
+        }
+
+        myUser.users.forEach(function(element){
+
+            User.findOne({ id: element.id})
+            .lean()
+            .exec(function(err, result) {
+                if (err == null){
+                    if (user.userId === result.userId){
+                        return res.status(422).send({ error: 'Already appended!' });
+                    }
+
+                }
+
+                myUser.users.push(user);
+                myUser.save(function(err, sendUser) {
+                    if (err) {
+                        return res.status(503).send({
+                            error: 'Save error!',
+                            description: err.message
+                        });
+                    }
+        
+        
+                    let userInfo = setUserInfo(myUser);
+                    res.status(201).json({
+                    user: userInfo
+                });
+                    
+        
+                });
+
+            });
+
+
+
+
+        });
+
+
+
+       
+    });
+};
 
 
 //========================================
@@ -22,8 +104,8 @@ function setUserInfo(request) {
 //========================================
 exports.addIllness = function(req, res) {
 
-    const id = req.params.illnessId;
-    const treatmentId = req.params.id;
+    const illnessid = req.params.illnessId;
+    const userId = req.params.userId;
 
     Illness.findOne({ illnessId: id }, function(err, illness) {
         if (err) {
@@ -37,7 +119,7 @@ exports.addIllness = function(req, res) {
             return res.status(422).send({ error: 'Illness not found.' });
         }
 
-        User.findOne({ userId: treatmentId }, function(err, user) {
+        User.findOne({ userId: userId }, function(err, user) {
             if (err) {
                 return res.status(403).send({
                     error: 'Request error!.',
@@ -74,10 +156,10 @@ exports.getAll = function(req, res) {
     if (req.user.role === "Doctor"  || req.user.role === "Admin") {
 
         User.find()
-            .populate({path: 'users', select: '-_id -users -__v'})
             .populate({path: 'illnesses', select: '-_id -users -__v'})
             .populate({path: 'treatments', select: '-_id'})
             .populate({path: 'entries', select: '-_id'})
+            .populate({path: 'users', select: '-_id -users -__v -password -entries'})
             .lean()
             .exec(function(err, result) {
 
@@ -113,6 +195,7 @@ exports.getUser = function(req, res) {
             .findOne({ userId: id })
             .populate({path: 'illnesses', select: '-_id -users -__v'})
             .populate({path: 'treatments', select: '-_id -__v -illnesses'})
+            .populate({path: 'users', select: '-_id -users -__v -password -createdAt -updatedAt'})
             .lean()
             .exec(function(err, user) {
                 if (err) {

@@ -51,7 +51,8 @@ module.exports = function(app) {
     apiRoutes.get('/users', requireAuth, UserController.getAll);
     apiRoutes.get('/user/:id', requireAuth, UserController.getUser);
     apiRoutes.get('/usern/:name', requireAuth, UserController.getUserByName);
-    apiRoutes.post('/user/:id/addIllness/:illnessId', requireAuth, UserController.addIllness);
+    apiRoutes.post('/user/add/:userId', requireAuth, UserController.addUserToUser);
+    apiRoutes.post('/user/:userId/addIllness/:illnessId', requireAuth, UserController.addIllness);
 
     // Topic route
     apiRoutes.post('/topic', requireAuth, TopicController.register);

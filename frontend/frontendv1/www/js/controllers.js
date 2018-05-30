@@ -1,12 +1,10 @@
 angular.module('app.controllers', ['ngCordova'])
 
-.controller('homeCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+.controller('homeCtrl', 
+function ($scope, sharedProperties, $stateParams) {
+$scope.user = sharedProperties.getProperty();
 
-
-}])
+})
 
 .controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -25,7 +23,7 @@ function ($scope, $stateParams) {
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, $state, $cordovaDialogs) {
+function ($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
 
     AuthService.logout()
     $scope.user = {
@@ -35,6 +33,7 @@ function ($scope, AuthService, $state, $cordovaDialogs) {
 
       $scope.login = function() {
         AuthService.login($scope.user).then(function(user) {
+          sharedProperties.setProperty(user);
           if (user.role == "Doctor") {
             $state.go('men.home2');
           } else {
@@ -88,7 +87,7 @@ function($scope, AuthService, $state, $cordovaDialogs) {
       .then(function(buttonIndex) {
         // no button = 0, 'OK' = 1, 'Cancel' = 2
         var btnIndex = buttonIndex;
-        $state.go('men.home');
+        $state.go('men.home',{"user": user});
       });
     }, function(errMsg) {
       $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
@@ -120,7 +119,7 @@ function($scope, AuthService, $state, $cordovaDialogs) {
       .then(function(buttonIndex) {
         // no button = 0, 'OK' = 1, 'Cancel' = 2
         var btnIndex = buttonIndex;
-        $state.go('men.home2');
+        $state.go('men.home2',{"user": user});
       });
     }, function(errMsg) {
       $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
@@ -211,12 +210,11 @@ function ($scope, $stateParams) {
 
       })
 
-  .controller('home2Ctrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
-
-    }])
+  .controller('home2Ctrl',
+  
+    function ($scope, sharedProperties, $stateParams) {
+      $scope.user = sharedProperties.getProperty();
+    })
 
   .controller('patientenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function

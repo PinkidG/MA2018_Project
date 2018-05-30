@@ -13,7 +13,9 @@
         <span class="item-note">{{user.gender}}</span>
       </ion-item>
       <ion-item id="home-list-item64">Befund
-        <span class="item-note">Doppelter Oberschnekelbruch</span>
+        <div ng-repeat="illness in illnesses">
+          <span class="item-note">{{illness.name}}</span>
+        </div>
       </ion-item>
     </ion-list>
     <h3 id="home-heading9" style="color:#000000;">Tagebuch</h3>

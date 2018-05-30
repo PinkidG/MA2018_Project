@@ -8,6 +8,8 @@ var date = new Date($scope.user.dateOfBirth);
 
 $scope.datefor = date.toLocaleDateString("de");
 
+$scope.illnesses = $scope.user.illnesses
+
 })
 
 .controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller

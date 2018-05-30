@@ -17,8 +17,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
     $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
       if (!AuthService.isAuthenticated()) {
         console.log(next.name);
-        if (next.name !== 'login' //&& next.name !== 'outside.register'
-        ) {
+        if (next.name !== 'login' && next.name !== 'registrierenArzt') {
           event.preventDefault();
           $state.go('login');
         }

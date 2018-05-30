@@ -27,6 +27,7 @@ function ($scope, $stateParams) {
 .controller('loginCtrl',
 function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
 
+    AuthService.logout()
     $scope.user = {
         email: '',
         password: ''
@@ -36,10 +37,19 @@ function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
         AuthService.login($scope.user).then(function(msg) {
           $state.go('men.home');
         }, function(errMsg) {
-          var alertPopup = $ionicPopup.alert({
-            title: 'Login failed!',
-            template: errMsg
-          });
+
+          $cordovaDialogs.confirm(errMsg, 'Fehler', ['Try Again'])
+            .then(function(buttonIndex) {
+              // no button = 0, 'OK' = 1, 'Cancel' = 2
+              var btnIndex = buttonIndex;
+            });
+
+
+
+          // var alertPopup = $ionicPopup.alert({
+          //   title: 'Login failed!',
+          //   template: errMsg
+          // });
         });
       };
 
@@ -106,12 +116,13 @@ function($scope, AuthService, $ionicPopup, $state) {
     firstName: '',
     email: '',
     dateOfBirth: '',
-    password: ''
+    password: '',
+    role: 'Doctor'
   };
 
   $scope.signup = function() {
     AuthService.register($scope.user).then(function(msg) {
-      $state.go('men.home');
+      $state.go('home2');
       var alertPopup = $ionicPopup.alert({
         title: 'Register success!',
         template: msg

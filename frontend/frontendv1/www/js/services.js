@@ -46,7 +46,8 @@ angular.module('app.services', [])
     var register = function(user) {
       return $q(function(resolve, reject) {
         $http.post(API_ENDPOINT.url + '/auth/register', user).then(function(result) {
-          if (result.data.success) {
+          if (result.data.token) {
+            storeUserCredentials(result.data.token);
             resolve(result.data.msg);
           } else {
             reject(result.data.msg);
@@ -64,6 +65,12 @@ angular.module('app.services', [])
           } else {
             reject(result.data.msg);
           }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
         });
       });
     };

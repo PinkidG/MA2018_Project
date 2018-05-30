@@ -46,11 +46,18 @@ angular.module('app.services', [])
     var register = function(user) {
       return $q(function(resolve, reject) {
         $http.post(API_ENDPOINT.url + '/auth/register', user).then(function(result) {
-          if (result.data.success) {
-            resolve(result.data.msg);
+          if (result.data.token) {
+            storeUserCredentials(result.data.token);
+            resolve(result.data.user);
           } else {
             reject(result.data.msg);
           }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
         });
       });
     };
@@ -60,10 +67,16 @@ angular.module('app.services', [])
         $http.post(API_ENDPOINT.url + '/auth/login', user).then(function(result) {
           if (result.data.token) {
             storeUserCredentials(result.data.token);
-            resolve(result.data.msg);
+            resolve(result.data.user);
           } else {
             reject(result.data.msg);
           }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
         });
       });
     };
@@ -81,6 +94,19 @@ angular.module('app.services', [])
       isAuthenticated: function() {return isAuthenticated;},
     };
   })
+
+.service('sharedProperties', function () {
+  var property = "";
+
+  return {
+      getProperty: function () {
+           return property;
+      },
+       setProperty: function(value) {
+           property = value;
+       }
+  };
+})
 
 .config(function ($httpProvider) {
   $httpProvider.interceptors.push('AuthInterceptor');

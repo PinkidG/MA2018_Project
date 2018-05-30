@@ -1,12 +1,16 @@
 angular.module('app.controllers', ['ngCordova'])
 
-.controller('homeCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+.controller('homeCtrl', 
+function ($scope, sharedProperties, $stateParams) {
+$scope.user = sharedProperties.getProperty();
 
+var date = new Date($scope.user.dateOfBirth);
 
-}])
+$scope.datefor = date.toLocaleDateString("de");
+
+$scope.illnesses = $scope.user.illnesses
+
+})
 
 .controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -25,21 +29,29 @@ function ($scope, $stateParams) {
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
+function ($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
 
+    AuthService.logout()
     $scope.user = {
         email: '',
         password: ''
       };
 
       $scope.login = function() {
-        AuthService.login($scope.user).then(function(msg) {
-          $state.go('men.home');
+        AuthService.login($scope.user).then(function(user) {
+          sharedProperties.setProperty(user);
+          if (user.role == "Doctor") {
+            $state.go('men.home2');
+          } else {
+            $state.go('men.home');
+          }
         }, function(errMsg) {
-          var alertPopup = $ionicPopup.alert({
-            title: 'Login failed!',
-            template: errMsg
-          });
+
+          $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
+            .then(function(buttonIndex) {
+              // no button = 0, 'OK' = 1, 'Cancel' = 2
+              var btnIndex = buttonIndex;
+            });
         });
       };
 
@@ -58,47 +70,12 @@ function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
         $state.go('registrierenPatient');
       }
     });
-
-
-    // // Custom popup
-    // var myPopup = $ionicPopup.show({
-    //    title: 'Title',
-    //    subTitle: 'Subtitle',
-    //    scope: $scope,
-
-    //    buttons: [
-    //       { text: '<b>Arzt</b>',
-    //       type: 'button-positive',
-    //       onTap: function(e) {
-    //        $state.go('registrierenArzt');
-    //       }
-    //     }, {
-    //          text: '<b>Patient</b>',
-    //          type: 'button-positive',
-    //          onTap: function(e) {
-    //           $state.go('registrierenPatient');
-    //          }
-    //       }
-    //    ]
-//     });
-
-//     myPopup.then(function(res) {
-//        console.log('Tapped!', res);
-//     });
   };
 
 })
 
-.controller('registrierenPatientCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
-
-
-}])
-
-.controller('registrierenArztCtrl',
-function($scope, AuthService, $ionicPopup, $state) {
+.controller('registrierenPatientCtrl',
+function($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
 
   $scope.user = {
     gender: '',
@@ -106,20 +83,57 @@ function($scope, AuthService, $ionicPopup, $state) {
     firstName: '',
     email: '',
     dateOfBirth: '',
-    password: ''
+    password: '',
+    role: 'Patient'
   };
 
   $scope.signup = function() {
-    AuthService.register($scope.user).then(function(msg) {
-      $state.go('men.home');
-      var alertPopup = $ionicPopup.alert({
-        title: 'Register success!',
-        template: msg
+    AuthService.register($scope.user).then(function(user) {
+      sharedProperties.setProperty(user);
+      $cordovaDialogs.confirm("Erfolg", 'Registrierung erfolgreich', ['OK'])
+      .then(function(buttonIndex) {
+        // no button = 0, 'OK' = 1, 'Cancel' = 2
+        var btnIndex = buttonIndex;
+        $state.go('men.home');
       });
     }, function(errMsg) {
-      var alertPopup = $ionicPopup.alert({
-        title: 'Register failed!',
-        template: errMsg
+      $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
+      .then(function(buttonIndex) {
+        // no button = 0, 'OK' = 1, 'Cancel' = 2
+        var btnIndex = buttonIndex;
+      });
+    });
+  };
+
+})
+
+.controller('registrierenArztCtrl',
+function($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
+
+  $scope.user = {
+    gender: '',
+    lastName: '',
+    firstName: '',
+    email: '',
+    dateOfBirth: '',
+    password: '',
+    role: 'Doctor'
+  };
+
+  $scope.signup = function() {
+    AuthService.register($scope.user).then(function(user) {
+      sharedProperties.setProperty(user);
+      $cordovaDialogs.confirm("Erfolg", 'Registrierung erfolgreich', ['OK'])
+      .then(function(buttonIndex) {
+        // no button = 0, 'OK' = 1, 'Cancel' = 2
+        var btnIndex = buttonIndex;
+        $state.go('men.home2');
+      });
+    }, function(errMsg) {
+      $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
+      .then(function(buttonIndex) {
+        // no button = 0, 'OK' = 1, 'Cancel' = 2
+        var btnIndex = buttonIndex;
       });
     });
   };
@@ -174,14 +188,6 @@ function ($scope, $stateParams) {
 
     }])
 
-  .controller('registrierenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
-
-
-    }])
-
   .controller('suchergebnisCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
@@ -203,19 +209,20 @@ function ($scope, $stateParams) {
     }])
 
 
-    .controller('menCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-      function ($scope, $stateParams) {
+    .controller('menCtrl',
+      function ($scope, AuthService, $stateParams, $state) {
 
-      }])
+        $scope.logout = function() {
+          $state.go('login');
+        }
 
-  .controller('home2Ctrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
+      })
 
-    }])
+  .controller('home2Ctrl',
+
+    function ($scope, sharedProperties, $stateParams) {
+      $scope.user = sharedProperties.getProperty();
+    })
 
   .controller('patientenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function

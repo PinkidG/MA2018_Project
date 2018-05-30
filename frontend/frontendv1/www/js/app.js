@@ -10,6 +10,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
 .config(function($ionicConfigProvider, $sceDelegateProvider){
 
+  $ionicConfigProvider.views.maxCache(0);
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
 
 })
@@ -17,8 +18,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
     $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
       if (!AuthService.isAuthenticated()) {
         console.log(next.name);
-        if (next.name !== 'login' //&& next.name !== 'outside.register'
-        ) {
+        if (next.name !== 'login' && next.name !== 'registrierenArzt' && next.name !== 'registrierenPatient') {
           event.preventDefault();
           $state.go('login');
         }

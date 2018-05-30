@@ -25,7 +25,7 @@ function ($scope, $stateParams) {
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
+function ($scope, AuthService, $state, $cordovaDialogs) {
 
     AuthService.logout()
     $scope.user = {
@@ -38,18 +38,11 @@ function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
           $state.go('men.home');
         }, function(errMsg) {
 
-          $cordovaDialogs.confirm(errMsg, 'Fehler', ['Try Again'])
+          $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
             .then(function(buttonIndex) {
               // no button = 0, 'OK' = 1, 'Cancel' = 2
               var btnIndex = buttonIndex;
             });
-
-
-
-          // var alertPopup = $ionicPopup.alert({
-          //   title: 'Login failed!',
-          //   template: errMsg
-          // });
         });
       };
 
@@ -73,7 +66,7 @@ function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
 })
 
 .controller('registrierenPatientCtrl',
-function($scope, AuthService, $ionicPopup, $state) {
+function($scope, AuthService, $state, $cordovaDialogs) {
 
   $scope.user = {
     gender: '',
@@ -88,14 +81,16 @@ function($scope, AuthService, $ionicPopup, $state) {
   $scope.signup = function() {
     AuthService.register($scope.user).then(function(msg) {
       $state.go('home2');
-      var alertPopup = $ionicPopup.alert({
-        title: 'Register success!',
-        template: msg
+      $cordovaDialogs.confirm(errMsg.data.error, 'Registrierung erfolgreich', ['OK'])
+      .then(function(buttonIndex) {
+        // no button = 0, 'OK' = 1, 'Cancel' = 2
+        var btnIndex = buttonIndex;
       });
     }, function(errMsg) {
-      var alertPopup = $ionicPopup.alert({
-        title: 'Register failed!',
-        template: errMsg
+      $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
+      .then(function(buttonIndex) {
+        // no button = 0, 'OK' = 1, 'Cancel' = 2
+        var btnIndex = buttonIndex;
       });
     });
   };
@@ -103,7 +98,7 @@ function($scope, AuthService, $ionicPopup, $state) {
 })
 
 .controller('registrierenArztCtrl',
-function($scope, AuthService, $ionicPopup, $state) {
+function($scope, AuthService, $state, $cordovaDialogs) {
 
   $scope.user = {
     gender: '',
@@ -118,14 +113,16 @@ function($scope, AuthService, $ionicPopup, $state) {
   $scope.signup = function() {
     AuthService.register($scope.user).then(function(msg) {
       $state.go('home2');
-      var alertPopup = $ionicPopup.alert({
-        title: 'Register success!',
-        template: msg
+      $cordovaDialogs.confirm(errMsg.data.error, 'Registrierung erfolgreich', ['OK'])
+      .then(function(buttonIndex) {
+        // no button = 0, 'OK' = 1, 'Cancel' = 2
+        var btnIndex = buttonIndex;
       });
     }, function(errMsg) {
-      var alertPopup = $ionicPopup.alert({
-        title: 'Register failed!',
-        template: errMsg
+      $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
+      .then(function(buttonIndex) {
+        // no button = 0, 'OK' = 1, 'Cancel' = 2
+        var btnIndex = buttonIndex;
       });
     });
   };

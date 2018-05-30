@@ -34,8 +34,12 @@ function ($scope, AuthService, $state, $cordovaDialogs) {
       };
 
       $scope.login = function() {
-        AuthService.login($scope.user).then(function(msg) {
-          $state.go('men.home');
+        AuthService.login($scope.user).then(function(user) {
+          if (user.role == "Doctor") {
+            $state.go('men.home2');
+          } else {
+            $state.go('men.home');
+          }
         }, function(errMsg) {
 
           $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
@@ -80,11 +84,11 @@ function($scope, AuthService, $state, $cordovaDialogs) {
 
   $scope.signup = function() {
     AuthService.register($scope.user).then(function(msg) {
-      $state.go('home2');
-      $cordovaDialogs.confirm(errMsg.data.error, 'Registrierung erfolgreich', ['OK'])
+      $cordovaDialogs.confirm("Erfolg", 'Registrierung erfolgreich', ['OK'])
       .then(function(buttonIndex) {
         // no button = 0, 'OK' = 1, 'Cancel' = 2
         var btnIndex = buttonIndex;
+        $state.go('men.home');
       });
     }, function(errMsg) {
       $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
@@ -112,11 +116,11 @@ function($scope, AuthService, $state, $cordovaDialogs) {
 
   $scope.signup = function() {
     AuthService.register($scope.user).then(function(msg) {
-      $state.go('home2');
-      $cordovaDialogs.confirm(errMsg.data.error, 'Registrierung erfolgreich', ['OK'])
+      $cordovaDialogs.confirm(msg, 'Registrierung erfolgreich', ['OK'])
       .then(function(buttonIndex) {
         // no button = 0, 'OK' = 1, 'Cancel' = 2
         var btnIndex = buttonIndex;
+        $state.go('men.home2');
       });
     }, function(errMsg) {
       $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
@@ -198,12 +202,14 @@ function ($scope, $stateParams) {
     }])
 
 
-    .controller('menCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-      function ($scope, $stateParams) {
+    .controller('menCtrl',
+      function ($scope, AuthService, $stateParams, $state) {
 
-      }])
+        $scope.logout = function() {
+          $state.go('login');
+        }
+
+      })
 
   .controller('home2Ctrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function

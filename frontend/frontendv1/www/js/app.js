@@ -10,6 +10,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
 .config(function($ionicConfigProvider, $sceDelegateProvider){
 
+  $ionicConfigProvider.views.maxCache(0);
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
 
 })

@@ -129,10 +129,14 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('home2', {
+  .state('men.home2', {
     url: '/home-doctor',
+    views: {
+      'side-menu21': {
     templateUrl: 'templates/home2.html',
     controller: 'home2Ctrl'
+     }
+   }
   })
 
   .state('men.patienten', {

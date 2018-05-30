@@ -4,6 +4,10 @@ angular.module('app.controllers', ['ngCordova'])
 function ($scope, sharedProperties, $stateParams) {
 $scope.user = sharedProperties.getProperty();
 
+var date = new Date($scope.user.dateOfBirth);
+
+$scope.datefor = date.toLocaleDateString("de");
+
 })
 
 .controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -69,7 +73,7 @@ function ($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
 })
 
 .controller('registrierenPatientCtrl',
-function($scope, AuthService, $state, $cordovaDialogs) {
+function($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
 
   $scope.user = {
     gender: '',
@@ -82,12 +86,13 @@ function($scope, AuthService, $state, $cordovaDialogs) {
   };
 
   $scope.signup = function() {
-    AuthService.register($scope.user).then(function(msg) {
+    AuthService.register($scope.user).then(function(user) {
+      sharedProperties.setProperty(user);
       $cordovaDialogs.confirm("Erfolg", 'Registrierung erfolgreich', ['OK'])
       .then(function(buttonIndex) {
         // no button = 0, 'OK' = 1, 'Cancel' = 2
         var btnIndex = buttonIndex;
-        $state.go('men.home',{"user": user});
+        $state.go('men.home');
       });
     }, function(errMsg) {
       $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
@@ -101,7 +106,7 @@ function($scope, AuthService, $state, $cordovaDialogs) {
 })
 
 .controller('registrierenArztCtrl',
-function($scope, AuthService, $state, $cordovaDialogs) {
+function($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
 
   $scope.user = {
     gender: '',
@@ -114,12 +119,13 @@ function($scope, AuthService, $state, $cordovaDialogs) {
   };
 
   $scope.signup = function() {
-    AuthService.register($scope.user).then(function(msg) {
-      $cordovaDialogs.confirm(msg, 'Registrierung erfolgreich', ['OK'])
+    AuthService.register($scope.user).then(function(user) {
+      sharedProperties.setProperty(user);
+      $cordovaDialogs.confirm("Erfolg", 'Registrierung erfolgreich', ['OK'])
       .then(function(buttonIndex) {
         // no button = 0, 'OK' = 1, 'Cancel' = 2
         var btnIndex = buttonIndex;
-        $state.go('men.home2',{"user": user});
+        $state.go('men.home2');
       });
     }, function(errMsg) {
       $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
@@ -211,7 +217,7 @@ function ($scope, $stateParams) {
       })
 
   .controller('home2Ctrl',
-  
+
     function ($scope, sharedProperties, $stateParams) {
       $scope.user = sharedProperties.getProperty();
     })

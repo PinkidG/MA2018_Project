@@ -48,7 +48,7 @@ angular.module('app.services', [])
         $http.post(API_ENDPOINT.url + '/auth/register', user).then(function(result) {
           if (result.data.token) {
             storeUserCredentials(result.data.token);
-            resolve(result.data.msg);
+            resolve(result.data.user);
           } else {
             reject(result.data.msg);
           }

@@ -73,10 +73,13 @@ exports.getAll = function(req, res) {
 
     if (req.user.role === "Doctor"  || req.user.role === "Admin") {
 
-        User.find().populate({
-            path: 'users',
-            select: '-_id -users -__v'
-        }).exec(function(err, result) {
+        User.find()
+            .populate({path: 'users', select: '-_id -users -__v'})
+            .populate({path: 'illnesses', select: '-_id -users -__v'})
+            .populate({path: 'treatments', select: '-_id'})
+            .populate({path: 'entries', select: '-_id'})
+            .lean()
+            .exec(function(err, result) {
 
             if (err) {
                 return res.status(403).send({
@@ -108,7 +111,8 @@ exports.getUser = function(req, res) {
 
         User
             .findOne({ userId: id })
-            .populate({path: 'illnesses', select: '-_id -users -__v', populate: {path: 'treatments', model: 'Treatment', select: '-_id -__v -illnesses'}})
+            .populate({path: 'illnesses', select: '-_id -users -__v'})
+            .populate({path: 'treatments', select: '-_id -__v -illnesses'})
             .lean()
             .exec(function(err, user) {
                 if (err) {

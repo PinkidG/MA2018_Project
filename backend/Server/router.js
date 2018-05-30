@@ -60,7 +60,7 @@ module.exports = function(app) {
     apiRoutes.post('/topic/:id/entry/:entryId', requireAuth, TopicController.addEntry);
 
     // Entry route
-    apiRoutes.post('/entry', requireAuth, EntryController.register);
+    apiRoutes.post('/entry/topic/:topicId', requireAuth, EntryController.register);
     apiRoutes.get('/entries', requireAuth, EntryController.getAll);
     apiRoutes.get('/entry/:id', requireAuth, EntryController.getById);
 

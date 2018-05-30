@@ -11,7 +11,8 @@ function setUserInfo(request) {
         dateOfBirth: request.profile.dateOfBirth,
         gender: request.profile.gender,
         illnesses: request.illnesses,
-        treatments: request.treatments
+        treatments: request.treatments,
+        entries: request.entries
     };
 }
 

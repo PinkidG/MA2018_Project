@@ -6,7 +6,8 @@ const Topic = require('../models/topic'),
 function setTopicInfo(request) {
     return {
         id: request.topicId,
-        title: request.title
+        title: request.title,
+        entries: request.entries
     };
 }
 
@@ -15,13 +16,14 @@ function setTopicInfo(request) {
 //========================================
 exports.register = function(req, res, next) {
     const title = req.body.title;
+    const newTopic = true;
 
         // Return error if no title provided
         if (!title) {
             return res.status(422).send({ error: 'You must enter an title.' });
         }
 
-        Topic.findOne({ title: title }, function(err, existingTopic) {
+        Topic.findOne({ title: title }).populate({path: 'entries', select: '-_id -__v'}).exec(function(err, existingTopic) {
             if (err) {
                 return res.status(403).send({
                     error: 'Request error!.',
@@ -31,25 +33,22 @@ exports.register = function(req, res, next) {
 
             // If topic is not unique, return error
             if (existingTopic) {
-                return res.status(422).send({ error: 'That topic is already created.' });
+                return res.status(422).send({error: 'That topic is already created.'});
             }
 
-            // If topic is unique, create illness
+            // If topic is unique, create topic
             let topic = new Topic({
                 title: title
             });
 
-            topic.save(function(err, topic) {
-                if (err) { return next(err); }
-                let topicInfo = setTopicInfo(topic);
-                res.status(201).json({
-                    topic: topicInfo
-                });
+            topic.save(function (err, topicSaved) {
+                if (err) {
+                    return next(err);
+                }
+                EntryController.registerWithTopic(req, res, newTopic, topicSaved);
+
             });
         });
-
-        EntryController.register(req, res, next);
-
 };
 
 

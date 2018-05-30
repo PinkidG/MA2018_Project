@@ -68,44 +68,39 @@ function ($scope, AuthService, $ionicPopup, $state, $cordovaDialogs) {
         $state.go('registrierenPatient');
       }
     });
-
-
-    // // Custom popup
-    // var myPopup = $ionicPopup.show({
-    //    title: 'Title',
-    //    subTitle: 'Subtitle',
-    //    scope: $scope,
-
-    //    buttons: [
-    //       { text: '<b>Arzt</b>',
-    //       type: 'button-positive',
-    //       onTap: function(e) {
-    //        $state.go('registrierenArzt');
-    //       }
-    //     }, {
-    //          text: '<b>Patient</b>',
-    //          type: 'button-positive',
-    //          onTap: function(e) {
-    //           $state.go('registrierenPatient');
-    //          }
-    //       }
-    //    ]
-//     });
-
-//     myPopup.then(function(res) {
-//        console.log('Tapped!', res);
-//     });
   };
 
 })
 
-.controller('registrierenPatientCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+.controller('registrierenPatientCtrl',
+function($scope, AuthService, $ionicPopup, $state) {
 
+  $scope.user = {
+    gender: '',
+    lastName: '',
+    firstName: '',
+    email: '',
+    dateOfBirth: '',
+    password: '',
+    role: 'Patient'
+  };
 
-}])
+  $scope.signup = function() {
+    AuthService.register($scope.user).then(function(msg) {
+      $state.go('home2');
+      var alertPopup = $ionicPopup.alert({
+        title: 'Register success!',
+        template: msg
+      });
+    }, function(errMsg) {
+      var alertPopup = $ionicPopup.alert({
+        title: 'Register failed!',
+        template: errMsg
+      });
+    });
+  };
+
+})
 
 .controller('registrierenArztCtrl',
 function($scope, AuthService, $ionicPopup, $state) {
@@ -178,14 +173,6 @@ function ($scope, $stateParams) {
 }])
 
   .controller('sucheCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
-
-
-    }])
-
-  .controller('registrierenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
     function ($scope, $stateParams) {

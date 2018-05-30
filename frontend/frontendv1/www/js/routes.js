@@ -113,12 +113,6 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('registrieren', {
-    url: '/register-decide',
-    templateUrl: 'templates/registrieren.html',
-    controller: 'registrierenCtrl'
-  })
-
   .state('suchergebnis', {
     url: '/searchresult',
     templateUrl: 'templates/suchergebnis.html',

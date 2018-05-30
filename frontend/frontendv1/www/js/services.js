@@ -52,6 +52,12 @@ angular.module('app.services', [])
           } else {
             reject(result.data.msg);
           }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
         });
       });
     };

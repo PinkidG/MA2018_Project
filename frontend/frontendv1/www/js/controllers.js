@@ -8,7 +8,13 @@ var date = new Date($scope.user.dateOfBirth);
 
 $scope.datefor = date.toLocaleDateString("de");
 
-$scope.illnesses = $scope.user.illnesses
+$scope.illnames = [];
+
+  for(i=0;i<$scope.user.illnesses.length;i++) { 
+    $scope.illnames.push($scope.user.illnesses[i].name);
+  }
+
+$scope.illnesses = $scope.illnames.toString();
 
 })
 
@@ -29,7 +35,7 @@ function ($scope, $stateParams) {
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
+function ($scope, AuthService, UserService, sharedProperties, $state, $cordovaDialogs) {
 
     AuthService.logout()
     $scope.user = {
@@ -39,12 +45,21 @@ function ($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
 
       $scope.login = function() {
         AuthService.login($scope.user).then(function(user) {
-          sharedProperties.setProperty(user);
-          if (user.role == "Doctor") {
+          UserService.refreshUser(user.userId).then(function(ruser) {
+          sharedProperties.setProperty(ruser);
+          if (ruser.role == "Doctor") {
             $state.go('men.home2');
           } else {
             $state.go('men.home');
           }
+        }, function(errMsg) {
+
+          $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
+            .then(function(buttonIndex) {
+              // no button = 0, 'OK' = 1, 'Cancel' = 2
+              var btnIndex = buttonIndex;
+            });
+        });
         }, function(errMsg) {
 
           $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])

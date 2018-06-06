@@ -2,6 +2,16 @@ angular.module('app.services', [])
 
   .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
     return {
+      request: function (config) {
+        var LOCAL_TOKEN_KEY = 'yourTokenKey';
+
+        config.headers = config.headers || {};
+        if (window.localStorage.getItem(LOCAL_TOKEN_KEY)) {
+          config.headers.Authorization = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+        }
+        return config;
+      },
+
       responseError: function (response) {
         $rootScope.$broadcast({
           401: AUTH_EVENTS.notAuthenticated,
@@ -92,6 +102,31 @@ angular.module('app.services', [])
       register: register,
       logout: logout,
       isAuthenticated: function() {return isAuthenticated;},
+    };
+  })
+
+  .service('UserService', function($q, $http, API_ENDPOINT) {
+
+    var refreshUser = function(userId) {
+      return $q(function(resolve, reject) {
+        $http.get(API_ENDPOINT.url + '/user/' + userId).then(function(result) {
+          if (result.data.User) {
+            resolve(result.data.User);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
+        });
+      });
+    };
+    
+    return {
+      refreshUser: refreshUser
     };
   })
 

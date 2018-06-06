@@ -39,12 +39,19 @@ const UserSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Entry'
     }],
+    topics: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Topic'
+    }],
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         childPath: "users"
     }],
-
+    videos: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Video'
+    }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
 }, {

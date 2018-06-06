@@ -16,7 +16,8 @@ function setTopicInfo(request) {
     return {
         id: request.topicId,
         title: request.title,
-        entries: request.entries
+        entries: request.entries,
+        userId: request.userId
     };
 }
 

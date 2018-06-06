@@ -7,6 +7,7 @@ function setTopicInfo(request) {
     return {
         id: request.topicId,
         title: request.title,
+        userId: request.userId,
         entries: request.entries
     };
 }
@@ -17,6 +18,8 @@ function setTopicInfo(request) {
 exports.register = function(req, res, next) {
     const title = req.body.title;
     const newTopic = true;
+    const user = req.user;
+    const id = user.userId;
 
         // Return error if no title provided
         if (!title) {
@@ -38,21 +41,31 @@ exports.register = function(req, res, next) {
 
             // If topic is unique, create topic
             let topic = new Topic({
-                title: title
+                title: title,
+                userId: id
             });
 
             topic.save(function (err, topicSaved) {
                 if (err) {
                     return next(err);
                 }
-                EntryController.registerWithTopic(req, res, newTopic, topicSaved);
-
+                user.topics.push(topic);
+                user.save(function (err) {
+                    if (err) {
+                        return next(err);
+                    }
+                    EntryController.registerWithTopic(req, res, newTopic, topicSaved);
+                });
             });
         });
 };
 
 
 exports.getAll = function(req, res, next) {
+
+    const id = req.user.userId;
+
+    if (req.user.role === "Doctor" || req.user.role === "Admin") {
 
     Topic.find(function(err, result) {
 
@@ -74,6 +87,33 @@ exports.getAll = function(req, res, next) {
         });
 
     })
+
+    } else {
+
+        Topic.find({ userId: id }).populate({path: 'entries', select: '-_id -__v'}).exec(function(err, existingTopic) {
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+
+            // If no topic exist
+            if (!existingTopic) {
+                return res.status(422).send({error: 'There is no topic'});
+            }
+
+            let array = [];
+
+            existingTopic.forEach(function (element) {
+                array.push(setTopicInfo(element))
+            });
+
+            res.status(200).json({
+                topic: array
+            });
+        });
+    };
 };
 
 exports.getById = function(req, res, next) {

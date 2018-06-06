@@ -2,7 +2,7 @@ const mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     bcrypt = require('bcrypt-nodejs'),
     AutoIncrement = require('mongoose-sequence')(mongoose);
-
+var relationship = require("mongoose-relationship");
 
 
 //================================
@@ -39,12 +39,22 @@ const UserSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Entry'
     }],
+    users: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        childPath: "users"
+    }],
+
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
 }, {
     timestamps: true
 });
 UserSchema.plugin(AutoIncrement, { inc_field: 'userId' })
+
+UserSchema.plugin(relationship, {
+    relationshipPathName: 'users'
+});
 
 // Pre-save of user to database, hash password if password is modified or new
 UserSchema.pre('save', function(next) {

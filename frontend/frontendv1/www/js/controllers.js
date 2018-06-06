@@ -225,11 +225,22 @@ function ($scope, $stateParams) {
 
 
     .controller('menCtrl',
-      function ($scope, AuthService, $stateParams, $state) {
+      function ($scope, AuthService, sharedProperties, $stateParams, $state) {
+
+        $scope.init = function () {
+          $scope.user = sharedProperties.getProperty();
+          if ($scope.user.role == 'Doctor') {
+            $scope.showPatient = true;
+          } else {
+            $scope.showPatient = false;
+          }
+      }
 
         $scope.logout = function() {
           $state.go('login');
         }
+
+        $scope.init();
 
       })
 

@@ -57,7 +57,7 @@ const UserSchema = new Schema({
 }, {
     timestamps: true
 });
-UserSchema.plugin(AutoIncrement, { inc_field: 'userId' })
+UserSchema.plugin(AutoIncrement, { inc_field: 'userId' });
 
 UserSchema.plugin(relationship, {
     relationshipPathName: 'users'

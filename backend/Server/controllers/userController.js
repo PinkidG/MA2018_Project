@@ -22,7 +22,7 @@ function setUserInfo(request) {
     }
 
 
-    return userInfo
+    return userInfo;
 }
 
 
@@ -55,7 +55,7 @@ exports.addUserToUser = function(req, res) {
         }
 
 
-        var alreadyAdded = false
+        var alreadyAdded = false;
 
         User.findOne({ _id: user._id})
             .populate({path: 'users', select: '-_id -users -__v -password -entries'})
@@ -81,7 +81,7 @@ exports.addUserToUser = function(req, res) {
                                         description: err.message
                                     });
                                 }
-                                let userInfo = setUserInfo(myUser);
+                                let userInfo = setUserInfo(sendUser);
                                 return res.status(201).json({
                                     user: userInfo
                                 });

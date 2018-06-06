@@ -113,7 +113,7 @@ exports.getAll = function(req, res, next) {
                 topic: array
             });
         });
-    };
+    }
 };
 
 exports.getById = function(req, res, next) {

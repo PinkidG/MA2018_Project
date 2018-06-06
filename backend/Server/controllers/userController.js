@@ -3,8 +3,6 @@ const User = require('../models/user');
 
 function setUserInfo(request) {
 
-
-
     var userInfo = {
         userId: request.userId,
         firstName: request.profile.firstName,
@@ -52,50 +50,50 @@ exports.addUserToUser = function(req, res) {
             });
         }
         if (user == null) {
-            return res.status(422).send({ error: 'User  not found.' });
+            return res.status(422).send({ error: 'User not found.' });
         }
 
-        myUser.users.forEach(function(element){
 
-            User.findOne({ id: element.id})
+        var alreadyAdded = false
+
+        User.findOne({ _id: user._id})
+            .populate({path: 'users', select: '-_id -users -__v -password -entries'})
             .lean()
             .exec(function(err, result) {
                 if (err == null){
-                    if (user.userId === result.userId){
-                        return res.status(422).send({ error: 'Already appended!' });
-                    }
+                    if (result != null){
+                        myUser.users.forEach(function(element){
 
-                }
-
-                myUser.users.push(user);
-                myUser.save(function(err, sendUser) {
-                    if (err) {
-                        return res.status(503).send({
-                            error: 'Save error!',
-                            description: err.message
+                            if(element.equals(result._id)){
+                                alreadyAdded = true;
+                            }
                         });
+                        if(alreadyAdded){
+                            return res.status(422).send({ error: 'Already appended!' });
+                        }
+                        else{
+                            myUser.users.push(user);
+                            myUser.save(function(err, sendUser) {
+                                if (err) {
+                                    return res.status(503).send({
+                                        error: 'Save error!',
+                                        description: err.message
+                                    });
+                                }
+                                let userInfo = setUserInfo(myUser);
+                                return res.status(201).json({
+                                    user: userInfo
+                                });
+                            });
+                        }
                     }
-        
-        
-                    let userInfo = setUserInfo(myUser);
-                    res.status(201).json({
-                    user: userInfo
-                });
                     
-        
-                });
-
+                }   
             });
 
-
-
-
-        });
-
-
-
        
-    });
+
+     });
 };
 
 

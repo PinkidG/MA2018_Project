@@ -13,6 +13,7 @@
     "bower": "bower"
   },
   "dependencies": {
+    "branch-cordova-sdk": "^2.6.0",
     "cordova-browser": "^5.0.3",
     "cordova-ios": "^4.5.4",
     "cordova-plugin-device": "^2.0.2",
@@ -29,11 +30,12 @@
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-dialogs": {}
+      "cordova-plugin-dialogs": {},
+      "branch-cordova-sdk": {}
     },
     "platforms": [
-      "ios",
-      "browser"
+      "browser",
+      "ios"
     ]
   }
 }

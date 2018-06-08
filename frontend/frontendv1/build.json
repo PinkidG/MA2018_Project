@@ -1,0 +1,10 @@
+{
+  "ios": {
+    "debug": {
+      "developmentTeam": "HPU5HA782R"
+    },
+    "release": {
+      "developmentTeam": "HPU5HA782R"
+    }
+  }
+}

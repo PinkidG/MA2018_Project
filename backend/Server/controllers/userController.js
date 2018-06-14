@@ -13,7 +13,9 @@ function setUserInfo(request) {
         gender: request.profile.gender,
         illnesses: request.illnesses,
         treatments: request.treatments,
-        entries: request.entries
+        entries: request.entries,
+        videos: request.videos,
+        diaryEntries: request.diaryEntries
     };
 
     if(userInfo.role !== "Patient"){
@@ -21,7 +23,7 @@ function setUserInfo(request) {
     }
 
 
-    return userInfo
+    return userInfo;
 }
 
 
@@ -54,7 +56,7 @@ exports.addUserToUser = function(req, res) {
         }
 
 
-        var alreadyAdded = false
+        var alreadyAdded = false;
 
         User.findOne({ _id: user._id})
             .populate({path: 'users', select: '-_id -users -__v -password -entries'})
@@ -80,7 +82,7 @@ exports.addUserToUser = function(req, res) {
                                         description: err.message
                                     });
                                 }
-                                let userInfo = setUserInfo(myUser);
+                                let userInfo = setUserInfo(sendUser);
                                 return res.status(201).json({
                                     user: userInfo
                                 });
@@ -102,10 +104,10 @@ exports.addUserToUser = function(req, res) {
 //========================================
 exports.addIllness = function(req, res) {
 
-    const illnessid = req.params.illnessId;
+    const illnessId = req.params.illnessId;
     const userId = req.params.userId;
 
-    Illness.findOne({ illnessId: id }, function(err, illness) {
+    Illness.findOne({ illnessId: illnessId }, function(err, illness) {
         if (err) {
             return res.status(403).send({
                 error: 'Request error!.',
@@ -286,4 +288,53 @@ exports.getUserByName = function(req, res) {
     } else {
         return res.status(422).send({ error: 'Unauthorized' });
     }
+};
+
+exports.addVideo = function(req, res) {
+
+    const videoId = req.params.videoId;
+    const userId = req.params.userId;
+
+    Video.findOne({ videoId: videoId }, function(err, video) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        if (video == null) {
+            return res.status(422).send({ error: 'Video not found.' });
+        }
+
+        User.findOne({ userId: userId }, function(err, user) {
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+
+            if (user == null) {
+                return res.status(422).send({ error: 'User not found.' });
+            }
+
+            user.videos.push(video);
+
+            user.save(function(err, user) {
+                if (err) {
+                    return res.status(503).send({
+                        error: 'Save error!',
+                        description: err.message
+                    });
+                }
+
+                let userInfo = setUserInfo(user);
+
+                res.status(201).json({
+                    user: userInfo
+                });
+            });
+        });
+    });
 };

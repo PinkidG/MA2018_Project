@@ -39,18 +39,29 @@ const UserSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Entry'
     }],
+    topics: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Topic'
+    }],
     users: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         childPath: "users"
     }],
-
+    videos: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Video'
+    }],
+    diaryEntries: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'DiaryEntry'
+    }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
 }, {
     timestamps: true
 });
-UserSchema.plugin(AutoIncrement, { inc_field: 'userId' })
+UserSchema.plugin(AutoIncrement, { inc_field: 'userId' });
 
 UserSchema.plugin(relationship, {
     relationshipPathName: 'users'

@@ -20,8 +20,12 @@ function setUserInfo(request) {
         email: request.email,
         role: request.role,
         dateOfBirth: request.profile.dateOfBirth,
+        gender: request.profile.gender,
         illnesses: request.illnesses,
-        gender: request.profile.gender
+        treatments: request.treatments,
+        entries: request.entries,
+        videos: request.videos,
+        diaryEntries: request.diaryEntries
     };
 }
 

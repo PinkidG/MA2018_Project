@@ -6,21 +6,20 @@ const mongoose = require('mongoose'),
 Schema = mongoose.Schema;
 
 //================================
-// Topic Schema
+// DiaryEntry Schema
 //================================
-const TopicSchema = new Schema({
-    topicId: {
+const DiaryEntrySchema = new Schema({
+    diaryEntryId: {
         type: Number
     },
-    title: {
+    message: {
         type: String,
-        unique: true,
         required: true
     },
-    entries: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Entry'
-    }],
+    status: {
+        type: String,
+        required: true
+    },
     userId: {
         type: Number,
         references: 'user',
@@ -30,6 +29,6 @@ const TopicSchema = new Schema({
     }
 });
 
-TopicSchema.plugin(AutoIncrement, { inc_field: 'topicId' });
+DiaryEntrySchema.plugin(AutoIncrement, { inc_field: 'diaryEntryId' });
 
-module.exports = mongoose.model('Topic', TopicSchema);
+module.exports = mongoose.model('DiaryEntry', DiaryEntrySchema);

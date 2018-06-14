@@ -199,7 +199,9 @@ function ($scope, $stateParams) {
   .controller('sucheCtrl', 
     function ($scope, $stateParams) {
 
-      $scope.search = {}
+      $scope.search = {
+        text: ""
+      }
 
       $scope.search = function() {
         console.log($scope.search.text)
@@ -222,11 +224,15 @@ function ($scope, $stateParams) {
 
     }])
 
-  .controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-    function ($scope, $stateParams) {
+  .controller('tagebuchCtrl',
+    function ($scope, $stateParams, sharedProperties) {
 
+      $scope.init = function () {
+        $scope.user = sharedProperties.getProperty();
+        
+      }
 
-    }])
+    })
 
 
     .controller('menCtrl',

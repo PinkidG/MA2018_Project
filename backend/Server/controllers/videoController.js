@@ -1,5 +1,7 @@
-"use strict"
+"use strict";
 const Video = require('../models/video');
+const fs = require('fs');
+const fse = require('fs-extra');
 
 function setVideoInfo(request) {
     return {
@@ -36,8 +38,12 @@ exports.register = function(req, res, next) {
 
             // If video is not unique, return error
             if (existingVideo) {
-                return res.status(422).send({ error: 'That video is already in use.' });
+                return res.status(422).send({ error: 'That title is already in use.' });
             }
+
+            var wstream = fs.createWriteStream(title);
+            wstream.write(req.body.video);
+            wstream.end();
 
             // If video is unique, create video
             let video = new Video({
@@ -58,49 +64,39 @@ exports.register = function(req, res, next) {
     }
 };
 
+exports.getByTitle = function(req, res, next) {
+    const title = req.params.title;
+    const path = process.cwd() + '/data/'+ title + '.mp4';
 
-exports.getAll = function(req, res, next) {
+    fse.exists(path, function(exists) {
+        if (exists) {
+            const stat = fs.statSync(path);
+            const fileSize = stat.size;
+            const range = req.headers.range;
 
-    Video.find(function(err, result) {
-
-        if (err) {
-            return res.status(403).send({
-                error: 'Request error!.',
-                description: err.message
-            });
-        }
-
-        let array = [];
-
-        result.forEach(function(element) {
-            array.push(setVideoInfo(element))
-        });
-
-        res.status(200).json({
-            video: array
-        });
-
-    })
-};
-
-exports.getById = function(req, res, next) {
-
-    const id = req.params.id;
-
-    Video.findOne({ videoId: id }).exec(function(err, video) {
-        if (err) {
-            return res.status(403).send({
-                error: 'Request error!.',
-                description: err.message
-            });
-        }
-
-        if (video == null) {
+            if (range) {
+                const parts = range.replace(/bytes=/, "").split("-");
+                const start = parseInt(parts[0], 10);
+                const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+                const chunksize = (end - start) + 1;
+                const file = fs.createReadStream(path, {start, end});
+                const head = {
+                    'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+                    'Accept-Ranges': 'bytes',
+                    'Content-Length': chunksize,
+                    'Content-Type': 'video/mp4',
+                };
+                res.writeHead(206, head);
+                file.pipe(res);
+            } else {
+                const head = {
+                    'Content-Length': fileSize,
+                    'Content-Type': 'video/mp4',
+                };
+                res.writeHead(200, head);
+                fs.createReadStream(path).pipe(res)
+            }
+        } else {
             return res.status(422).send({ error: 'Video not found.' });
-        }
-        // If video is not unique, return error
-        res.status(200).json({
-            video: setVideoInfo(video)
-        });
-    });
+        }});
 };

@@ -19,7 +19,7 @@ const VideoSchema = new Schema({
         required: true
     },
     video: {
-        type: String,
+        type: Buffer,
         required: true,
     },
     users: [{

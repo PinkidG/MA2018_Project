@@ -52,7 +52,7 @@ module.exports = function(app) {
     // User route
     apiRoutes.get('/users', requireAuth, UserController.getAll);
     apiRoutes.get('/user/:id', requireAuth, UserController.getUser);
-    apiRoutes.get('/usern/:name', requireAuth, UserController.getUserByName);
+    apiRoutes.get('/user/:name', requireAuth, UserController.getUserByName);
     apiRoutes.post('/user/add/:userId', requireAuth, UserController.addUserToUser);
     apiRoutes.post('/user/:userId/addIllness/:illnessId', requireAuth, UserController.addIllness);
 
@@ -69,8 +69,7 @@ module.exports = function(app) {
 
     //Video route
     apiRoutes.post('/video', requireAuth, VideoController.register);
-    apiRoutes.get('/videos', requireAuth, VideoController.getAll);
-    apiRoutes.get('/video/:id', requireAuth, VideoController.getById);
+    apiRoutes.get('/video/:title', requireAuth, VideoController.getByTitle);
 
     // DiaryEntry route
     apiRoutes.post('/diary', requireAuth, DiaryEntryController.register);

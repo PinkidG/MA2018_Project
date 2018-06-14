@@ -2,20 +2,16 @@ angular.module('app.controllers', ['ngCordova'])
 
 .controller('homeCtrl', 
 function ($scope, sharedProperties, $stateParams) {
-$scope.user = sharedProperties.getProperty();
+  $scope.illnames = [];
+  var date = new Date($scope.user.dateOfBirth);
 
-var date = new Date($scope.user.dateOfBirth);
-
-$scope.datefor = date.toLocaleDateString("de");
-
-$scope.illnames = [];
+  $scope.user = sharedProperties.getProperty();
+  $scope.datefor = date.toLocaleDateString("de");
 
   for(i=0;i<$scope.user.illnesses.length;i++) { 
     $scope.illnames.push($scope.user.illnesses[i].name);
   }
-
 $scope.illnesses = $scope.illnames.toString();
-
 })
 
 .controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -195,13 +191,17 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('sucheCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+  .controller('sucheCtrl', 
     function ($scope, $stateParams) {
 
+      $scope.searchtext = ''
 
-    }])
+      $scope.search = function() {
+        console.log($scope.searchtext)
+
+      };
+
+    })
 
   .controller('suchergebnisCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function

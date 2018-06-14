@@ -11,7 +11,12 @@ function ($scope, sharedProperties, $stateParams) {
   for(i=0;i<$scope.user.illnesses.length;i++) { 
     $scope.illnames.push($scope.user.illnesses[i].name);
   }
-$scope.illnesses = $scope.illnames.toString();
+  if ($scope.illnames.length == 0) {
+    $scope.illnesses = "Keine Befunde"
+  } else {
+    $scope.illnesses = $scope.illnames.toString();
+  }
+
 })
 
 .controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -194,10 +199,10 @@ function ($scope, $stateParams) {
   .controller('sucheCtrl', 
     function ($scope, $stateParams) {
 
-      $scope.searchtext = ''
+      $scope.search = {}
 
       $scope.search = function() {
-        console.log($scope.searchtext)
+        console.log($scope.search.text)
 
       };
 

@@ -52,6 +52,10 @@ const UserSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Video'
     }],
+    diaryEntries: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'DiaryEntry'
+    }],
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date }
 }, {

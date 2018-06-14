@@ -14,7 +14,8 @@ function setUserInfo(request) {
         illnesses: request.illnesses,
         treatments: request.treatments,
         entries: request.entries,
-        videos: request.videos
+        videos: request.videos,
+        diaryEntries: request.diaryEntries
     };
 
     if(userInfo.role !== "Patient"){

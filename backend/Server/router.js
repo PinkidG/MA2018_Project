@@ -5,6 +5,7 @@ const AuthenticationController = require('./controllers/authentication'),
     TopicController = require('./controllers/topicController'),
     EntryController = require('./controllers/entryController'),
     VideoController = require('./controllers/videoController'),
+    DiaryEntryController = require('./controllers/diaryEntryController'),
     express = require('express'),
     passportService = require('./config/passport'),
     passport = require('passport');
@@ -70,6 +71,10 @@ module.exports = function(app) {
     apiRoutes.post('/video', requireAuth, VideoController.register);
     apiRoutes.get('/videos', requireAuth, VideoController.getAll);
     apiRoutes.get('/video/:id', requireAuth, VideoController.getById);
+
+    // DiaryEntry route
+    apiRoutes.post('/diary', requireAuth, DiaryEntryController.register);
+    apiRoutes.get('/diaries', requireAuth, DiaryEntryController.getAll);
 
     app.get('/', requireAuth, function(req, res) {
         res.send('Server is up and Running');

@@ -1,6 +1,6 @@
-angular.module('app.controllers', ['ngCordova'])
+angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial'])
 
-.controller('homeCtrl', 
+.controller('homeCtrl',
 function ($scope, sharedProperties, $stateParams) {
   $scope.illnames = [];
   var date = new Date($scope.user.dateOfBirth);
@@ -8,7 +8,7 @@ function ($scope, sharedProperties, $stateParams) {
   $scope.user = sharedProperties.getProperty();
   $scope.datefor = date.toLocaleDateString("de");
 
-  for(i=0;i<$scope.user.illnesses.length;i++) { 
+  for(i=0;i<$scope.user.illnesses.length;i++) {
     $scope.illnames.push($scope.user.illnesses[i].name);
   }
   if ($scope.illnames.length == 0) {
@@ -36,7 +36,7 @@ function ($scope, $stateParams) {
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, UserService, sharedProperties, $state, $cordovaDialogs) {
+function ($scope, AuthService, UserService, sharedProperties, $state, $cordovaDialogs, $mdDialog) {
 
     AuthService.logout()
     $scope.user = {
@@ -72,21 +72,61 @@ function ($scope, AuthService, UserService, sharedProperties, $state, $cordovaDi
       };
 
     // When button is clicked, the popup will be shown...
-   $scope.showPopup = function() {
-    $scope.data = {}
 
-    $cordovaDialogs.confirm('message', 'Auswählen', ['Arzt','Patient'])
-    .then(function(buttonIndex) {
-      // no button = 0, 'OK' = 1, 'Cancel' = 2
-      var btnIndex = buttonIndex;
+  $scope.showPopup = function(ev) {
 
-      if (btnIndex == 1) {
-        $state.go('registrierenArzt');
-      } else if (btnIndex == 2) {
+    var app = document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1;
+    if ( app ) {
+      navigator.notification.confirm("Sind Sie ein Arzt oder ein Patient?", function(buttonIndex) {
+        switch(buttonIndex) {
+          case 1:
+            $state.go('registrierenArzt');
+            break;
+          case 2:
+            $state.go('registrierenPatient');
+            break;
+        }
+      }, "Registrieren", [ "Arzt", "Patient"]);
+    } else {
+
+      var confirm = $mdDialog.confirm()
+        .title('Registrieren')
+        .textContent('Sind Sie ein Arzt oder ein Patient?')
+        .ariaLabel('Lucky day')
+        .targetEvent(ev)
+        .ok("Patient")
+        .cancel("Arzt");
+
+      $mdDialog.show(confirm).then(function() {
         $state.go('registrierenPatient');
-      }
-    });
-  };
+      }, function() {
+        $state.go('registrierenArzt');
+      });
+
+      // Web page
+    }
+
+  }
+
+
+
+
+
+  //  $scope.showPopup = function() {
+  //   $scope.data = {}
+  //
+  //   $cordovaDialogs.confirm('Sind Sie ein Arzt oder ein Patient?', 'Auswählen', ['Arzt','Patient'])
+  //   .then(function(buttonIndex) {
+  //     // no button = 0, 'OK' = 1, 'Cancel' = 2
+  //     var btnIndex = buttonIndex;
+  //
+  //     if (btnIndex == 1) {
+  //       $state.go('registrierenArzt');
+  //     } else if (btnIndex == 2) {
+  //       $state.go('registrierenPatient');
+  //     }
+  //   });
+  // };
 
 })
 
@@ -196,7 +236,7 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('sucheCtrl', 
+  .controller('sucheCtrl',
     function ($scope, $stateParams) {
 
       $scope.search = {
@@ -229,7 +269,7 @@ function ($scope, $stateParams) {
 
       $scope.init = function () {
         $scope.user = sharedProperties.getProperty();
-        
+
       }
 
     })

@@ -14,12 +14,13 @@
     "bower": "bower",
     "clean": "ionic clean",
     "ionic:build": "ionic build",
-    "ionic:serve": "ionic serve"
+    "ionic:serve": "ionic serve -p 8080",
+    "ionic:runOniOS": "ionic cordova run ios --prod"
   },
   "dependencies": {
     "branch-cordova-sdk": "^2.6.24",
     "cordova-browser": "^5.0.3",
-    "cordova-ios": "^4.5.4",
+    "cordova-ios": "4.5.4",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-dialogs": "^2.0.1",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
@@ -28,12 +29,12 @@
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-whitelist": {},
       "cordova-plugin-device": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-dialogs": {},
-      "branch-cordova-sdk": {}
+      "branch-cordova-sdk": {},
+      "cordova-plugin-whitelist": {}
     },
     "platforms": [
       "browser",

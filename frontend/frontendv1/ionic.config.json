@@ -2,6 +2,12 @@
   "name": "frontendv1",
   "app_id": "",
   "type": "ionic1",
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://pinkisworld.ddnss.de/api"
+    }
+  ],
   "integrations": {
     "gulp": {},
     "cordova": {}
@@ -13,7 +19,7 @@
     "!www/**/*.map"
   ],
   "gulpStartupTasks": [
-    "sass", 
+    "sass",
     "watch"
   ]
 }

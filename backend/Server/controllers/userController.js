@@ -216,10 +216,12 @@ exports.getUser = function(req, res) {
 
     } else if (req.user.userId == id) {
 
-        User.findOne({ userId: id }).populate({
-            path: 'user',
-            select: '-_id -users -__v'
-        }).exec(function(err, user) {
+        User.findOne({ userId: id })
+        .populate({path: 'user', select: '-_id -users -__v'})
+        .populate({path: 'illnesses', select: '-_id -users -__v'})
+        .populate({path: 'treatments', select: '-_id -__v -illnesses'})
+        .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
+        .exec(function(err, user) {
 
             if (err) {
                 return res.status(403).send({

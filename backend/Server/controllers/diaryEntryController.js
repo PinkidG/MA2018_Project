@@ -39,7 +39,7 @@ exports.register = function(req, res, next) {
     const status = req.body.status;
     const title = req.body.title;
     const user = req.user;
-    const date = date.now();
+    const date = Date.now();
 
     // Return error if no message or status is provided
     if (!message) {

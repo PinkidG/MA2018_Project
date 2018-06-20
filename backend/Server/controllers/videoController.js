@@ -78,7 +78,7 @@ exports.registertest = function(req, res, next) {
 
 exports.getByTitle = function(req, res, next) {
     const title = req.params.title;
-    const path = process.cwd() + '/data/'+ title + '.mp4';
+    const path = process.cwd() + '/data/'+ title + '*';
 
     fse.exists(path, function(exists) {
         if (exists) {

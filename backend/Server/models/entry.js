@@ -30,7 +30,7 @@ const EntrySchema = new Schema({
         allowNull: false,
         required: true
     },
-    time: {
+    date: {
         type: Date
     }
 });

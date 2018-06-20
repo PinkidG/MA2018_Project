@@ -29,7 +29,7 @@ exports.register = function(req, res, next) {
     const message = req.body.message;
     const topId = req.body.topicId;
     const user = req.user;
-    const date = date.now();
+    const date = Date.now();
 
         // Return error if no message or topicId is provided
         if (!message) {

@@ -117,6 +117,42 @@ angular.module('app.services', [])
     };
   })
 
+
+  .service('TopicService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+
+    let endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+
+      return end;
+    };
+
+    let topics = function () {
+      return $q(function(resolve, reject) {
+        $http.get(endpoint().url + '/topics').then(function(result) {
+          if (result.data) {
+            resolve(result.data.topic);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
+        });
+      });
+    };
+
+    return {
+      topics: topics,
+    };
+  })
+
   .service('UserService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
 
@@ -128,7 +164,7 @@ angular.module('app.services', [])
       }
 
       return end;
-    }
+    };
 
     var refreshUser = function(userId) {
       return $q(function(resolve, reject) {

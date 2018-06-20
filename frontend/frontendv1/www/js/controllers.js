@@ -227,10 +227,14 @@ function ($scope, $stateParams) {
   .controller('tagebuchCtrl',
     function ($scope, $stateParams, sharedProperties) {
 
-      $scope.init = function () {
-        $scope.user = sharedProperties.getProperty();
-        
-      }
+      $scope.user = sharedProperties.getProperty();
+      $scope.diaryEntries = $scope.user.diaryEntries
+
+        for(i=0;i<$scope.user.diaryEntries.length;i++) { 
+          $scope.user.diaryEntries[i].status;
+          $scope.user.diaryEntries[i].message;
+        }
+
 
     })
 

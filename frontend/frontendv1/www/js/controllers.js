@@ -73,7 +73,7 @@ function ($scope, AuthService, UserService,checkPlatform , sharedProperties , $s
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Benutzer-Fehler", ["Erneut versuchen"]);
           } else {
 
-            let confirm = $mdDialog.confirm()
+            let confirm = $mdDialog.alert()
               .title('Benutzer-Fehler')
               .textContent(errMsg.statusText)
               .ariaLabel('Lucky day')
@@ -145,7 +145,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
         }, "Erfolg", [ "Okay"]);
       } else {
 
-        var confirm = $mdDialog.confirm()
+        var confirm = $mdDialog.alert()
           .title('Erfolg')
           .textContent('Registrierung erfolgreich! (Patient)')
           .ariaLabel('Lucky day')
@@ -160,7 +160,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
         navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Patient)", ["Erneut versuchen"]);
       } else {
 
-        let confirm = $mdDialog.confirm()
+        let confirm = $mdDialog.alert()
           .title('Fehler (Patient)')
           .textContent(errMsg.statusText)
           .ariaLabel('Lucky day')
@@ -195,7 +195,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
         }, "Erfolg", [ "Okay"]);
       } else {
 
-        var confirm = $mdDialog.confirm()
+        var confirm = $mdDialog.alert()
           .title('Erfolg')
           .textContent('Registrierung erfolgreich! (Arzt)')
           .ariaLabel('Lucky day')
@@ -210,7 +210,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
         navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Arzt)", ["Erneut versuchen"]);
       } else {
 
-        let confirm = $mdDialog.confirm()
+        let confirm = $mdDialog.alert()
           .title('Fehler (Arzt)')
           .textContent(errMsg.statusText)
           .ariaLabel('Lucky day')

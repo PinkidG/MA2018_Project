@@ -1,11 +1,23 @@
 <ion-view title="Tagebuch" id="page2">
   <ion-content padding="true" class="has-header">
     <button id="tagebuch-button12" style="text-align:right;" class="button button-light button-icon icon ion-ios-plus-outline"></button>
-    <ion-list id="tagebuch-list9" *ngFor="let item from diaryEntries">
-      <ion-item class="item-icon-left" id="tagebuch-list-item15">
-        <i class="icon ion-happy-outline"></i>{{item.message}}
-        <span class="item-note">29.02.2018 - 9:00 Uhr</span>
-      </ion-item>
+    <ion-list id="tagebuch-list9">
+        <ion-item class="item-icon-left" id="tagebuch-list-item15" ng-repeat="item in diaryEntries">
+          <div ng-switch on={{item.status}}>
+            <div ng-switch-when="good">
+                <i class="icon ion-happy-outline"></i>
+            </div>
+            <div ng-switch-when="bad">
+                <i class="icon ion-sad-outline"></i>
+            </div>
+            <div ng-switch-default>
+                <i class="icon ion-sad-outline"></i>
+            </div>
+          </div>
+            {{item.title}}
+            {{item.message}}
+            <span class="item-note">{{item.date | date:'dd-MM-yyyy HH:mm'}}</span>
+          </ion-item>
     </ion-list>
   </ion-content>
 </ion-view>

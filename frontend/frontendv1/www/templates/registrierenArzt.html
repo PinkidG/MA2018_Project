@@ -2,35 +2,35 @@
   <ion-content padding="true" class="has-header">
     <form id="registrierenArzt-form5" class="list">
       <ion-list id="registrierenArzt-list5">
-          <label class = "item item-input item-select" ng-model="user.gender">
+          <label class = "item item-input item-select">
               <div class = "input-label">
                  Geschlecht wählen...
               </div>
-             
-              <select>
+
+              <select ng-model="user.gender">
                  <option selected>Männlich</option>
                  <option>Weiblich</option>
               </select>
            </label>
-        <label class="item item-input" id="registrierenArzt-input14" ng-model="user.lastName">
+        <label class="item item-input" id="registrierenArzt-input14">
           <span class="input-label">Name</span>
-          <input type="text" placeholder="">
+          <input type="text" placeholder="" ng-model="user.lastName">
         </label>
-        <label class="item item-input" id="registrierenArzt-input15" ng-model="user.firstName">
+        <label class="item item-input" id="registrierenArzt-input15">
           <span class="input-label">Vorname</span>
-          <input type="text" placeholder="">
+          <input type="text" placeholder="" ng-model="user.firstName">
         </label>
-        <label class="item item-input" id="registrierenArzt-input16" ng-model="user.email">
+        <label class="item item-input" id="registrierenArzt-input16" >
           <span class="input-label">Email</span>
-          <input type="email" placeholder="">
+          <input type="email" placeholder="" ng-model="user.email">
         </label>
-        <label class="item item-input" id="registrierenArzt-input17" ng-model="user.dateOfBirth">
+        <label class="item item-input" id="registrierenArzt-input17">
           <span class="input-label">Geburtsdatum</span>
-          <input type="date" placeholder="">
+          <input type="date" placeholder="" ng-model="user.dateOfBirth">
         </label>
-        <label class="item item-input" id="registrierenArzt-input18" ng-model="user.password">
+        <label class="item item-input" id="registrierenArzt-input18">
           <span class="input-label">Passwort</span>
-          <input type="password" placeholder="">
+          <input type="password" placeholder="" ng-model="user.password">
         </label>
       </ion-list>
       <a id="registrierenArzt-button11" class="button button-stable button-block" ng-click="signup()">Registrieren</a>

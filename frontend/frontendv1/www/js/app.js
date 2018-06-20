@@ -10,15 +10,49 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
 .config(function($ionicConfigProvider, $sceDelegateProvider){
 
+  $ionicConfigProvider.views.maxCache(0);
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
 
 })
-  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS) {
+  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform) {
+
+    $ionicPlatform.ready(function() {
+      if (
+        window.cordova &&
+        window.cordova.plugins &&
+        window.cordova.plugins.Keyboard
+      ) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        cordova.plugins.Keyboard.disableScroll(true);
+      }
+      if (window.StatusBar) {
+        StatusBar.styleDefault();
+      }
+
+      // Branch
+      $ionicPlatform.on("deviceready", function() {
+        branchInit();
+      });
+
+      $ionicPlatform.on("resume", function() {
+        branchInit();
+      });
+
+      function branchInit() {
+        // Branch initialization
+        Branch.initSession().then(function(data) {
+          if (data["+clicked_branch_link"]) {
+            // read deep link data on click
+            alert("Deep Link Data: " + JSON.stringify(data));
+          }
+        });
+      }
+    });
+
     $rootScope.$on('$stateChangeStart', function (event,next, nextParams, fromState) {
       if (!AuthService.isAuthenticated()) {
         console.log(next.name);
-        if (next.name !== 'login' //&& next.name !== 'outside.register'
-        ) {
+        if (next.name !== 'login' && next.name !== 'registrierenArzt' && next.name !== 'registrierenPatient') {
           event.preventDefault();
           $state.go('login');
         }

@@ -2,6 +2,16 @@ angular.module('app.services', [])
 
   .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
     return {
+      request: function (config) {
+        var LOCAL_TOKEN_KEY = 'yourTokenKey';
+
+        config.headers = config.headers || {};
+        if (window.localStorage.getItem(LOCAL_TOKEN_KEY)) {
+          config.headers.Authorization = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+        }
+        return config;
+      },
+
       responseError: function (response) {
         $rootScope.$broadcast({
           401: AUTH_EVENTS.notAuthenticated,
@@ -11,7 +21,7 @@ angular.module('app.services', [])
     };
   })
 
-  .service('AuthService', function($q, $http, API_ENDPOINT) {
+  .service('AuthService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
     var LOCAL_TOKEN_KEY = 'yourTokenKey';
     var isAuthenticated = false;
     var authToken;
@@ -43,27 +53,52 @@ angular.module('app.services', [])
       window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     }
 
+    var endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+
+      return end;
+    };
+
     var register = function(user) {
       return $q(function(resolve, reject) {
-        $http.post(API_ENDPOINT.url + '/auth/register', user).then(function(result) {
-          if (result.data.success) {
-            resolve(result.data.msg);
+
+        $http.post(endpoint().url + '/auth/register', user).then(function(result) {
+          if (result.data.token) {
+            storeUserCredentials(result.data.token);
+            resolve(result.data.user);
           } else {
             reject(result.data.msg);
           }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
         });
       });
     };
 
     var login = function(user) {
       return $q(function(resolve, reject) {
-        $http.post(API_ENDPOINT.url + '/auth/login', user).then(function(result) {
+
+        $http.post(endpoint().url + '/auth/login', user).then(function(result) {
           if (result.data.token) {
             storeUserCredentials(result.data.token);
-            resolve(result.data.msg);
+            resolve(result.data.user);
           } else {
             reject(result.data.msg);
           }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
         });
       });
     };
@@ -81,6 +116,61 @@ angular.module('app.services', [])
       isAuthenticated: function() {return isAuthenticated;},
     };
   })
+
+  .service('UserService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+
+
+    var endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+
+      return end;
+    }
+
+    var refreshUser = function(userId) {
+      return $q(function(resolve, reject) {
+        $http.get(endpoint().url + '/user/' + userId).then(function(result) {
+          if (result.data.User) {
+            resolve(result.data.User);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
+        });
+      });
+    };
+
+    return {
+      refreshUser: refreshUser
+    };
+  })
+
+  .service('checkPlatform', function () {
+    return{
+      isBrowser: ionic.Platform.is('browser')
+    }
+  })
+
+.service('sharedProperties', function () {
+  var property = "";
+
+  return {
+      getProperty: function () {
+           return property;
+      },
+       setProperty: function(value) {
+           property = value;
+       }
+  };
+})
 
 .config(function ($httpProvider) {
   $httpProvider.interceptors.push('AuthInterceptor');

@@ -16,9 +16,10 @@
       <ion-list id="men-list1">
         <ion-item id="men-list-item1" ui-sref="men.home()" menu-close="">Home</ion-item>
         <ion-item id="men-list-item93" ui-sref="men.suche()" menu-close="">Suche</ion-item>
-        <ion-item id="men-list-item184" ui-sref="men.patienten()" menu-close="">Patienten</ion-item>
+        <ion-item id="men-list-item184" ng-show="showPatient" ui-sref="men.patienten()" menu-close="">Patienten</ion-item>
         <ion-item id="men-list-item2" ui-sref="men.tagebuch()" menu-close="">Tagebuch</ion-item>
         <ion-item id="men-list-item21">Account</ion-item>
+        <ion-item id="men-list-item3" menu-close="" ng-click="logout()">Abmelden</ion-item>
       </ion-list>
     </ion-content>
   </ion-side-menu>

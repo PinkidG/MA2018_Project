@@ -2,20 +2,20 @@
   <ion-content padding="true" class="has-header">
     <button id="tagebuch-button12" style="text-align:right;" class="button button-light button-icon icon ion-ios-plus-outline"></button>
     <ion-list id="tagebuch-list9">
-        <ion-item class="item-icon-left" id="tagebuch-list-item15" ng-repeat="item in diaryEntries">
-          <div ng-switch on={{item.status}}>
-            <div ng-switch-when="good">
+        <ion-item class="item-avatar" id="tagebuch-list-item15" ng-repeat="item in diaryEntries">
+          <item-avatar item-start ng-switch on={{item.status}}>
+              <div ng-switch-when="good">
                 <i class="icon ion-happy-outline"></i>
-            </div>
-            <div ng-switch-when="bad">
+              </div>
+              <div ng-switch-when="bad">
                 <i class="icon ion-sad-outline"></i>
-            </div>
-            <div ng-switch-default>
+              </div>
+              <div ng-switch-default>
                 <i class="icon ion-sad-outline"></i>
-            </div>
-          </div>
-            {{item.title}}
-            {{item.message}}
+              </div>
+         </item-avatar item-end>
+            <h2>{{item.title}}</h2>
+            <p>{{item.message}}</p>
             <span class="item-note">{{item.date | date:'dd-MM-yyyy HH:mm'}}</span>
           </ion-item>
     </ion-list>

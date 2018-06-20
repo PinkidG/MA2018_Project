@@ -9,7 +9,7 @@ function setEntryInfo(request) {
         message: request.message,
         userId: request.userId,
         topicId: request.topicId,
-        date: request.time
+        date: request.date
     };
 }
 
@@ -29,6 +29,7 @@ exports.register = function(req, res, next) {
     const message = req.body.message;
     const topId = req.body.topicId;
     const user = req.user;
+    const date = date.now();
 
         // Return error if no message or topicId is provided
         if (!message) {
@@ -51,6 +52,7 @@ exports.register = function(req, res, next) {
                 let entry = new Entry({
                     message: message,
                     topicId: topic.topicId,
+                    date: date,
                     userId: user.userId
                 });
 

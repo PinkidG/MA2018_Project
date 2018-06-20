@@ -31,8 +31,7 @@ const EntrySchema = new Schema({
         required: true
     },
     time: {
-        type: Date,
-        default: Date.now
+        type: Date
     }
 });
 

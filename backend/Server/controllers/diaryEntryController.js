@@ -10,7 +10,7 @@ function setDiaryEntryInfo(request) {
         message: request.message,
         userId: request.userId,
         status: request.status,
-        date: request.time
+        date: request.date
     };
 }
 
@@ -39,6 +39,7 @@ exports.register = function(req, res, next) {
     const status = req.body.status;
     const title = req.body.title;
     const user = req.user;
+    const date = date.now();
 
     // Return error if no message or status is provided
     if (!message) {
@@ -62,6 +63,7 @@ exports.register = function(req, res, next) {
             message: message,
             status: status,
             title: title,
+            date: date,
             userId: user.userId
         });
 

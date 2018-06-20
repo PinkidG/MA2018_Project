@@ -32,8 +32,7 @@ const DiaryEntrySchema = new Schema({
         required: true
     },
     time: {
-        type: Date,
-        default: Date.now
+        type: Date
     }
 });
 

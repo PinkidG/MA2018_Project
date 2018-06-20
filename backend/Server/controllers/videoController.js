@@ -2,6 +2,7 @@
 const Video = require('../models/video');
 const fs = require('fs');
 const fse = require('fs-extra');
+const multer = require('multer');
 
 function setVideoInfo(request) {
     return {
@@ -15,8 +16,10 @@ function setVideoInfo(request) {
 // Add Video
 //========================================
 exports.register = function(req, res, next) {
-    const title = req.body.title;
-    const video = req.body.video;
+    //const title = req.body.title;
+    //const video = req.body.video;
+
+    const path = process.cwd() + '/data';
 
     if (req.user.role === "Doctor" || req.user.role === "Admin") {
         // Return error if no title provided
@@ -41,7 +44,7 @@ exports.register = function(req, res, next) {
                 return res.status(422).send({ error: 'That title is already in use.' });
             }
 
-            var wstream = fs.createWriteStream(title);
+            var wstream = fs.createWriteStream(req.body.video);
             wstream.write(req.body.video);
             wstream.end();
 
@@ -62,6 +65,15 @@ exports.register = function(req, res, next) {
     } else {
         return res.status(422).send({ error: 'Unauthorized' });
     }
+};
+
+exports.registertest = function(req, res, next) {
+
+    const path = process.cwd() + '/data';
+
+            var wstream = fs.createWriteStream(req.body.video);
+            wstream.write(req.body.video);
+            wstream.end();
 };
 
 exports.getByTitle = function(req, res, next) {

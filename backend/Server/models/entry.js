@@ -29,6 +29,10 @@ const EntrySchema = new Schema({
         referencesKey: 'id',
         allowNull: false,
         required: true
+    },
+    time: {
+        type: Date,
+        default: Date.now
     }
 });
 

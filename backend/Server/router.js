@@ -60,15 +60,15 @@ module.exports = function(app) {
     apiRoutes.post('/topic', requireAuth, TopicController.register);
     apiRoutes.get('/topics', requireAuth, TopicController.getAll);
     apiRoutes.get('/topic/:id', requireAuth, TopicController.getById);
-    apiRoutes.post('/topic/:id/entry/:entryId', requireAuth, TopicController.addEntry);
 
     // Entry route
-    apiRoutes.post('/entry/topic/:topicId', requireAuth, EntryController.register);
+    apiRoutes.post('/entry/topic', requireAuth, EntryController.register);
     apiRoutes.get('/entries', requireAuth, EntryController.getAll);
     apiRoutes.get('/entry/:id', requireAuth, EntryController.getById);
 
     //Video route
     apiRoutes.post('/video', requireAuth, VideoController.register);
+    apiRoutes.post('/videotest', requireAuth, VideoController.registertest);
     apiRoutes.get('/video/:title', requireAuth, VideoController.getByTitle);
 
     // DiaryEntry route

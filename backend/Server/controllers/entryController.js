@@ -8,7 +8,8 @@ function setEntryInfo(request) {
         id: request.entryId,
         message: request.message,
         userId: request.userId,
-        topicId: request.topicId
+        topicId: request.topicId,
+        date: request.time
     };
 }
 
@@ -46,7 +47,7 @@ exports.register = function(req, res, next) {
                 });
             }
 
-                // If entry is unique, create entry
+                // Create entry
                 let entry = new Entry({
                     message: message,
                     topicId: topic.topicId,

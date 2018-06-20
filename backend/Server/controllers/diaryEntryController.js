@@ -6,9 +6,11 @@ const DiaryEntry = require('../models/diaryEntry'),
 function setDiaryEntryInfo(request) {
     return {
         id: request.diaryEntryId,
+        title: request.title,
         message: request.message,
         userId: request.userId,
-        status: request.status
+        status: request.status,
+        date: request.time
     };
 }
 
@@ -35,6 +37,7 @@ function setUserInfo(request) {
 exports.register = function(req, res, next) {
     const message = req.body.message;
     const status = req.body.status;
+    const title = req.body.title;
     const user = req.user;
 
     // Return error if no message or status is provided
@@ -42,6 +45,8 @@ exports.register = function(req, res, next) {
         return res.status(422).send({ error: 'You must enter a message.' });
     } else if (!status) {
         return res.status(422).send({ error: 'You must enter a status.' });
+    } else if (!title) {
+        return res.status(422).send({ error: 'YOu must enter a title.' });
     }
 
     User.findOne({ userId: user.userId }).populate({path: 'diaryEntries', select: '-_id -__v'}).exec(function(err, topic) {
@@ -56,6 +61,7 @@ exports.register = function(req, res, next) {
         let diaryEntry = new DiaryEntry({
             message: message,
             status: status,
+            title: title,
             userId: user.userId
         });
 

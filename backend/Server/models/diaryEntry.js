@@ -20,12 +20,20 @@ const DiaryEntrySchema = new Schema({
         type: String,
         required: true
     },
+    title: {
+        type: String,
+        required: true
+    },
     userId: {
         type: Number,
         references: 'user',
         referencesKey: 'id',
         allowNull: false,
         required: true
+    },
+    time: {
+        type: Date,
+        default: Date.now
     }
 });
 

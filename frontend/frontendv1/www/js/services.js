@@ -21,7 +21,7 @@ angular.module('app.services', [])
     };
   })
 
-  .service('AuthService', function($q, $http, API_ENDPOINT) {
+  .service('AuthService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
     var LOCAL_TOKEN_KEY = 'yourTokenKey';
     var isAuthenticated = false;
     var authToken;
@@ -53,9 +53,20 @@ angular.module('app.services', [])
       window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     }
 
+    var endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+
+      return end;
+    };
+
     var register = function(user) {
       return $q(function(resolve, reject) {
-        $http.post(API_ENDPOINT.url + '/auth/register', user).then(function(result) {
+
+        $http.post(endpoint().url + '/auth/register', user).then(function(result) {
           if (result.data.token) {
             storeUserCredentials(result.data.token);
             resolve(result.data.user);
@@ -74,7 +85,8 @@ angular.module('app.services', [])
 
     var login = function(user) {
       return $q(function(resolve, reject) {
-        $http.post(API_ENDPOINT.url + '/auth/login', user).then(function(result) {
+
+        $http.post(endpoint().url + '/auth/login', user).then(function(result) {
           if (result.data.token) {
             storeUserCredentials(result.data.token);
             resolve(result.data.user);
@@ -105,11 +117,22 @@ angular.module('app.services', [])
     };
   })
 
-  .service('UserService', function($q, $http, API_ENDPOINT) {
+  .service('UserService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+
+
+    var endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+
+      return end;
+    }
 
     var refreshUser = function(userId) {
       return $q(function(resolve, reject) {
-        $http.get(API_ENDPOINT.url + '/user/' + userId).then(function(result) {
+        $http.get(endpoint().url + '/user/' + userId).then(function(result) {
           if (result.data.User) {
             resolve(result.data.User);
           } else {
@@ -124,10 +147,16 @@ angular.module('app.services', [])
         });
       });
     };
-    
+
     return {
       refreshUser: refreshUser
     };
+  })
+
+  .service('checkPlatform', function () {
+    return{
+      isBrowser: ionic.Platform.is('browser')
+    }
   })
 
 .service('sharedProperties', function () {

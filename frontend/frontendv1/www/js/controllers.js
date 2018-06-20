@@ -1,6 +1,6 @@
-angular.module('app.controllers', ['ngCordova'])
+angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial'])
 
-.controller('homeCtrl', 
+.controller('homeCtrl',
 function ($scope, sharedProperties, $stateParams) {
   $scope.illnames = [];
   var date = new Date($scope.user.dateOfBirth);
@@ -8,7 +8,7 @@ function ($scope, sharedProperties, $stateParams) {
   $scope.user = sharedProperties.getProperty();
   $scope.datefor = date.toLocaleDateString("de");
 
-  for(i=0;i<$scope.user.illnesses.length;i++) { 
+  for(i=0;i<$scope.user.illnesses.length;i++) {
     $scope.illnames.push($scope.user.illnesses[i].name);
   }
   if ($scope.illnames.length == 0) {
@@ -36,9 +36,9 @@ function ($scope, $stateParams) {
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, UserService, sharedProperties, $state, $cordovaDialogs) {
+function ($scope, AuthService, UserService,checkPlatform , sharedProperties , $state, $cordovaDialogs, $mdDialog) {
 
-    AuthService.logout()
+    AuthService.logout();
     $scope.user = {
         email: '',
         password: ''
@@ -55,43 +55,75 @@ function ($scope, AuthService, UserService, sharedProperties, $state, $cordovaDi
           }
         }, function(errMsg) {
 
-          $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
-            .then(function(buttonIndex) {
-              // no button = 0, 'OK' = 1, 'Cancel' = 2
-              var btnIndex = buttonIndex;
-            });
+            if ( !checkPlatform.isBrowser ) {
+              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Server-Fehler", ["Erneut versuchen"]);
+            } else {
+
+              let confirm = $mdDialog.confirm()
+                .title('Server-Fehler')
+                .textContent(errMsg.statusText)
+                .ariaLabel('Lucky day')
+                .ok("Erneut versuchen");
+
+              $mdDialog.show(confirm);
+            }
         });
         }, function(errMsg) {
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Benutzer-Fehler", ["Erneut versuchen"]);
+          } else {
 
-          $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
-            .then(function(buttonIndex) {
-              // no button = 0, 'OK' = 1, 'Cancel' = 2
-              var btnIndex = buttonIndex;
-            });
+            let confirm = $mdDialog.confirm()
+              .title('Benutzer-Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+
+            $mdDialog.show(confirm);
+          }
         });
       };
 
     // When button is clicked, the popup will be shown...
-   $scope.showPopup = function() {
-    $scope.data = {}
 
-    $cordovaDialogs.confirm('message', 'Auswählen', ['Arzt','Patient'])
-    .then(function(buttonIndex) {
-      // no button = 0, 'OK' = 1, 'Cancel' = 2
-      var btnIndex = buttonIndex;
+  $scope.showPopup = function(ev) {
 
-      if (btnIndex == 1) {
-        $state.go('registrierenArzt');
-      } else if (btnIndex == 2) {
+    if ( !checkPlatform.isBrowser ) {
+      navigator.notification.confirm("Sind Sie ein Arzt oder ein Patient?", function(buttonIndex) {
+        switch(buttonIndex) {
+          case 1:
+            $state.go('registrierenArzt');
+            break;
+          case 2:
+            $state.go('registrierenPatient');
+            break;
+        }
+      }, "Registrieren", [ "Arzt", "Patient"]);
+    } else {
+
+      var confirm = $mdDialog.confirm()
+        .title('Registrieren')
+        .textContent('Sind Sie ein Arzt oder ein Patient?')
+        .ariaLabel('Lucky day')
+        .targetEvent(ev)
+        .ok("Patient")
+        .cancel("Arzt");
+
+      $mdDialog.show(confirm).then(function() {
         $state.go('registrierenPatient');
-      }
-    });
-  };
+      }, function() {
+        $state.go('registrierenArzt');
+      });
+
+      // Web page
+    }
+
+  }
 
 })
 
 .controller('registrierenPatientCtrl',
-function($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
+function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDialogs, $mdDialog) {
 
   $scope.user = {
     gender: '',
@@ -106,25 +138,43 @@ function($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
   $scope.signup = function() {
     AuthService.register($scope.user).then(function(user) {
       sharedProperties.setProperty(user);
-      $cordovaDialogs.confirm("Erfolg", 'Registrierung erfolgreich', ['OK'])
-      .then(function(buttonIndex) {
-        // no button = 0, 'OK' = 1, 'Cancel' = 2
-        var btnIndex = buttonIndex;
-        $state.go('men.home');
-      });
+
+      if ( !checkPlatform.isBrowser ) {
+        navigator.notification.confirm("Registrierung erfolgreich! (Patient)", function(buttonIndex) {
+          $state.go('men.home');
+        }, "Erfolg", [ "Okay"]);
+      } else {
+
+        var confirm = $mdDialog.confirm()
+          .title('Erfolg')
+          .textContent('Registrierung erfolgreich! (Patient)')
+          .ariaLabel('Lucky day')
+          .ok("Okay");
+
+        $mdDialog.show(confirm).then(function() {
+          $state.go('men.home');
+        });
+      }
     }, function(errMsg) {
-      $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
-      .then(function(buttonIndex) {
-        // no button = 0, 'OK' = 1, 'Cancel' = 2
-        var btnIndex = buttonIndex;
-      });
+      if ( !checkPlatform.isBrowser ) {
+        navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Patient)", ["Erneut versuchen"]);
+      } else {
+
+        let confirm = $mdDialog.confirm()
+          .title('Fehler (Patient)')
+          .textContent(errMsg.statusText)
+          .ariaLabel('Lucky day')
+          .ok("Erneut versuchen");
+
+        $mdDialog.show(confirm);
+      }
     });
   };
 
 })
 
 .controller('registrierenArztCtrl',
-function($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
+function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDialogs, $mdDialog) {
 
   $scope.user = {
     gender: '',
@@ -139,18 +189,35 @@ function($scope, AuthService, sharedProperties, $state, $cordovaDialogs) {
   $scope.signup = function() {
     AuthService.register($scope.user).then(function(user) {
       sharedProperties.setProperty(user);
-      $cordovaDialogs.confirm("Erfolg", 'Registrierung erfolgreich', ['OK'])
-      .then(function(buttonIndex) {
-        // no button = 0, 'OK' = 1, 'Cancel' = 2
-        var btnIndex = buttonIndex;
-        $state.go('men.home2');
-      });
+      if ( !checkPlatform.isBrowser ) {
+        navigator.notification.confirm("Registrierung erfolgreich! (Arzt)", function(buttonIndex) {
+          $state.go('men.home2');
+        }, "Erfolg", [ "Okay"]);
+      } else {
+
+        var confirm = $mdDialog.confirm()
+          .title('Erfolg')
+          .textContent('Registrierung erfolgreich! (Arzt)')
+          .ariaLabel('Lucky day')
+          .ok("Okay");
+
+        $mdDialog.show(confirm).then(function() {
+          $state.go('men.home2');
+        });
+      }
     }, function(errMsg) {
-      $cordovaDialogs.confirm(errMsg.data.error, 'Fehler', ['Try Again'])
-      .then(function(buttonIndex) {
-        // no button = 0, 'OK' = 1, 'Cancel' = 2
-        var btnIndex = buttonIndex;
-      });
+      if ( !checkPlatform.isBrowser ) {
+        navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Arzt)", ["Erneut versuchen"]);
+      } else {
+
+        let confirm = $mdDialog.confirm()
+          .title('Fehler (Arzt)')
+          .textContent(errMsg.statusText)
+          .ariaLabel('Lucky day')
+          .ok("Erneut versuchen");
+
+        $mdDialog.show(confirm);
+      }
     });
   };
 
@@ -196,7 +263,7 @@ function ($scope, $stateParams) {
 
 }])
 
-  .controller('sucheCtrl', 
+  .controller('sucheCtrl',
     function ($scope, $stateParams) {
 
       $scope.search = {
@@ -235,6 +302,10 @@ function ($scope, $stateParams) {
           $scope.user.diaryEntries[i].message;
         }
 
+      $scope.init = function () {
+        $scope.user = sharedProperties.getProperty();
+
+      }
 
     })
 

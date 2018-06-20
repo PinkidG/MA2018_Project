@@ -195,6 +195,7 @@ exports.getUser = function(req, res) {
             .findOne({ userId: id })
             .populate({path: 'illnesses', select: '-_id -users -__v'})
             .populate({path: 'treatments', select: '-_id -__v -illnesses'})
+            .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
             .populate({path: 'users', select: '-_id -users -__v -password -createdAt -updatedAt'})
             .lean()
             .exec(function(err, user) {

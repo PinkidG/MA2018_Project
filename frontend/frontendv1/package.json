@@ -14,7 +14,7 @@
     "bower": "bower",
     "clean": "ionic clean",
     "ionic:build": "ionic build",
-    "ionic:serve": "ionic serve -p 8080",
+    "ionic:serve": "ionic serve -p 8080 -l",
     "ionic:runOniOS": "ionic cordova run ios --prod"
   },
   "dependencies": {

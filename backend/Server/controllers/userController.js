@@ -159,6 +159,7 @@ exports.getAll = function(req, res) {
             .populate({path: 'illnesses', select: '-_id -users -__v'})
             .populate({path: 'treatments', select: '-_id'})
             .populate({path: 'entries', select: '-_id'})
+            .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
             .populate({path: 'users', select: '-_id -users -__v -password -entries'})
             .lean()
             .exec(function(err, result) {
@@ -196,6 +197,7 @@ exports.getUser = function(req, res) {
             .populate({path: 'illnesses', select: '-_id -users -__v'})
             .populate({path: 'treatments', select: '-_id -__v -illnesses'})
             .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
+            .populate({path: 'entries', select: '-_id'})
             .populate({path: 'users', select: '-_id -users -__v -password -createdAt -updatedAt'})
             .lean()
             .exec(function(err, user) {
@@ -220,6 +222,7 @@ exports.getUser = function(req, res) {
         .populate({path: 'user', select: '-_id -users -__v'})
         .populate({path: 'illnesses', select: '-_id -users -__v'})
         .populate({path: 'treatments', select: '-_id -__v -illnesses'})
+        .populate({path: 'entries', select: '-_id'})
         .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
         .exec(function(err, user) {
 

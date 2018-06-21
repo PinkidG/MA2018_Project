@@ -94,7 +94,7 @@ angular.module('app.routes', [])
   })
 
   .state('men.frage', {
-    url: '/question',
+    url: '/question/:topicId',
     views: {
       'side-menu21': {
         templateUrl: 'templates/frage.html',

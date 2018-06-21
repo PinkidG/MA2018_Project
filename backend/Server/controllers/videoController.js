@@ -2,7 +2,8 @@
 const Video = require('../models/video');
 const fs = require('fs');
 const fse = require('fs-extra');
-const multer = require('multer');
+var multer = require('multer');
+//const VideoController = require('./videoController');
 
 function setVideoInfo(request) {
     return {
@@ -69,11 +70,46 @@ exports.register = function(req, res, next) {
 
 exports.registertest = function(req, res, next) {
 
-    const path = process.cwd() + '/data';
+    const path = process.cwd() + '/data/';
 
-            var wstream = fs.createWriteStream(req.body.video);
-            wstream.write(req.body.video);
-            wstream.end();
+    var Storage = multer.diskStorage({
+        destination: function(req, file, callback) {
+            callback(null, path);
+        },
+        filename: function(req, file, callback) {
+            callback(null, file.originalname);
+        }
+    });
+
+    var upload = multer({ storage: Storage }).array("videoUploader", 3);
+
+    return {upload:upload};
+
+   /* fs.writeFile(path + filename, req, function(error) {
+        if (error) {
+            return res.end("error:  " + error.message);
+        } else {
+            return res.end("Successful Write to " + path);
+        }
+    });*/
+
+
+    /*var storage = multer.diskStorage({
+        destination: function (request, file, callback){
+            callback(null, path);
+        },
+        filename: function(request, file, callback){
+            console.log(file);
+            callback(null, file.originalname)
+        }
+    });
+
+    var upload = multer({storage: storage}).single('videoFile');
+
+    console.log(req.file);
+    res.end('Your file Uploaded');
+    console.log('Video Uploaded');*/
+
 };
 
 exports.getByTitle = function(req, res, next) {
@@ -112,3 +148,14 @@ exports.getByTitle = function(req, res, next) {
             return res.status(422).send({ error: 'Video not found.' });
         }});
 };
+
+/*
+exports.uploading = function(request, response, upload) {
+    if(err) {
+        console.log('Error Occured');
+        return;
+    }
+    console.log(request.file);
+    response.end('Your file Uploaded');
+    console.log('Video Uploaded');
+};*/

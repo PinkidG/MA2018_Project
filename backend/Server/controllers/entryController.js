@@ -7,9 +7,9 @@ function setEntryInfo(request) {
     return {
         id: request.entryId,
         message: request.message,
-        userId: request.userId,
+        user: request.user,
         topicId: request.topicId,
-        date: request.date
+        date: request.date,
     };
 }
 
@@ -18,7 +18,7 @@ function setTopicInfo(request) {
         id: request.topicId,
         title: request.title,
         entries: request.entries,
-        userId: request.userId
+        user: request.user
     };
 }
 
@@ -36,8 +36,6 @@ exports.register = function(req, res, next) {
             return res.status(422).send({ error: 'You must enter a message.' });
         } else if (!topId) {
             return res.status(422).send({ error: 'You must enter a valid topicId.' });
-        } else if (!user.userId) {
-            return res.status(422).send({ error: 'You must enter a valid userId.' });
         }
 
         Topic.findOne({ topicId: topId }).populate({path: 'entries', select: '-_id -__v'}).exec(function(err, topic) {
@@ -53,7 +51,7 @@ exports.register = function(req, res, next) {
                     message: message,
                     topicId: topic.topicId,
                     date: date,
-                    userId: user.userId
+                    user: user
                 });
 
                 entry.save(function (err, entry) {
@@ -132,14 +130,13 @@ exports.registerWithTopic = function(req, res, newTopic, topic) {
     const entId = req.body.entryId;
     const topId = topic.topicId;
     const user = req.user;
+    const date = Date.now();
 
     // Return error if no message or topicId is provided
     if (!message) {
         return res.status(422).send({ error: 'You must enter a message.' });
     } else if (!topId) {
         return res.status(422).send({ error: 'You must enter a valid topicId.' });
-    } else if (!user.userId) {
-        return res.status(422).send({ error: 'You must enter a valid userId.' });
     }
 
 
@@ -160,7 +157,8 @@ exports.registerWithTopic = function(req, res, newTopic, topic) {
         let entry = new Entry({
             message: message,
             topicId: topId,
-            userId: user.userId
+            date: date,
+            user: user
         });
 
         entry.save(function(err, entry) {

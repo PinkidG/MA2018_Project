@@ -17,6 +17,12 @@ function ($scope, sharedProperties, TopicService,  $stateParams) {
     $scope.illnesses = $scope.illnames.toString();
   }
 
+  //2 neusten Tagebucheinträge
+  $scope.diaryEntries = $scope.user.diaryEntries.slice();
+  $scope.diaryEntries.reverse();
+
+
+  //Forumseinträge des Patienten
   TopicService.topics().then(function(topics) {
 
     $scope.entries = topics
@@ -353,8 +359,9 @@ function ($scope, $stateParams, sharedProperties, TopicService) {
     function ($scope, $stateParams, sharedProperties) {
 
       $scope.user = sharedProperties.getProperty();
-      $scope.diaryEntries = $scope.user.diaryEntries
-
+      $scope.diaryEntries = $scope.user.diaryEntries.slice();
+      $scope.diaryEntries.reverse();
+      
     })
 
 

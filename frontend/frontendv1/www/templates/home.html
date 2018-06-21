@@ -4,16 +4,16 @@
     <h3 id="home-heading11" style="color:#000000;">Persönliche Daten</h3>
     <ion-list id="home-list14">
       <ion-item id="home-list-item61">Name
-        <span class="item-note">{{user.firstName}} {{user.lastName}}</span>
+        <p style="color:black;font-size:130%;text-align:right;">{{user.firstName}} {{user.lastName}}</p>
       </ion-item>
       <ion-item id="home-list-item62">Geburtsdatum
-        <span class="item-note">{{datefor}}</span>
+        <p style="color:black;font-size:130%;text-align:right;">{{datefor}}</p>
       </ion-item>
       <ion-item id="home-list-item63">Geschlecht
-        <span class="item-note">{{user.gender}}</span>
+        <p style="color:black;font-size:130%;text-align:right;">{{user.gender}}</p>
       </ion-item>
       <ion-item id="home-list-item64">Befund
-          <span class="item-note">{{illnesses}}</span>
+        <p style="color:black;font-size:130%;text-align:right;">{{illnesses}}</p>
       </ion-item>
     </ion-list>
     <h3 id="home-heading9" style="color:#000000;">Tagebuch</h3>
@@ -34,7 +34,7 @@
     </div>
     <h3 id="home-heading8" style="color:#000000;">Meine Fragen</h3>
     <div class="list card" id="home-card26">
-      <ion-item class="item-icon-left" id="home-list-item49" ui-sref="men.frage()" ng-repeat="item in entries">
+      <ion-item class="item-icon-left" id="home-list-item49" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries|limitTo:1">
         <i class="icon ion-checkmark-round"></i>{{item.title}}}
         <span class="item-note">#tag1 #tag2</span>
       </ion-item>

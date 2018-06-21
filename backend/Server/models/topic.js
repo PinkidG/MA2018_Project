@@ -21,18 +21,12 @@ const TopicSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Entry'
     }],
-    user: {
-        userId: {
-            type: Number,
-            references: 'user',
-            referencesKey: 'id',
-            allowNull: false,
-            required: true
-        },
-        profile: {
-            firstName: { type: String },
-            lastName: { type: String }
-        },
+    userId: {
+        type: Number,
+        references: 'user',
+        referencesKey: 'id',
+        allowNull: false,
+        required: true
     },
 });
 

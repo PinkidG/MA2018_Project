@@ -18,7 +18,7 @@ function setTopicInfo(request) {
         id: request.topicId,
         title: request.title,
         entries: request.entries,
-        user: request.user
+        userId: request.userId
     };
 }
 
@@ -129,6 +129,7 @@ exports.registerWithTopic = function(req, res, newTopic, topic) {
     const message = req.body.message;
     const entId = req.body.entryId;
     const topId = topic.topicId;
+    const userId = req.user.userId;
     const user = req.user;
     const date = Date.now();
 

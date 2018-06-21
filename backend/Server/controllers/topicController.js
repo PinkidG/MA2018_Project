@@ -19,6 +19,7 @@ exports.register = function(req, res, next) {
     const title = req.body.title;
     const newTopic = true;
     const user = req.user;
+    const id = user.userId;
 
         // Return error if no title provided
         if (!title) {
@@ -41,7 +42,7 @@ exports.register = function(req, res, next) {
             // If topic is unique, create topic
             let topic = new Topic({
                 title: title,
-                user: user
+                userId: id
             });
 
             topic.save(function (err, topicSaved) {

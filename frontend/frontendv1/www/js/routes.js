@@ -103,6 +103,16 @@ angular.module('app.routes', [])
     }
   })
 
+    .state('men.frageNeu', {
+      url: '/questionAdd',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/neueFrage.html',
+          controller: 'frageNeuCtrl'
+        }
+      }
+    })
+
   .state('men.suche', {
     url: '/search',
     views: {

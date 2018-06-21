@@ -168,9 +168,29 @@ angular.module('app.services', [])
       });
     };
 
+
+    let addTopic = function (topicObj) {
+      return $q(function(resolve, reject) {
+        $http.post(endpoint().url + '/topic', topicObj).then(function(result) {
+          if (result.data) {
+            resolve(result.data.topic);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
+        });
+      });
+    };
+
     return {
       topics: topics,
-      topic: topic
+      topic: topic,
+      addTopic: addTopic
     };
   })
 

@@ -17,6 +17,8 @@ function ($scope, sharedProperties, TopicService,  $stateParams) {
     $scope.illnesses = $scope.illnames.toString();
   }
 
+  $scope.isDoctor = $scope.user.role == "Doctor" || $scope.user.role == "Admin"
+
   //2 neusten Tagebucheinträge
   $scope.diaryEntries = $scope.user.diaryEntries.slice();
   $scope.diaryEntries.reverse();
@@ -280,7 +282,7 @@ function ($scope, $stateParams) {
 }])
 
 .controller('frageCtrl',
-function ($scope, $stateParams, sharedProperties, TopicService) {
+function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
 
   let topicId = $stateParams.topicId
 
@@ -306,7 +308,7 @@ function ($scope, $stateParams, sharedProperties, TopicService) {
 })
 
 .controller('fragenCtrl',
-function ($scope, $stateParams, sharedProperties, TopicService) {
+function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
   TopicService.topics().then(function(topics) {
 
     $scope.entries = topics
@@ -327,6 +329,40 @@ function ($scope, $stateParams, sharedProperties, TopicService) {
 
 
 })
+
+
+  .controller('frageNeuCtrl',
+    function ($scope, $stateParams,$state,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
+      $scope.topic = {
+        title: '',
+        message: ''
+      };
+
+    $scope.addTopic = function() {
+
+        TopicService.addTopic($scope.topic).then(function(topics) {
+          $state.go('men.fragen');
+
+        }, function(errMsg) {
+
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
+          } else {
+
+            let confirm = $mdDialog.confirm()
+              .title('Topic-Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+            $mdDialog.show(confirm);
+          }
+        });
+
+      }
+
+
+
+    })
 
   .controller('sucheCtrl',
     function ($scope, $stateParams) {
@@ -362,7 +398,12 @@ function ($scope, $stateParams, sharedProperties, TopicService) {
       $scope.user = sharedProperties.getProperty();
       $scope.diaryEntries = $scope.user.diaryEntries.slice();
       $scope.diaryEntries.reverse();
-      
+
+
+
+
+
+
     })
 
 

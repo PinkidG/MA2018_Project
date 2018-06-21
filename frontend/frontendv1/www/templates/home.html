@@ -34,13 +34,9 @@
     </div>
     <h3 id="home-heading8" style="color:#000000;">Meine Fragen</h3>
     <div class="list card" id="home-card26">
-      <ion-item class="item-icon-left" id="home-list-item49" ui-sref="men.frage()">
-        <i class="icon ion-checkmark-round"></i>Warum ist die Banane krumm?
-        <span class="item-note">#bananen #krumm #OP</span>
-      </ion-item>
-      <ion-item class="item-icon-left" id="home-list-item50" ui-sref="men.frage()">
-        <i class="icon ion-help"></i>Welche Komplikationen können bei OP xy auftreten?
-        <span class="item-note">#OP #Bruch #Oberschenkel</span>
+      <ion-item class="item-icon-left" id="home-list-item49" ui-sref="men.frage()" ng-repeat="item in entries">
+        <i class="icon ion-checkmark-round"></i>{{item.title}}}
+        <span class="item-note">#tag1 #tag2</span>
       </ion-item>
       <ion-item class="item-icon-right" id="home-list-item74" ui-sref="men.fragen()">mehr
         <i class="icon ion-ios-arrow-forward"></i>

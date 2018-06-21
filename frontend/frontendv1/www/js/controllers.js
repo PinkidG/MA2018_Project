@@ -1,7 +1,7 @@
 angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial'])
 
 .controller('homeCtrl',
-function ($scope, sharedProperties, $stateParams) {
+function ($scope, sharedProperties, TopicService,  $stateParams) {
   $scope.illnames = [];
   var date = new Date($scope.user.dateOfBirth);
 
@@ -16,6 +16,28 @@ function ($scope, sharedProperties, $stateParams) {
   } else {
     $scope.illnesses = $scope.illnames.toString();
   }
+
+  TopicService.topics().then(function(topics) {
+
+    $scope.entries = topics
+  }, function(errMsg) {
+
+    if ( !checkPlatform.isBrowser ) {
+      navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
+    } else {
+
+      let confirm = $mdDialog.confirm()
+        .title('Topic-Fehler')
+        .textContent(errMsg.statusText)
+        .ariaLabel('Lucky day')
+        .ok("Erneut versuchen");
+      $mdDialog.show(confirm);
+    }
+  });
+
+
+
+
 
 })
 
@@ -36,7 +58,7 @@ function ($scope, $stateParams) {
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, UserService,checkPlatform , sharedProperties , $state, $cordovaDialogs, $mdDialog) {
+function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $state, $cordovaDialogs, $mdDialog) {
 
     AuthService.logout();
     $scope.user = {
@@ -297,7 +319,7 @@ function ($scope, $stateParams) {
       $scope.user = sharedProperties.getProperty();
       $scope.diaryEntries = $scope.user.diaryEntries
 
-        for(i=0;i<$scope.user.diaryEntries.length;i++) { 
+        for(i=0;i<$scope.user.diaryEntries.length;i++) {
           $scope.user.diaryEntries[i].status;
           $scope.user.diaryEntries[i].message;
         }

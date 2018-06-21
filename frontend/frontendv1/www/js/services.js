@@ -117,6 +117,47 @@ angular.module('app.services', [])
     };
   })
 
+  .service('DiaryService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+
+
+    var endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+
+      return end;
+    };
+
+    var diary = function(diaryEntry) {
+      return $q(function(resolve, reject) {
+        $http.post(endpoint().url + '/diary', diaryEntry).then(function(result) {
+          if (result.data.user) {
+            resolve(result.data.user);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
+        });
+      });
+    };
+
+    return {
+      diary: diary
+    };
+  })
+
+  .service('checkPlatform', function () {
+    return{
+      isBrowser: ionic.Platform.is('browser')
+    }
+  })
 
   .service('TopicService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 

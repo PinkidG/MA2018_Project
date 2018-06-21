@@ -399,11 +399,54 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
       $scope.diaryEntries = $scope.user.diaryEntries.slice();
       $scope.diaryEntries.reverse();
 
+    })
 
+  .controller('neuTagebuchCtrl',
+    function ($scope, $stateParams, sharedProperties, DiaryService, UserService, checkPlatform , $state, $mdDialog) {
 
+    $scope.diaryEntry = {
+        title: '',
+        message: '',
+        status: ''
+      };
 
+      $scope.create = function(ev) {
+        DiaryService.diary($scope.diaryEntry).then(function(user) {
+          if (user) {
+            UserService.refreshUser(user.userId).then(function(ruser) {
+            sharedProperties.setProperty(ruser);
+            $state.go('men.tagebuch');
+          }, function(errMsg) {
 
+            if ( !checkPlatform.isBrowser ) {
+              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Server-Fehler", ["Erneut versuchen"]);
+            } else {
 
+              let confirm = $mdDialog.confirm()
+                .title('Server-Fehler')
+                .textContent(errMsg.statusText)
+                .ariaLabel('Lucky day')
+                .targetEvent(ev)
+                .ok("Erneut versuchen");
+
+              $mdDialog.show(confirm);
+            }
+        });
+          }
+        }, function(errMsg) {
+
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Diary-Fehler", ["Erneut versuchen"]);
+          } else {
+            let confirm = $mdDialog.confirm()
+              .title('Diary-Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+            $mdDialog.show(confirm);
+          }
+        });
+      };
     })
 
 

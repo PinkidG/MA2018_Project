@@ -39,6 +39,16 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('men.neuTagebuch', {
+    url: '/newpatientdiary',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/neuerTagebucheintrag.html',
+        controller: 'neuTagebuchCtrl'
+      }
+    }
+  })
+
   .state('men', {
     url: '/side-menu',
     templateUrl: 'templates/men.html',

@@ -18,15 +18,21 @@
     </ion-list>
     <h3 id="home-heading9" style="color:#000000;">Tagebuch</h3>
     <div class="list card" id="home-card28">
-      <ion-item class="item-icon-left" id="home-list-item73">
-        <i class="icon ion-happy-outline"></i>Keine Bauchschmerzen
-        <span class="item-note">29.02.2018 - 9:00 Uhr</span>
-        <ion-option-button class="button-positive"></ion-option-button>
-      </ion-item>
-      <ion-item class="item-icon-left" id="home-list-item72">
-        <i class="icon ion-sad-outline"></i>Explosiver Durchfall
-        <span class="item-note">13.02.2018 - 13:00 Uhr</span>
-        <ion-option-button class="button-positive"></ion-option-button>
+      <ion-item class="item-avatar" id="home-list-item73" ng-repeat="item in diaryEntries | limitTo:2">
+        <item-avatar item-start ng-switch on={{item.status}}>
+          <div ng-switch-when="good">
+            <i class="icon ion-happy-outline"></i>
+          </div>
+          <div ng-switch-when="bad">
+            <i class="icon ion-sad-outline"></i>
+          </div>
+          <div ng-switch-default>
+            <i class="icon ion-sad-outline"></i>
+          </div>
+     </item-avatar item-end>
+        <h2>{{item.title}}</h2>
+        <p>{{item.message}}</p>
+        <span class="item-note">{{item.date | date:'dd-MM-yyyy HH:mm'}}</span>
       </ion-item>
       <ion-item class="item-icon-right" id="home-list-item70" ui-sref="men.tagebuch()">mehr
         <i class="icon ion-ios-arrow-forward"></i>

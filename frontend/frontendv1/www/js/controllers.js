@@ -1,4 +1,4 @@
-angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial'])
+angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospaced.elastic'])
 
 .controller('homeCtrl',
 function ($scope, sharedProperties, TopicService,  $stateParams) {

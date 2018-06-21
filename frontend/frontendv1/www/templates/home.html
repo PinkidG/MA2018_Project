@@ -19,7 +19,8 @@
     <h3 id="home-heading9" style="color:#000000;">Tagebuch</h3>
     <div class="list card" id="home-card28">
       <ion-item class="item-avatar" id="home-list-item73" ng-repeat="item in diaryEntries | limitTo:2">
-          <img src="img/happy.png">
+        <img src="img/sad.png" ng-if="item.status == 'bad'">
+        <img src="img/happy.png" ng-if="item.status == 'good'" >
         <h2>{{item.title}}</h2>
         <p>{{item.message}}</p>
         <span class="item-note">{{item.date | date:'dd-MM-yyyy HH:mm'}}</span>
@@ -31,7 +32,7 @@
     <h3 id="home-heading8" style="color:#000000;">Meine Fragen</h3>
     <div class="list card" id="home-card26">
       <ion-item class="item-icon-left" id="home-list-item49" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries|limitTo:1">
-        <i class="icon ion-checkmark-round"></i>{{item.title}}}
+        <i class="icon ion-help"></i>{{item.title}}}
         <span class="item-note">#tag1 #tag2</span>
       </ion-item>
       <ion-item class="item-icon-right" id="home-list-item74" ui-sref="men.fragen()">mehr

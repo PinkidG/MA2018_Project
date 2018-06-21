@@ -2,20 +2,10 @@
   <ion-content padding="true" class="has-header">
     <h2 id="frage-heading15" style="color:#000000;">Wird es weh tun?</h2>
     <ion-list id="frage-list18">
-      <ion-item class="item-avatar" id="frage-list-item104" ui-sref="men.arzt()">
+      <ion-item class="item-avatar" id="frage-list-item104" ng-repeat="item in topicEntries">
         <img src="img/js8VEmmjQ5uMDmfgeVW2_arzt.jpg">
-        <h2>Dr. Peter Oetker</h2>
-        <p style="white-space:normal;">Die Vorbereitung an sich nicht. Bei der Operation selbst ist es abhängig von der gewählten Betäubungsart.</p>
-      </ion-item>
-      <ion-item class="item-avatar" id="frage-list-item105" ui-sref="men.home()">
-        <img src="img/LSmjjMJISHqT4QfsU3wy_Patient.jpg">
-        <h2>Max Mustermann</h2>
-        <p style="white-space:normal;">Ich habe mich für eine lokale Betäubung entschieden. Ist das mit Komplikationen verbunden?</p>
-      </ion-item>
-      <ion-item class="item-avatar" id="frage-list-item106" ui-sref="men.arzt()">
-        <img src="img/js8VEmmjQ5uMDmfgeVW2_arzt.jpg">
-        <h2>Dr. Peter Oetker</h2>
-        <p style="white-space:normal;">Sie werden spüren, dass das Bein bewegt wird. Die eigentliche Operation ist jedoch mit keinen Schmerzen verbunden. </p>
+        <h2>UserID: {{item.userId}}</h2>
+        <p style="white-space:normal;">{{item.message}}</p>
       </ion-item>
     </ion-list>
     <button id="frage-button5" class="button button-stable button-block">Neuer Eintrag</button>

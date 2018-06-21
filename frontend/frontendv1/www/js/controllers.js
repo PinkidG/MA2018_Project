@@ -66,7 +66,7 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
         password: ''
       };
 
-      $scope.login = function() {
+      $scope.login = function(ev) {
         AuthService.login($scope.user).then(function(user) {
           UserService.refreshUser(user.userId).then(function(ruser) {
           sharedProperties.setProperty(ruser);
@@ -85,6 +85,7 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
                 .title('Server-Fehler')
                 .textContent(errMsg.statusText)
                 .ariaLabel('Lucky day')
+                .targetEvent(ev)
                 .ok("Erneut versuchen");
 
               $mdDialog.show(confirm);
@@ -92,16 +93,19 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
         });
         }, function(errMsg) {
           if ( !checkPlatform.isBrowser ) {
-            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Benutzer-Fehler", ["Erneut versuchen"]);
+            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Benutzer-Fehler (1M)", ["Erneut versuchen"]);
           } else {
 
             let confirm = $mdDialog.alert()
-              .title('Benutzer-Fehler')
+              .title('Benutzer-Fehler (1B)')
               .textContent(errMsg.statusText)
               .ariaLabel('Lucky day')
+              .targetEvent(ev)
               .ok("Erneut versuchen");
 
-            $mdDialog.show(confirm);
+            $mdDialog.show(confirm).then(function() {
+              console.log("Dialog shown...")
+            });
           }
         });
       };
@@ -269,21 +273,53 @@ function ($scope, $stateParams) {
 
 }])
 
-.controller('frageCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
+.controller('frageCtrl',
+function ($scope, $stateParams, sharedProperties, TopicService) {
+
+  let topicId = $stateParams.topicId
+
+  TopicService.topic(topicId).then(function(topicEntries) {
+
+    $scope.topicEntries = topicEntries.entries
+  }, function(errMsg) {
+
+    if ( !checkPlatform.isBrowser ) {
+      navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
+    } else {
+
+      let confirm = $mdDialog.confirm()
+        .title('Topic-Fehler')
+        .textContent(errMsg.statusText)
+        .ariaLabel('Lucky day')
+        .ok("Erneut versuchen");
+      $mdDialog.show(confirm);
+    }
+  });
+
+})
+
+.controller('fragenCtrl',
+function ($scope, $stateParams, sharedProperties, TopicService) {
+  TopicService.topics().then(function(topics) {
+
+    $scope.entries = topics
+  }, function(errMsg) {
+
+    if ( !checkPlatform.isBrowser ) {
+      navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
+    } else {
+
+      let confirm = $mdDialog.confirm()
+        .title('Topic-Fehler')
+        .textContent(errMsg.statusText)
+        .ariaLabel('Lucky day')
+        .ok("Erneut versuchen");
+      $mdDialog.show(confirm);
+    }
+  });
 
 
-}])
-
-.controller('fragenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
-
-
-}])
+})
 
   .controller('sucheCtrl',
     function ($scope, $stateParams) {
@@ -318,16 +354,6 @@ function ($scope, $stateParams) {
 
       $scope.user = sharedProperties.getProperty();
       $scope.diaryEntries = $scope.user.diaryEntries
-
-        for(i=0;i<$scope.user.diaryEntries.length;i++) {
-          $scope.user.diaryEntries[i].status;
-          $scope.user.diaryEntries[i].message;
-        }
-
-      $scope.init = function () {
-        $scope.user = sharedProperties.getProperty();
-
-      }
 
     })
 

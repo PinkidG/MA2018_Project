@@ -1,19 +1,11 @@
 <ion-view title="Fragen" id="page17">
   <ion-content padding="true" class="has-header">
     <div class="list card" id="fragen-card223">
-      <ion-item class="item-icon-left" id="fragen-list-item162" ui-sref="men.frage()">
-        <i class="icon ion-checkmark-round"></i>Warum ist die Banane krumm?
-        <span class="item-note">#bananen #krumm #OP</span>
-      </ion-item>
-      <ion-item class="item-icon-left" id="fragen-list-item163" ui-sref="men.frage()">
-        <i class="icon ion-help"></i>Welche Komplikationen können bei OP xy auftreten?
-        <span class="item-note">#OP #Bruch #Oberschenkel</span>
-      </ion-item>
-      <ion-item class="item-icon-left" id="fragen-list-item165" ui-sref="men.frage()">
-        <i class="icon ion-checkmark-round"></i>Welche Komplikationen können bei OP xy auftreten?
-        <span class="item-note">#OP #Bruch #Elle</span>
+      <ion-item class="item-icon-left" id="fragen-list-item163" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries">
+        <i class="icon ion-help"></i>{{item.title}}
+        <span class="item-note">#tag1 #tag2</span>
       </ion-item>
     </div>
-    <button id="fragen-button14" class="button button-stable button-block">Neue Frage</button>
+    <button id="fragen-button14" class="button button-stable button-block" ui-sref="men.frageNeu()">Neue Frage</button>
   </ion-content>
 </ion-view>

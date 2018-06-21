@@ -1,0 +1,24 @@
+<ion-view title="Neuer Eintrag" id="page23">
+  <ion-content padding="true" class="has-header">
+    <form id="neuerTagebucheintrag-form13" class="list">
+      <label class="item item-input" id="neuerTagebucheintrag-input26">
+        <input type="text" placeholder="Kurzbeschreibung" ng-model="diaryEntry.title">
+      </label>
+      <div class="spacer" style="width: 300px; height: 25px;"></div>
+      <label class="item item-input" id="neuerTagebucheintrag-input28">
+      <textarea placeholder="Langtext" rows="3" ng-model="diaryEntry.message" msd-elastic></textarea>
+      </label>
+      <div class="spacer" style="width: 300px; height: 25px;"></div>
+      <label class = "item item-input item-select">
+        <div class = "input-label" style="color:#000000;">
+          Ich fühle mich...
+        </div>
+      <select ng-model="diaryEntry.status">
+        <option value="good" selected>gut</option>
+        <option value="bad">schlecht</option>
+     </select>
+     </label>
+    </form>
+      <button id="neuerTagebucheintrag-button20" class="button button-stable button-block" ng-click="create($event)">Erstellen</button>
+  </ion-content>
+</ion-view>

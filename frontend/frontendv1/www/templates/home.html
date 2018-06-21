@@ -4,29 +4,26 @@
     <h3 id="home-heading11" style="color:#000000;">Persönliche Daten</h3>
     <ion-list id="home-list14">
       <ion-item id="home-list-item61">Name
-        <span class="item-note">{{user.firstName}} {{user.lastName}}</span>
+        <p style="color:black;font-size:130%;text-align:right;">{{user.firstName}} {{user.lastName}}</p>
       </ion-item>
       <ion-item id="home-list-item62">Geburtsdatum
-        <span class="item-note">{{datefor}}</span>
+        <p style="color:black;font-size:130%;text-align:right;">{{datefor}}</p>
       </ion-item>
       <ion-item id="home-list-item63">Geschlecht
-        <span class="item-note">{{user.gender}}</span>
+        <p style="color:black;font-size:130%;text-align:right;">{{user.gender}}</p>
       </ion-item>
-      <ion-item id="home-list-item64">Befund
-          <span class="item-note">{{illnesses}}</span>
+      <ion-item id="home-list-item64" ng-hide="isDoctor">Befund
+        <p style="color:black;font-size:130%;text-align:right;">{{illnesses}}</p>
       </ion-item>
     </ion-list>
     <h3 id="home-heading9" style="color:#000000;">Tagebuch</h3>
     <div class="list card" id="home-card28">
-      <ion-item class="item-icon-left" id="home-list-item73">
-        <i class="icon ion-happy-outline"></i>Keine Bauchschmerzen
-        <span class="item-note">29.02.2018 - 9:00 Uhr</span>
-        <ion-option-button class="button-positive"></ion-option-button>
-      </ion-item>
-      <ion-item class="item-icon-left" id="home-list-item72">
-        <i class="icon ion-sad-outline"></i>Explosiver Durchfall
-        <span class="item-note">13.02.2018 - 13:00 Uhr</span>
-        <ion-option-button class="button-positive"></ion-option-button>
+      <ion-item class="item-avatar" id="home-list-item73" ng-repeat="item in diaryEntries | limitTo:2">
+        <img src="img/sad.png" ng-if="item.status == 'bad'">
+        <img src="img/happy.png" ng-if="item.status == 'good'" >
+        <h2>{{item.title}}</h2>
+        <p>{{item.message}}</p>
+        <span class="item-note">{{item.date | date:'dd-MM-yyyy HH:mm'}}</span>
       </ion-item>
       <ion-item class="item-icon-right" id="home-list-item70" ui-sref="men.tagebuch()">mehr
         <i class="icon ion-ios-arrow-forward"></i>
@@ -34,8 +31,8 @@
     </div>
     <h3 id="home-heading8" style="color:#000000;">Meine Fragen</h3>
     <div class="list card" id="home-card26">
-      <ion-item class="item-icon-left" id="home-list-item49" ui-sref="men.frage()" ng-repeat="item in entries">
-        <i class="icon ion-checkmark-round"></i>{{item.title}}}
+      <ion-item class="item-icon-left" id="home-list-item49" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries|limitTo:1">
+        <i class="icon ion-help"></i>{{item.title}}}
         <span class="item-note">#tag1 #tag2</span>
       </ion-item>
       <ion-item class="item-icon-right" id="home-list-item74" ui-sref="men.fragen()">mehr

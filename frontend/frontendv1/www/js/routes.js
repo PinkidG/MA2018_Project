@@ -39,6 +39,16 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('men.neuTagebuch', {
+    url: '/newpatientdiary',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/neuerTagebucheintrag.html',
+        controller: 'neuTagebuchCtrl'
+      }
+    }
+  })
+
   .state('men', {
     url: '/side-menu',
     templateUrl: 'templates/men.html',
@@ -94,7 +104,7 @@ angular.module('app.routes', [])
   })
 
   .state('men.frage', {
-    url: '/question',
+    url: '/question/:topicId',
     views: {
       'side-menu21': {
         templateUrl: 'templates/frage.html',
@@ -102,6 +112,16 @@ angular.module('app.routes', [])
       }
     }
   })
+
+    .state('men.frageNeu', {
+      url: '/questionAdd',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/neueFrage.html',
+          controller: 'frageNeuCtrl'
+        }
+      }
+    })
 
   .state('men.suche', {
     url: '/search',

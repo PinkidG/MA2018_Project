@@ -18,6 +18,7 @@
     "ionic:runOniOS": "ionic cordova run ios --prod"
   },
   "dependencies": {
+    "angular-elastic": "^2.5.1",
     "branch-cordova-sdk": "^2.6.24",
     "cordova-browser": "^5.0.3",
     "cordova-ios": "4.5.4",

@@ -284,9 +284,10 @@ function ($scope, $stateParams, sharedProperties, TopicService) {
 
   let topicId = $stateParams.topicId
 
-  TopicService.topic(topicId).then(function(topicEntries) {
+  TopicService.topic(topicId).then(function(topicEntry) {
 
-    $scope.topicEntries = topicEntries.entries
+    $scope.topicEntries = topicEntry.entries
+    $scope.topicTitle = topicEntry.title
   }, function(errMsg) {
 
     if ( !checkPlatform.isBrowser ) {

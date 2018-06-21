@@ -14,6 +14,21 @@ const AuthenticationController = require('./controllers/authentication'),
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireLogin = passport.authenticate('local', { session: false });
 
+//Setting up multer for fileupload
+var path = process.cwd() + '/data/';
+var multer = require('multer');
+var Storage = multer.memoryStorage({
+    destination: function (req, file, cb) {
+        cb(null, path)
+    },
+    filename: function (req, file, cb) {
+        let ext = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
+        cb(null, ext)
+    },
+    inMemory: true
+});
+
+var upload = multer({ storage: Storage });
 
 // Constants for role types
 const REQUIRE_ADMIN = "Admin",
@@ -67,8 +82,7 @@ module.exports = function(app) {
     apiRoutes.get('/entry/:id', requireAuth, EntryController.getById);
 
     //Video route
-    apiRoutes.post('/video', requireAuth, VideoController.register);
-    apiRoutes.post('/videotest', requireAuth, VideoController.registertest);
+    apiRoutes.post('/video', requireAuth, upload.single('video'), VideoController.register);
     apiRoutes.get('/video/:title', requireAuth, VideoController.getByTitle);
 
     // DiaryEntry route

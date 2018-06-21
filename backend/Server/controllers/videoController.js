@@ -1,120 +1,53 @@
 "use strict";
-const Video = require('../models/video');
 const fs = require('fs');
 const fse = require('fs-extra');
-var multer = require('multer');
-//const VideoController = require('./videoController');
-
-function setVideoInfo(request) {
-    return {
-        id: request.videoId,
-        title: request.title,
-        video: request.video
-    };
-}
 
 //========================================
 // Add Video
 //========================================
-exports.register = function(req, res, next) {
-    //const title = req.body.title;
-    //const video = req.body.video;
-
-    const path = process.cwd() + '/data';
+exports.register = function(req, res) {
 
     if (req.user.role === "Doctor" || req.user.role === "Admin") {
-        // Return error if no title provided
-        if (!title) {
-            return res.status(422).send({ error: 'You must enter a title.' });
-        }
-        // Return error if video is not provided
-        if (!video) {
-            return res.status(422).send({ error: 'You must attach a video.' });
+
+        if(!req.file){
+            return res.status(422).send({ error: 'You must provide a video' });
+        } else if (!req.file.mimetype == ("video/mp4")){
+            return res.status(422).send({ error: 'only mp4 allowed at the moment' });
         }
 
-        Video.findOne({ title: title }, function(err, existingVideo) {
-            if (err) {
-                return res.status(403).send({
-                    error: 'Request error!.',
-                    description: err.message
-                });
-            }
+        let file = req.file,
+            path = process.cwd() + '/data/';
 
-            // If video is not unique, return error
-            if (existingVideo) {
-                return res.status(422).send({ error: 'That title is already in use.' });
-            }
+        console.log(file);
+        // Logic for handling missing file, wrong mimetype, no buffer, etc.
 
-            var wstream = fs.createWriteStream(req.body.video);
-            wstream.write(req.body.video);
-            wstream.end();
-
-            // If video is unique, create video
-            let video = new Video({
-                title: title,
-                video: video
-            });
-
-            video.save(function(err, video) {
-                if (err) { return next(err); }
-                let videoInfo = setVideoInfo(video);
-                res.status(201).json({
-                    video: videoInfo
-                });
+        let buffer = file.buffer, //Note: buffer only populates if you set inMemory: true.
+            fileName = file.originalname;
+        let stream = fs.createWriteStream(path + fileName);
+        stream.write(buffer);
+        stream.on('error', function() {
+            console.log('Could not write file to memory.');
+            res.status(400).send({
+                message: 'Problem saving the file. Please try again.'
             });
         });
+        stream.on('finish', function() {
+            console.log('File saved successfully.');
+            let data = {
+                message: 'File saved successfully.'
+            };
+            res.jsonp(data);
+        });
+        stream.end();
+        console.log('Stream ended.');
     } else {
         return res.status(422).send({ error: 'Unauthorized' });
     }
 };
 
-exports.registertest = function(req, res, next) {
-
-    const path = process.cwd() + '/data/';
-
-    var Storage = multer.diskStorage({
-        destination: function(req, file, callback) {
-            callback(null, path);
-        },
-        filename: function(req, file, callback) {
-            callback(null, file.originalname);
-        }
-    });
-
-    var upload = multer({ storage: Storage }).array("videoUploader", 3);
-
-    return {upload:upload};
-
-   /* fs.writeFile(path + filename, req, function(error) {
-        if (error) {
-            return res.end("error:  " + error.message);
-        } else {
-            return res.end("Successful Write to " + path);
-        }
-    });*/
-
-
-    /*var storage = multer.diskStorage({
-        destination: function (request, file, callback){
-            callback(null, path);
-        },
-        filename: function(request, file, callback){
-            console.log(file);
-            callback(null, file.originalname)
-        }
-    });
-
-    var upload = multer({storage: storage}).single('videoFile');
-
-    console.log(req.file);
-    res.end('Your file Uploaded');
-    console.log('Video Uploaded');*/
-
-};
-
-exports.getByTitle = function(req, res, next) {
+exports.getByTitle = function(req, res) {
     const title = req.params.title;
-    const path = process.cwd() + '/data/'+ title + '*';
+    const path = process.cwd() + '/data/'+ title + '.mp4';
 
     fse.exists(path, function(exists) {
         if (exists) {
@@ -148,14 +81,3 @@ exports.getByTitle = function(req, res, next) {
             return res.status(422).send({ error: 'Video not found.' });
         }});
 };
-
-/*
-exports.uploading = function(request, response, upload) {
-    if(err) {
-        console.log('Error Occured');
-        return;
-    }
-    console.log(request.file);
-    response.end('Your file Uploaded');
-    console.log('Video Uploaded');
-};*/

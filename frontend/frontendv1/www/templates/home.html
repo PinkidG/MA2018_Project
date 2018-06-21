@@ -19,17 +19,7 @@
     <h3 id="home-heading9" style="color:#000000;">Tagebuch</h3>
     <div class="list card" id="home-card28">
       <ion-item class="item-avatar" id="home-list-item73" ng-repeat="item in diaryEntries | limitTo:2">
-        <item-avatar item-start ng-switch on={{item.status}}>
-          <div ng-switch-when="good">
-            <i class="icon ion-happy-outline"></i>
-          </div>
-          <div ng-switch-when="bad">
-            <i class="icon ion-sad-outline"></i>
-          </div>
-          <div ng-switch-default>
-            <i class="icon ion-sad-outline"></i>
-          </div>
-     </item-avatar item-end>
+          <img src="img/happy.png">
         <h2>{{item.title}}</h2>
         <p>{{item.message}}</p>
         <span class="item-note">{{item.date | date:'dd-MM-yyyy HH:mm'}}</span>

@@ -20,7 +20,7 @@ angular.module('app.routes', [])
   })
 
   .state('men.patient', {
-    url: '/patient-overview',
+    url: '/patient-overview/:userId',
     views: {
       'side-menu21': {
         templateUrl: 'templates/patient.html',

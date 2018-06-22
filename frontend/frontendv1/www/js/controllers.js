@@ -17,8 +17,6 @@ function ($scope, sharedProperties, TopicService,  $stateParams) {
     $scope.illnesses = $scope.illnames.toString();
   }
 
-  $scope.isDoctor = $scope.user.role == "Doctor" || $scope.user.role == "Admin"
-
   //2 neusten Tagebucheinträge
   $scope.diaryEntries = $scope.user.diaryEntries.slice();
   $scope.diaryEntries.reverse();
@@ -386,11 +384,30 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
 
     }])
 
-  .controller('patientCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-    function ($scope, $stateParams) {
+  .controller('patientCtrl',
+    function ($scope, $stateParams, UserService, checkPlatform) {
 
+      let userId = $stateParams.userId;
 
-    }])
+      UserService.getUserById(userId).then(function(user) {
+        $scope.user = user;
+
+      }, function(errMsg) {
+
+        if ( !checkPlatform.isBrowser ) {
+          navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "User-Fehler", ["Erneut versuchen"]);
+        } else {
+
+          let confirm = $mdDialog.confirm()
+            .title('User-Fehler')
+            .textContent(errMsg.statusText)
+            .ariaLabel('Lucky day')
+            .ok("Erneut versuchen");
+          $mdDialog.show(confirm);
+        }
+      });
+
+    })
 
   .controller('tagebuchCtrl',
     function ($scope, $stateParams, sharedProperties) {
@@ -474,6 +491,8 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
 
     function ($scope, sharedProperties, $stateParams) {
       $scope.user = sharedProperties.getProperty();
+
+
     })
 
   .controller('patientenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
@@ -484,12 +503,67 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
 
     }])
 
-  .controller('neuenPatientenZuweisenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
+  .controller('neuenPatientenZuweisenCtrl',
+    function ($scope, $stateParams ,UserService, checkPlatform,  sharedProperties) {
+    $scope.resultUser = [];
+    $scope.searchString = "";
+      $scope.searchUser = function() {
+        UserService.searchUser($scope.searchString).then(function(ruser) {
+          $scope.resultUser.append(ruser);
+        }, function(errMsg) {
 
-    }])
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Such-Fehler", ["Erneut versuchen"]);
+          } else {
+
+            let confirm = $mdDialog.confirm()
+              .title('Such-Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .targetEvent(ev)
+              .ok("Erneut versuchen");
+
+            $mdDialog.show(confirm);
+          }
+        });
+
+      }
+      $scope.addUser = function(user){
+        if ( !checkPlatform.isBrowser ) {
+          navigator.notification.confirm("Sind Sie ein Arzt oder ein Patient?", function(buttonIndex) {
+            switch(buttonIndex) {
+              case 1:
+                $state.go('registrierenArzt');
+                break;
+              case 2:
+                $state.go('registrierenPatient');
+                break;
+            }
+          }, "Registrieren", [ "Arzt", "Patient"]);
+        } else {
+
+          var confirm = $mdDialog.confirm()
+            .title('Registrieren')
+            .textContent('Sind Sie ein Arzt oder ein Patient?')
+            .ariaLabel('Lucky day')
+            .targetEvent(ev)
+            .ok("Patient")
+            .cancel("Arzt");
+
+          $mdDialog.show(confirm).then(function() {
+            $state.go('registrierenPatient');
+          }, function() {
+            $state.go('registrierenArzt');
+          });
+
+          // Web page
+        }
+
+      }
+
+
+
+    })
 
 
 

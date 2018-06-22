@@ -266,8 +266,46 @@ angular.module('app.services', [])
       });
     };
 
+    let searchUser = function(lastName) {
+      return $q(function(resolve, reject) {
+        $http.get(endpoint().url + '/usern/' + lastName).then(function(result) {
+          if (result.data.User) {
+            resolve(result.data.User);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
+        });
+      });
+    };
+
+    let getUserById = function(userId) {
+      return $q(function(resolve, reject) {
+        $http.get(endpoint().url + '/user/' + userId).then(function(result) {
+          if (result.data.User) {
+            resolve(result.data.User);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+
+          reject(err);
+          // Do messaging and error handling here
+
+          return
+        });
+      });
+    };
+
     return {
-      refreshUser: refreshUser
+      refreshUser: refreshUser,
+      searchUser: searchUser,
+      getUserById: getUserById
     };
   })
 

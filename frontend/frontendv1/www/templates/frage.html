@@ -4,7 +4,7 @@
     <ion-list id="frage-list18">
       <ion-item class="item-avatar" id="frage-list-item104" ng-repeat="item in topicEntries">
         <img src="img/js8VEmmjQ5uMDmfgeVW2_arzt.jpg">
-        <h2>UserID: {{item.userId}}</h2>
+        <h2>{{item.user.profile.firstName}} {{item.user.profile.lastName}}</h2>
         <p style="white-space:normal;">{{item.message}}</p>
       </ion-item>
     </ion-list>

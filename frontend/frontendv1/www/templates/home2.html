@@ -3,26 +3,16 @@
     <h2 id="home2-heading19" style="color:#000000;">Hallo {{user.firstName}} {{user.lastName}}</h2>
     <h3 id="home2-heading20" style="color:#000000;">Aktuelle Patienten</h3>
     <div class="list card" id="home2-card216">
-      <ion-item class="item-avatar" id="home2-list-item133" ui-sref="men.patient()">
+      <ion-item class="item-avatar" id="home2-list-item133" ui-sref="men.patient({userId: {{patient.userId}}})" ng-repeat="patient in user.users">
         <img src="img/70anb3aSHimEqVCC9ARA_patient.jpg">
-        <h2>Max Mustermann</h2>
-        <p>Oberschenkelbruch</p>
-      </ion-item>
-      <ion-item class="item-avatar" id="home2-list-item135" ui-sref="men.patient()">
-        <img src="img/fcLq5eR4Sn6nSsLx2Qo0_patientin.jpg">
-        <h2>Marietta Musterfrau</h2>
-        <p>akute Mandelentzündung</p>
-      </ion-item>
-      <ion-item class="item-avatar" id="home2-list-item136" ui-sref="men.patient()">
-        <img src="img/G8aKNN1jTg6cDbtYj2ex_Groot.jpg">
-        <h2>Groot</h2>
-        <p>i am groot</p>
+        <h2>{{patient.profile.firstName}} {{patient.profile.lastName}}</h2>
+        <p>...</p>
       </ion-item>
       <ion-item class="item-icon-right" id="home2-list-item157" ui-sref="men.patienten()">mehr
         <i class="icon ion-ios-arrow-forward"></i>
       </ion-item>
     </div>
-    <h3 id="home2-heading26" style="color:#000000;">Offene Fragen</h3>
+    <h3 id="home2-heading26" style="color:#000000;">Fragen</h3>
     <div class="list card" id="home2-card221">
       <ion-item class="item-icon-left" id="home2-list-item154" ui-sref="men.frage()">
         <i class="icon ion-help"></i>Welche Komplikationen können auftreten?
@@ -33,20 +23,6 @@
         <span class="item-note">#Oberschenkel #Bruch #OP</span>
       </ion-item>
       <ion-item class="item-icon-right" id="home2-list-item166" ui-sref="men.fragen()">mehr
-        <i class="icon ion-ios-arrow-forward"></i>
-      </ion-item>
-    </div>
-    <h3 id="home2-heading27" style="color:#000000;">Beantwortete Fragen</h3>
-    <div class="list card" id="home2-card222">
-      <ion-item class="item-icon-left" id="home2-list-item159" ui-sref="men.frage()">
-        <i class="icon ion-checkmark-round"></i>Welche Nebenwirkungen hat das Medikament?
-        <span class="item-note">#ibuprofen #Oberschenkel #OP</span>
-      </ion-item>
-      <ion-item class="item-icon-left" id="home2-list-item160" ui-sref="men.frage()">
-        <i class="icon ion-checkmark-round"></i>Muss ich in die Reha?
-        <span class="item-note">#Oberschenkel #Bruch #OP</span>
-      </ion-item>
-      <ion-item class="item-icon-right" id="home2-list-item161" ui-sref="men.fragen()">mehr
         <i class="icon ion-ios-arrow-forward"></i>
       </ion-item>
     </div>

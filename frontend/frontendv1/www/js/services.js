@@ -219,11 +219,26 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
+        });
+      });
+    };
 
-          return
+    let addTopicEntry = function (topicId, message) {
+      return $q(function(resolve, reject) {
+        let topicObject = {
+          topicId: topicId,
+          message: message
+        };
+
+        $http.post(endpoint().url + '/entry/topic', topicObject).then(function(result) {
+          if (result.data) {
+            resolve(result.data.topic);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
         });
       });
     };
@@ -231,7 +246,8 @@ angular.module('app.services', [])
     return {
       topics: topics,
       topic: topic,
-      addTopic: addTopic
+      addTopic: addTopic,
+      addTopicEntry: addTopicEntry
     };
   })
 
@@ -277,9 +293,7 @@ angular.module('app.services', [])
         }).catch((err) => {
 
           reject(err);
-          // Do messaging and error handling here
 
-          return
         });
       });
     };
@@ -295,9 +309,20 @@ angular.module('app.services', [])
         }).catch((err) => {
 
           reject(err);
-          // Do messaging and error handling here
+        });
+      });
+    };
 
-          return
+    let addUserToUser = function (userId) {
+      return $q(function(resolve, reject) {
+        $http.post(endpoint().url + '/user/add/' + userId, {id: userId}).then(function(result) {
+          if (result.data.user) {
+            resolve(result.data.user);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
         });
       });
     };
@@ -305,7 +330,8 @@ angular.module('app.services', [])
     return {
       refreshUser: refreshUser,
       searchUser: searchUser,
-      getUserById: getUserById
+      getUserById: getUserById,
+      addUserToUser: addUserToUser
     };
   })
 

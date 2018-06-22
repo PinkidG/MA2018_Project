@@ -123,6 +123,16 @@ angular.module('app.routes', [])
       }
     })
 
+    .state('men.frageEintragNeu', {
+      url: '/questionEntryAdd/:topicId',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/neuerFragenEintrag.html',
+          controller: 'frageEintragNeuCtrl'
+        }
+      }
+    })
+
   .state('men.suche', {
     url: '/search',
     views: {

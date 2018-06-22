@@ -14,13 +14,9 @@
     </div>
     <h3 id="home2-heading26" style="color:#000000;">Fragen</h3>
     <div class="list card" id="home2-card221">
-      <ion-item class="item-icon-left" id="home2-list-item154" ui-sref="men.frage()">
-        <i class="icon ion-help"></i>Welche Komplikationen können auftreten?
+      <ion-item class="item-icon-left" id="home2-list-item154" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries|limitTo:2">
+        <i class="icon ion-help"></i>{{item.title}}}
         <span class="item-note">#OP #Oberschenkel #Bruch</span>
-      </ion-item>
-      <ion-item class="item-icon-left" id="home2-list-item156" ui-sref="men.frage()">
-        <i class="icon ion-help"></i>Wann werde ich wieder laufen können?
-        <span class="item-note">#Oberschenkel #Bruch #OP</span>
       </ion-item>
       <ion-item class="item-icon-right" id="home2-list-item166" ui-sref="men.fragen()">mehr
         <i class="icon ion-ios-arrow-forward"></i>

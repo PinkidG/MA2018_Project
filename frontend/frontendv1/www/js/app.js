@@ -16,6 +16,11 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 })
   .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform) {
 
+    $rootScope.goBackState = function(){
+      $ionicViewSwitcher.nextDirection('back');
+      $ionicHistory.goBack();
+    }
+
     $ionicPlatform.ready(function() {
       if (
         window.cordova &&

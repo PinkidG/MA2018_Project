@@ -66,56 +66,91 @@ function ($scope, $stateParams) {
 
 .controller('loginCtrl',
 function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $state, $cordovaDialogs, $mdDialog) {
+  AuthService.logout();
+  $scope.user = {
+    email: '',
+    password: ''
+  };
 
-    AuthService.logout();
-    $scope.user = {
-        email: '',
-        password: ''
-      };
+  ionic.Platform.ready(function () {
+    window.plugins.touchid.isAvailable(
+      function (type) {
+        let email = window.localStorage.getItem("email");
+        let password = window.localStorage.getItem("password");
 
-      $scope.login = function(ev) {
-        AuthService.login($scope.user).then(function(user) {
-          UserService.refreshUser(user.userId).then(function(ruser) {
-          sharedProperties.setProperty(ruser);
-          if (ruser.role == "Doctor") {
-            $state.go('men.home2');
-          } else {
-            $state.go('men.home');
-          }
-        }, function(errMsg) {
+        if (email != null && email !== '') {
+          window.plugins.touchid.verifyFingerprintWithCustomPasswordFallbackAndEnterPasswordLabel(
+            'Fingerbdruck scannen!', // this will be shown in the native scanner popup
+            'Manuell', // this will become the 'Enter password' button label
+            function (msg) {
 
-            if ( !checkPlatform.isBrowser ) {
-              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Server-Fehler", ["Erneut versuchen"]);
-            } else {
+              $scope.user.email = email
+              $scope.user.password = password;
 
-              let confirm = $mdDialog.confirm()
-                .title('Server-Fehler')
-                .textContent(errMsg.statusText)
-                .ariaLabel('Lucky day')
-                .targetEvent(ev)
-                .ok("Erneut versuchen");
+            }, // success handler: fingerprint accepted
+            function (msg) {
+              //alert('not ok: ' + JSON.stringify(msg))
+            }); // error handler with errorcode and localised reason
+        }
 
-              $mdDialog.show(confirm);
-            }
+      }, // type returned to success callback: 'face' on iPhone X, 'touch' on other devices
+      function (msg) {
+        alert('not available, message: ' + JSON.stringify(msg))
+      } // error handler: no TouchID available
+    );
+  });
+
+  $scope.login = function (ev) {
+    AuthService.login($scope.user).then(function (user) {
+
+
+      window.localStorage.setItem("email", $scope.user.email);
+      window.localStorage.setItem("password", $scope.user.password);
+
+
+      UserService.refreshUser(user.userId).then(function (ruser) {
+        sharedProperties.setProperty(ruser);
+        if (ruser.role == "Doctor") {
+          $state.go('men.home2');
+        } else {
+          $state.go('men.home');
+        }
+      }, function (errMsg) {
+
+        if (!checkPlatform.isBrowser) {
+          navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
+          }, "Server-Fehler", ["Erneut versuchen"]);
+        } else {
+
+          let confirm = $mdDialog.confirm()
+            .title('Server-Fehler')
+            .textContent(errMsg.statusText)
+            .ariaLabel('Lucky day')
+            .targetEvent(ev)
+            .ok("Erneut versuchen");
+
+          $mdDialog.show(confirm);
+        }
+      });
+    }, function (errMsg) {
+      if (!checkPlatform.isBrowser) {
+        navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
+        }, "Benutzer-Fehler (1M)", ["Erneut versuchen"]);
+      } else {
+
+        let confirm = $mdDialog.alert()
+          .title('Benutzer-Fehler (1B)')
+          .textContent(errMsg.statusText)
+          .ariaLabel('Lucky day')
+          .targetEvent(ev)
+          .ok("Erneut versuchen");
+
+        $mdDialog.show(confirm).then(function () {
+          console.log("Dialog shown...")
         });
-        }, function(errMsg) {
-          if ( !checkPlatform.isBrowser ) {
-            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Benutzer-Fehler (1M)", ["Erneut versuchen"]);
-          } else {
-
-            let confirm = $mdDialog.alert()
-              .title('Benutzer-Fehler (1B)')
-              .textContent(errMsg.statusText)
-              .ariaLabel('Lucky day')
-              .targetEvent(ev)
-              .ok("Erneut versuchen");
-
-            $mdDialog.show(confirm).then(function() {
-              console.log("Dialog shown...")
-            });
-          }
-        });
-      };
+      }
+    });
+  };
 
     // When button is clicked, the popup will be shown...
 

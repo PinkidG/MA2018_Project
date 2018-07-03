@@ -37,10 +37,15 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       // Branch
       $ionicPlatform.on("deviceready", function() {
         branchInit();
+
       });
 
       $ionicPlatform.on("resume", function() {
-        branchInit();
+        $ionicPlatform.ready(function() {
+          branchInit();
+        });
+
+
       });
 
       function branchInit() {

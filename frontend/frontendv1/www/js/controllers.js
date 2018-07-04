@@ -1,7 +1,8 @@
 angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospaced.elastic'])
 
 .controller('homeCtrl',
-function ($scope, sharedProperties, TopicService) {
+
+function ($scope,$state, sharedProperties, sharedParameter, TopicService, checkPlatform ) {
 
   $scope.illnames = [];
   var date = new Date($scope.user.dateOfBirth);
@@ -38,9 +39,14 @@ function ($scope, sharedProperties, TopicService) {
       $mdDialog.show(confirm);
     }
   });
+
+  let parameter = sharedParameter.getProperty();
+  if(parameter != ""){
+    $state.go("men.frage",{"topicId": parameter});
+  }
 })
 
-.controller('menPatientCtrl', ['$scope', '$stateParams', 
+.controller('menPatientCtrl', ['$scope', '$stateParams',
 function ($scope, $stateParams) {
 }])
 
@@ -64,7 +70,7 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
             'Fingerbdruck scannen!', // this will be shown in the native scanner popup
             'Manuell', // this will become the 'Enter password' button label
             function (msg) {
-              $scope.user.email = email
+              $scope.user.email = email;
               $scope.user.password = password;
             }, // success handler: fingerprint accepted
             function (msg) {
@@ -244,21 +250,21 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog)
   };
 })
 
-.controller('arztCtrl', ['$scope', '$stateParams', 
+.controller('arztCtrl', ['$scope', '$stateParams',
 function ($scope, $stateParams) {
 }])
 
-.controller('videosCtrl', ['$scope', '$stateParams', 
+.controller('videosCtrl', ['$scope', '$stateParams',
 function ($scope, $stateParams) {
 }])
 
-.controller('videoCtrl', ['$scope', '$stateParams', 
+.controller('videoCtrl', ['$scope', '$stateParams',
 function ($scope, $stateParams) {
 }])
 
-.controller('frageCtrl',
-function ($scope, $stateParams,checkPlatform, TopicService, $mdDialog) {
+.controller('frageCtrl', function ($scope, $stateParams,sharedParameter, checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
 
+  sharedParameter.setProperty("");
   let topicId = $stateParams.topicId;
   $scope.myTopicId = topicId;
 
@@ -364,7 +370,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
       };
     })
 
-  .controller('suchergebnisCtrl', ['$scope', '$stateParams', 
+  .controller('suchergebnisCtrl', ['$scope', '$stateParams',
     function ($scope, $stateParams) {
     }])
 
@@ -524,7 +530,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
       });
     })
 
-  .controller('patientenCtrl', ['$scope', '$stateParams', 
+  .controller('patientenCtrl', ['$scope', '$stateParams',
     function ($scope, $stateParams) {
     }])
 

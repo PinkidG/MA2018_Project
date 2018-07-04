@@ -94,4 +94,7 @@
     <plugin name="cordova-plugin-touch-id" spec="^3.3.1">
         <variable name="FACEID_USAGE_DESCRIPTION" value="For easy authentication" />
     </plugin>
+    <plugin name="cordova-plugin-urlhandler" spec="^0.7.2">
+        <variable name="URL_SCHEME" value="branchnewmed" />
+    </plugin>
 </widget>

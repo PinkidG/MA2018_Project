@@ -14,7 +14,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
 
 })
-  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform) {
+  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform, sharedParameter) {
 
     $rootScope.goBackState = function(){
       $ionicViewSwitcher.nextDirection('back');
@@ -55,7 +55,9 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
             // read deep link data on click
             alert("Deep Link Data: " + JSON.stringify(data));
           }
-        });
+        }.catch( (err) => {
+          alert('Branch Init Error: ' + JSON.stringify(err));
+        }));
       }
     });
 
@@ -124,3 +126,12 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
     }
   };
 });
+
+function handleOpenURL(url) {
+  let urlObject = new URL(url);
+  let c = urlObject.searchParams.get("topicId");
+
+  let shared = angular.element(document.body).injector().get('sharedParameter');
+  shared.setProperty(c);
+}
+

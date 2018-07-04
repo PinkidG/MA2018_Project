@@ -325,6 +325,19 @@ angular.module('app.services', [])
    };
   })
 
+  .service('sharedParameter', function () {
+    var property = "";
+
+    return {
+      getProperty: function () {
+        return property;
+      },
+      setProperty: function(value) {
+        property = value;
+      }
+    };
+  })
+
 .config(function ($httpProvider) {
   $httpProvider.interceptors.push('AuthInterceptor');
 });

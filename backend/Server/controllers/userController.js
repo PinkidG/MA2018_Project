@@ -92,9 +92,6 @@ exports.addUserToUser = function(req, res) {
                     
                 }   
             });
-
-       
-
      });
 };
 
@@ -405,19 +402,18 @@ exports.updateUser = function(req, res) {
     if (!firstName) {
         firstName = req.user.profile.firstName;
     }
-    if (!lastName){
+    if (!lastName) {
         lastName = req.user.profile.lastName;
     }
-    if (!email){
+    if (!email) {
         email = req.user.email;
     }
-    if (!dateOfBirth){
+    if (!dateOfBirth) {
         dateOfBirth = req.user.profile.dateOfBirth;
     }
-    if (!gender){
+    if (!gender) {
         gender = req.user.gender;
     }
-
     let newValues = {
         $set: {
             profile: {
@@ -426,10 +422,9 @@ exports.updateUser = function(req, res) {
                 dateOfBirth: dateOfBirth,
                 gender: gender
             },
-                email: email
+            email: email
         }
     };
-
     User.updateOne(myquery, newValues, function (err) {
         if (err) {
             return res.status(403).send({
@@ -437,10 +432,18 @@ exports.updateUser = function(req, res) {
                 description: err.message
             });
         }
+    });
 
-        let data = {
-            message: 'User updated successfully'
-        };
-        res.jsonp(data);
+    User.findOne({userId: id}).populate({path: 'user', select: '-_id -users -__v'}).exec(function (err, user) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        res.status(200).json({
+            User: setUserInfo(user)
+        });
     });
 };

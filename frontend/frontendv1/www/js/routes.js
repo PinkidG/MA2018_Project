@@ -184,10 +184,14 @@ angular.module('app.routes', [])
     }
   })
 
-    .state('einstellungen', {
+    .state('men.account', {
       url: '/settings',
-      templateUrl: 'templates/einstellungen.html',
-      controller: 'einstellungenCtrl'
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/einstellungen.html',
+        controller: 'accountCtrl'
+        }
+      }
     })
 
   $urlRouterProvider.otherwise('/login')

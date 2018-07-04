@@ -1,29 +1,29 @@
 <ion-view title="Einstellungen" id="page24">
   <ion-content padding="true" class="has-header">
     <h3 id="einstellungen-heading30" style="color:#000000;">Allgemeine Informationen</h3>
-    <div style="margin: 0px; line-height: 250px; background-color: rgb(232, 235, 239); text-align: center;">
-      <i class="icon ion-image" style="font-size: 64px; color: rgb(136, 136, 136); vertical-align: middle;"></i>
-    </div>
     <form id="einstellungen-form10" class="list">
       <label class="item item-input" id="einstellungen-input22">
         <span class="input-label">Name</span>
-        <input type="text" placeholder="Mustermann">
+        <input type="text" value="{{user.lastName}}">
       </label>
       <label class="item item-input" id="einstellungen-input24">
         <span class="input-label">Vorname</span>
-        <input type="text" placeholder="Max">
+        <input type="text" value="{{user.firstName}}">
       </label>
       <label class="item item-input" id="einstellungen-input25">
         <span class="input-label">E-Mail</span>
-        <input type="email" placeholder="max@mustermann.de">
+        <input type="email" value="{{user.email}}">
       </label>
       <label class="item item-input" id="einstellungen-input31">
         <span class="input-label">Geburtstag</span>
-        <input type="date" placeholder="">
+        <input type="date" value="{{user.dateOfBirth | date: 'yyyy-MM-dd'}}">
       </label>
-      <label class="item item-input" id="einstellungen-input34">
-        <span class="input-label">Fachrichtung</span>
-        <input type="text" placeholder="Facharzt für Kinderchirurgie">
+      <label class="item item-input item-select" id="einstellungen-input34">
+        <span class="input-label">Geschlecht</span>
+        <select>
+          <option selected>Männlich</option>
+          <option>Weiblich</option>
+       </select>
       </label>
       <button id="einstellungen-button9" class="button button-positive button-block">Sichern</button>
     </form>

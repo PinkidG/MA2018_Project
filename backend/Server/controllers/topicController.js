@@ -144,9 +144,11 @@ exports.getById = function(req, res, next) {
 exports.deleteTopic = function(req, res) {
 
     const id = req.params.id;
-    var myquery = { topicId: id };
 
-    Topic.deleteOne(myquery, function(err, topic) {
+    Topic.findOne({ topicId: id }).populate({
+        path: 'entries',
+        select: '-_id -__v'
+    }).exec(function(err, topic) {
         if (err) {
             return res.status(403).send({
                 error: 'Request error!.',
@@ -158,9 +160,66 @@ exports.deleteTopic = function(req, res) {
             return res.status(422).send({ error: 'Topic not found.' });
         }
 
-        let data = {
-            message: 'Topic deleted successfully'
-        };
-        res.jsonp(data);
+        let myquery = {topicId: id};
+
+        if (req.user.role === "Doctor" || req.user.role === "Admin") {
+
+            Topic.deleteOne(myquery, function (err) {
+                if (err) {
+                    return res.status(403).send({
+                        error: 'Request error!.',
+                        description: err.message
+                    });
+                }
+
+                Entry.remove(myquery, function (err, entry) {
+                    if (err) {
+                        return res.status(403).send({
+                            error: 'Request error!.',
+                            description: err.message
+                        });
+                    }
+                    if (entry == null) {
+                        return res.status(422).send({error: 'Topic not found.'});
+                    }
+                });
+
+                let data = {
+                    message: 'Topic deleted successfully'
+                };
+                res.jsonp(data);
+            });
+        } else if (req.user.userId == topic.userId){
+            Topic.deleteOne(myquery, function (err) {
+                if (err) {
+                    return res.status(403).send({
+                        error: 'Request error!.',
+                        description: err.message
+                    });
+                }
+
+                Entry.remove(myquery, function (err, entry) {
+                    if (err) {
+                        return res.status(403).send({
+                            error: 'Request error!.',
+                            description: err.message
+                        });
+                    }
+                    if (entry == null) {
+                        return res.status(422).send({error: 'Topic not found.'});
+                    }
+                });
+
+                let data = {
+                    message: 'Topic deleted successfully'
+                };
+                res.jsonp(data);
+            });
+        } else {
+            return res.status(422).send({ error: 'Unauthorized' });
+        }
+
     });
+
+
 };

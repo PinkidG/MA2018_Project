@@ -455,9 +455,9 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
   .controller('patientCtrl',
     function ($scope, $stateParams, UserService, TopicService,  checkPlatform,  $state, $mdDialog) {
 
-      let userId = $stateParams.userId;
+       $scope.userId = $stateParams.userId;
 
-      UserService.getUserById(userId).then(function(user) {
+      UserService.getUserById($scope.userId).then(function(user) {
         $scope.user = user;
         $scope.entries = user.entries;
 
@@ -516,16 +516,20 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
     })
 
   .controller('tagebuchCtrl',
-    function ($scope, $stateParams, sharedProperties) {
+    function ($scope, $stateParams, UserService) {
 
-      $scope.user = sharedProperties.getProperty();
+      let userId = $stateParams.userId;
+
+      UserService.getUserById(userId).then(function(user) {
+      $scope.user = user;
       $scope.diaryEntries = $scope.user.diaryEntries.slice();
       $scope.diaryEntries.reverse();
+    });
 
     })
 
   .controller('neuTagebuchCtrl',
-    function ($scope, $stateParams, sharedProperties, DiaryService, UserService, checkPlatform , $state, $mdDialog) {
+    function ($scope, $stateParams, sharedProperties, DiaryService, UserService, checkPlatform , $ionicHistory, $mdDialog) {
 
     $scope.diaryEntry = {
         title: '',
@@ -538,7 +542,7 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
           if (user) {
             UserService.refreshUser(user.userId).then(function(ruser) {
             sharedProperties.setProperty(ruser);
-            $state.go('men.tagebuch');
+            $ionicHistory.goBack();
           }, function(errMsg) {
 
             if ( !checkPlatform.isBrowser ) {

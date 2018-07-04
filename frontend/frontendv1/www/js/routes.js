@@ -30,7 +30,7 @@ angular.module('app.routes', [])
   })
 
   .state('men.tagebuch', {
-    url: '/patientdiary',
+    url: '/patientdiary/:userId',
     views: {
       'side-menu21': {
         templateUrl: 'templates/tagebuch.html',

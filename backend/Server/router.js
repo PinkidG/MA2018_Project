@@ -77,12 +77,12 @@ module.exports = function(app) {
     apiRoutes.post('/topic', requireAuth, TopicController.register);
     apiRoutes.get('/topics', requireAuth, TopicController.getAll);
     apiRoutes.get('/topic/:id', requireAuth, TopicController.getById);
+    apiRoutes.delete('/topic/delete/:id', requireAuth, TopicController.deleteTopic);
 
     // Entry route
     apiRoutes.post('/entry/topic', requireAuth, EntryController.register);
     apiRoutes.get('/entries', requireAuth, EntryController.getAll);
     apiRoutes.get('/entry/:id', requireAuth, EntryController.getById);
-   // apiRoutes.get('/entry/delete/:id', requireAuth, EntryController.deleteEntry());
 
     //Video route
     apiRoutes.post('/video', requireAuth, upload.single('video'), VideoController.register);

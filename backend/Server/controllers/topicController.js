@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 const Topic = require('../models/topic'),
     Entry = require('../models/entry'),
     EntryController = require('./entryController');
@@ -138,5 +138,29 @@ exports.getById = function(req, res, next) {
         res.status(200).json({
             topic: setTopicInfo(topic)
         });
+    });
+};
+
+exports.deleteTopic = function(req, res) {
+
+    const id = req.params.id;
+    var myquery = { topicId: id };
+
+    Topic.deleteOne(myquery, function(err, topic) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        if (topic == null) {
+            return res.status(422).send({ error: 'Topic not found.' });
+        }
+
+        let data = {
+            message: 'Topic deleted successfully'
+        };
+        res.jsonp(data);
     });
 };

@@ -348,3 +348,99 @@ exports.getUserByName = function(req, res) {
         return res.status(422).send({ error: 'Unauthorized' });
     }
 };
+
+exports.deleteUser = function(req, res) {
+
+    const id = req.user.userId;
+
+        let myquery = {userId: id};
+
+        User.deleteOne(myquery, function (err) {
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+
+            let data = {
+                message: 'User deleted successfully'
+            };
+            res.jsonp(data);
+        });
+};
+
+exports.deleteUser = function(req, res) {
+
+    const id = req.user.userId;
+
+    let myquery = {userId: id};
+
+    User.deleteOne(myquery, function (err) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        let data = {
+            message: 'User deleted successfully'
+        };
+        res.jsonp(data);
+    });
+};
+
+exports.updateUser = function(req, res) {
+
+    let id = req.user.userId,
+        firstName = req.body.firstName,
+        lastName = req.body.lastName,
+        email = req.body.email,
+        dateOfBirth = req.body.dateOfBirth,
+        gender = req.body.gender;
+
+    let myquery = {userId: id};
+
+    if (!firstName) {
+        firstName = req.user.profile.firstName;
+    }
+    if (!lastName){
+        lastName = req.user.profile.lastName;
+    }
+    if (!email){
+        email = req.user.email;
+    }
+    if (!dateOfBirth){
+        dateOfBirth = req.user.profile.dateOfBirth;
+    }
+    if (!gender){
+        gender = req.user.gender;
+    }
+
+    let newValues = {
+        $set: {
+            profile: {
+                firstName: firstName,
+                lastName: lastName,
+                dateOfBirth: dateOfBirth,
+                gender: gender
+            },
+                email: email
+        }
+    };
+
+    User.updateOne(myquery, newValues, function (err) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        let data = {
+            message: 'User updated successfully'
+        };
+        res.jsonp(data);
+    });
+};

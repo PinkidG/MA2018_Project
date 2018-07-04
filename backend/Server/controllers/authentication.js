@@ -71,6 +71,11 @@ exports.register = function(req, res, next) {
         return res.status(422).send({ error: 'You must enter a password.' });
     }
 
+    // Return error if role is not provided
+    if (!role) {
+        return res.status(422).send({ error: 'You must enter a role'});
+    }
+
     User.findOne({ email: email }, function(err, existingUser) {
         if (err) { return next(err); }
 

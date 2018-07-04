@@ -71,7 +71,8 @@ module.exports = function(app) {
     apiRoutes.post('/user/add/:userId', requireAuth, UserController.addUserToUser);
     apiRoutes.post('/user/:userId/addIllness/:illnessId', requireAuth, UserController.addIllness);
     apiRoutes.post('/user/:userId/appendVideo/:videoId', requireAuth, UserController.addVideo);
-
+    apiRoutes.delete('/user/delete', requireAuth, UserController.deleteUser);
+    apiRoutes.post('/user/update', requireAuth, UserController.updateUser);
 
     // Topic route
     apiRoutes.post('/topic', requireAuth, TopicController.register);

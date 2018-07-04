@@ -1,11 +1,22 @@
 "use strict";
 const fs = require('fs');
 const fse = require('fs-extra');
+const Video = require('../models/video');
+function setVideoInfo(request) {
+    return {
+        id: request.videoId,
+        title: request.title,
+        video: request.video,
+        user: request.user
+    };
+}
 
 //========================================
 // Add Video
 //========================================
 exports.register = function(req, res) {
+
+    const user = req.user;
 
     if (req.user.role === "Doctor" || req.user.role === "Admin") {
 
@@ -23,22 +34,63 @@ exports.register = function(req, res) {
 
         let buffer = file.buffer, //Note: buffer only populates if you set inMemory: true.
             fileName = file.originalname;
-        let stream = fs.createWriteStream(path + fileName);
-        stream.write(buffer);
-        stream.on('error', function() {
-            console.log('Could not write file to memory.');
-            res.status(400).send({
-                message: 'Problem saving the file. Please try again.'
+
+        // Return error if no title provided
+        if (!fileName) {
+            return res.status(422).send({ error: 'You must enter an title.' });
+        }
+
+        Video.findOne({ title: fileName }).populate({path: 'videos', select: '-_id -__v'}).exec(function(err, existingVideo) {
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+
+            // If video is not unique, return error
+            if (existingVideo) {
+                return res.status(422).send({error: 'That video is already created.'});
+            }
+
+
+            let stream = fs.createWriteStream(path + fileName);
+            stream.write(buffer);
+            stream.on('error', function() {
+                console.log('Could not write file to memory.');
+                res.status(400).send({
+                    message: 'Problem saving the file. Please try again.'
+                });
+            });
+            stream.on('finish', function() {
+                console.log('File saved successfully.');
+                let data = {
+                    message: 'File saved successfully.'
+                };
+                res.jsonp(data);
+            });
+            stream.end();
+
+            // If video is unique, create video
+            let video = new Video({
+                title: fileName,
+                user: user,
+                video: buffer
+            });
+
+            video.save(function (err) {
+                if (err) {
+                    return next(err);
+                }
+                user.videos.push(video);
+                user.save(function (err) {
+                    if (err) {
+                        return next(err);
+                    }
+                });
             });
         });
-        stream.on('finish', function() {
-            console.log('File saved successfully.');
-            let data = {
-                message: 'File saved successfully.'
-            };
-            res.jsonp(data);
-        });
-        stream.end();
+
         console.log('Stream ended.');
     } else {
         return res.status(422).send({ error: 'Unauthorized' });
@@ -79,5 +131,55 @@ exports.getByTitle = function(req, res) {
             }
         } else {
             return res.status(422).send({ error: 'Video not found.' });
-        }});
+        }
+    });
+};
+
+exports.getById = function(req, res, next) {
+
+    const id = req.params.id;
+
+    Video.findOne({ videoId: id }).populate({
+        path: 'videos',
+        select: '-_id -__v -users -video'
+    }).exec(function(err, video) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        if (video == null) {
+            return res.status(422).send({ error: 'Video not found.' });
+        }
+        // If topic is not unique, return error
+        res.status(200).json({
+            video: setVideoInfo(video)
+        });
+    });
+};
+
+exports.getAll = function(req, res, next) {
+
+    Video.find(function(err, result) {
+
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        let array = [];
+
+        result.forEach(function(element) {
+            array.push(setVideoInfo(element))
+        });
+
+        res.status(200).json({
+            video: array
+        });
+
+    })
 };

@@ -1,6 +1,6 @@
 "use strict"
 const User = require('../models/user');
-
+const Video = require('../models/video');
 function setUserInfo(request) {
 
     var userInfo = {
@@ -151,6 +151,55 @@ exports.addIllness = function(req, res) {
     });
 };
 
+exports.addVideo = function(req, res) {
+
+    const videoId = req.params.videoId;
+    const userId = req.params.userId;
+
+    Video.findOne({ videoId: videoId }, function(err, video) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        if (video == null) {
+            return res.status(422).send({ error: 'Video not found.' });
+        }
+
+        User.findOne({ userId: userId }, function(err, user) {
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+
+            if (user == null) {
+                return res.status(422).send({ error: 'User not found.' });
+            }
+
+            user.videos.push(video);
+
+            user.save(function(err, user) {
+                if (err) {
+                    return res.status(503).send({
+                        error: 'Save error!',
+                        description: err.message
+                    });
+                }
+
+                let userInfo = setUserInfo(user);
+
+                res.status(201).json({
+                    user: userInfo
+                });
+            });
+        });
+    });
+};
+
 exports.getAll = function(req, res) {
 
     if (req.user.role === "Doctor"  || req.user.role === "Admin") {
@@ -159,6 +208,7 @@ exports.getAll = function(req, res) {
             .populate({path: 'illnesses', select: '-_id -users -__v'})
             .populate({path: 'treatments', select: '-_id'})
             .populate({path: 'entries', select: '-_id'})
+            .populate({path: 'videos', select: '-_id -users -video -__v'})
             .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
             .populate({path: 'users', select: '-_id -users -__v -password -entries'})
             .lean()
@@ -198,6 +248,7 @@ exports.getUser = function(req, res) {
             .populate({path: 'treatments', select: '-_id -__v -illnesses'})
             .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
             .populate({path: 'entries', select: '-_id'})
+            .populate({path: 'videos', select: '-_id -users -video -__v'})
             .populate({path: 'users', select: '-_id -users -__v -password -createdAt -updatedAt'})
             .lean()
             .exec(function(err, user) {
@@ -219,11 +270,13 @@ exports.getUser = function(req, res) {
     } else if (req.user.userId == id) {
 
         User.findOne({ userId: id })
-        .populate({path: 'user', select: '-_id -users -__v'})
-        .populate({path: 'illnesses', select: '-_id -users -__v'})
-        .populate({path: 'treatments', select: '-_id -__v -illnesses'})
-        .populate({path: 'entries', select: '-_id'})
-        .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
+            .populate({path: 'user', select: '-_id -users -__v'})
+            .populate({path: 'illnesses', select: '-_id -users -__v'})
+            .populate({path: 'treatments', select: '-_id -__v -illnesses'})
+            .populate({path: 'entries', select: '-_id'})
+            .populate({path: 'videos', select: '-_id -users -video -__v'})
+            .populate({path: 'diaryEntries', select: '-_id -__v -userId'})
+            .lean()
         .exec(function(err, user) {
 
             if (err) {
@@ -294,53 +347,4 @@ exports.getUserByName = function(req, res) {
     } else {
         return res.status(422).send({ error: 'Unauthorized' });
     }
-};
-
-exports.addVideo = function(req, res) {
-
-    const videoId = req.params.videoId;
-    const userId = req.params.userId;
-
-    Video.findOne({ videoId: videoId }, function(err, video) {
-        if (err) {
-            return res.status(403).send({
-                error: 'Request error!.',
-                description: err.message
-            });
-        }
-
-        if (video == null) {
-            return res.status(422).send({ error: 'Video not found.' });
-        }
-
-        User.findOne({ userId: userId }, function(err, user) {
-            if (err) {
-                return res.status(403).send({
-                    error: 'Request error!.',
-                    description: err.message
-                });
-            }
-
-            if (user == null) {
-                return res.status(422).send({ error: 'User not found.' });
-            }
-
-            user.videos.push(video);
-
-            user.save(function(err, user) {
-                if (err) {
-                    return res.status(503).send({
-                        error: 'Save error!',
-                        description: err.message
-                    });
-                }
-
-                let userInfo = setUserInfo(user);
-
-                res.status(201).json({
-                    user: userInfo
-                });
-            });
-        });
-    });
 };

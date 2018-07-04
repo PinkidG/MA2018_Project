@@ -610,10 +610,39 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
     })
 
   .controller('accountCtrl', 
-    function ($scope, sharedProperties) {
+    function ($scope, sharedProperties, UserService, checkPlatform, $mdDialog) {
 
       $scope.user = sharedProperties.getProperty();
-    })
+
+      $scope.save = function() {
+        
+        UserService.updateUser($scope.user).then(function(user) {
+         sharedProperties.setProperty(user);
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm("Update erfolgreich!", function(buttonIndex) {
+          }, "Erfolg", [ "Okay"]);
+          } else {
+           var confirm = $mdDialog.alert()
+              .title('Erfolg')
+              .textContent('Update erfolgreich!')
+              .ariaLabel('Lucky day')
+              .ok("Okay");
+            $mdDialog.show(confirm);
+          }
+          }, function(errMsg) {
+            if ( !checkPlatform.isBrowser ) {
+              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
+            } else {
+              let confirm = $mdDialog.alert()
+              .title('Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+              $mdDialog.show(confirm);
+            }
+        });
+      };
+  })
 
   .controller('AppCtrl',
 

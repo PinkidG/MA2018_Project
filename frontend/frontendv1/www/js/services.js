@@ -257,6 +257,21 @@ angular.module('app.services', [])
       });
     };
 
+    var updateUser = function(user) {
+      return $q(function(resolve, reject) {
+        $http.post(endpoint().url + '/user/update', user).then(function(result) {
+          if (result.data.User) {
+            resolve(result.data.User);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+          return
+        });
+      });
+    };
+
     let searchUser = function(lastName) {
       return $q(function(resolve, reject) {
         $http.get(endpoint().url + '/usern/' + lastName).then(function(result) {
@@ -301,6 +316,7 @@ angular.module('app.services', [])
 
     return {
       refreshUser: refreshUser,
+      updateUser: updateUser,
       searchUser: searchUser,
       getUserById: getUserById,
       addUserToUser: addUserToUser

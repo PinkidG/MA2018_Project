@@ -160,7 +160,7 @@ exports.getById = function(req, res, next) {
     });
 };
 
-exports.getAll = function(req, res, next) {
+exports.getAll = function(req, res) {
 
     Video.find(function(err, result) {
 

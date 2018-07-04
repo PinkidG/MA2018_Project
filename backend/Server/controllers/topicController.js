@@ -1,6 +1,7 @@
 "use strict";
 const Topic = require('../models/topic'),
     Entry = require('../models/entry'),
+    Video = require('../models/video'),
     EntryController = require('./entryController');
 
 function setTopicInfo(request) {
@@ -11,7 +12,14 @@ function setTopicInfo(request) {
         entries: request.entries
     };
 }
-
+function setVideoInfo(request) {
+    return {
+        id: request.videoId,
+        title: request.title,
+        video: request.video,
+        user: request.user
+    };
+}
 //========================================
 // Add Topic
 //========================================
@@ -61,7 +69,7 @@ exports.register = function(req, res, next) {
 };
 
 
-exports.getAll = function(req, res, next) {
+exports.getAll = function(req, res) {
 
     const id = req.user.userId;
 
@@ -116,7 +124,7 @@ exports.getAll = function(req, res, next) {
     }
 };
 
-exports.getById = function(req, res, next) {
+exports.getById = function(req, res) {
 
     const id = req.params.id;
 
@@ -142,9 +150,7 @@ exports.getById = function(req, res, next) {
 };
 
 exports.deleteTopic = function(req, res) {
-
     const id = req.params.id;
-
     Topic.findOne({ topicId: id }).populate({
         path: 'entries',
         select: '-_id -__v'
@@ -155,15 +161,11 @@ exports.deleteTopic = function(req, res) {
                 description: err.message
             });
         }
-
         if (topic == null) {
             return res.status(422).send({ error: 'Topic not found.' });
         }
-
         let myquery = {topicId: id};
-
         if (req.user.role === "Doctor" || req.user.role === "Admin") {
-
             Topic.deleteOne(myquery, function (err) {
                 if (err) {
                     return res.status(403).send({
@@ -171,7 +173,6 @@ exports.deleteTopic = function(req, res) {
                         description: err.message
                     });
                 }
-
                 Entry.remove(myquery, function (err, entry) {
                     if (err) {
                         return res.status(403).send({
@@ -189,7 +190,7 @@ exports.deleteTopic = function(req, res) {
                 };
                 res.jsonp(data);
             });
-        } else if (req.user.userId == topic.userId){
+        } else if (req.user.userId === topic.userId){
             Topic.deleteOne(myquery, function (err) {
                 if (err) {
                     return res.status(403).send({
@@ -197,7 +198,6 @@ exports.deleteTopic = function(req, res) {
                         description: err.message
                     });
                 }
-
                 Entry.remove(myquery, function (err, entry) {
                     if (err) {
                         return res.status(403).send({
@@ -209,7 +209,6 @@ exports.deleteTopic = function(req, res) {
                         return res.status(422).send({error: 'Topic not found.'});
                     }
                 });
-
                 let data = {
                     message: 'Topic deleted successfully'
                 };
@@ -218,8 +217,42 @@ exports.deleteTopic = function(req, res) {
         } else {
             return res.status(422).send({ error: 'Unauthorized' });
         }
-
     });
+};
 
 
+exports.search = function(req, res) {
+    const searchTerm = req.body.searchTerm;
+        Topic.find({ title : {$regex: new RegExp('.*' + searchTerm + '.*')}}).populate({path: 'topics', select: '-_id -__v'}).exec(function(err, existingTopic) {
+            if (err) {
+                return res.status(403).send({
+                    error: 'Request error!.',
+                    description: err.message
+                });
+            }
+            // If no topic exist
+            if (!existingTopic) {
+                return res.status(422).send({error: 'There is no topic'});
+            }
+            let topicArray = [];
+            existingTopic.forEach(function (element) {
+                topicArray.push(setTopicInfo(element))
+            });
+            Video.find({ title : {$regex: new RegExp('.*' + searchTerm + '.*')}}).populate({path: 'videos', select: '-video -_id -__v'}).exec(function(err, existingVideo) {
+                if (err) {
+                    return res.status(403).send({
+                        error: 'Request error!.',
+                        description: err.message
+                    });
+                }
+                let videoArray = [];
+                existingVideo.forEach(function(element) {
+                    videoArray.push(setVideoInfo(element))
+                });
+                res.status(200).json({
+                    topics: topicArray,
+                    videos: videoArray
+                });
+        });
+    });
 };

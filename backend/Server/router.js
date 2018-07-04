@@ -80,6 +80,9 @@ module.exports = function(app) {
     apiRoutes.get('/topic/:id', requireAuth, TopicController.getById);
     apiRoutes.delete('/topic/delete/:id', requireAuth, TopicController.deleteTopic);
 
+    // Search route
+    apiRoutes.post('/search', requireAuth, TopicController.search);
+
     // Entry route
     apiRoutes.post('/entry/topic', requireAuth, EntryController.register);
     apiRoutes.get('/entries', requireAuth, EntryController.getAll);

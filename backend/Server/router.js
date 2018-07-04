@@ -67,7 +67,7 @@ module.exports = function(app) {
     // User route
     apiRoutes.get('/users', requireAuth, UserController.getAll);
     apiRoutes.get('/user/:id', requireAuth, UserController.getUser);
-    apiRoutes.get('/user/:name', requireAuth, UserController.getUserByName);
+    apiRoutes.get('/usern/:name', requireAuth, UserController.getUserByName);
     apiRoutes.post('/user/add/:userId', requireAuth, UserController.addUserToUser);
     apiRoutes.post('/user/:userId/addIllness/:illnessId', requireAuth, UserController.addIllness);
 

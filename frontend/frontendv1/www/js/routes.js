@@ -184,5 +184,11 @@ angular.module('app.routes', [])
     }
   })
 
+    .state('einstellungen', {
+      url: '/settings',
+      templateUrl: 'templates/einstellungen.html',
+      controller: 'einstellungenCtrl'
+    })
+
   $urlRouterProvider.otherwise('/login')
 });

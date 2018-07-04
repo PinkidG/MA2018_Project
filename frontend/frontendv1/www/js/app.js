@@ -5,11 +5,12 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services', 'app.constants', 'monospaced.elastic'])
+angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'app.directives','app.services', 'app.constants', 'monospaced.elastic'])
 
 
-.config(function($ionicConfigProvider, $sceDelegateProvider){
+.config(function($ionicConfigProvider, $sceDelegateProvider, $mdGestureProvider){
 
+  $mdGestureProvider.skipClickHijack();
   $ionicConfigProvider.views.maxCache(0);
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
 
@@ -33,6 +34,9 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       if (window.StatusBar) {
         StatusBar.styleDefault();
       }
+
+      pictureSource = navigator.camera.PictureSourceType;
+      destinationType = navigator.camera.DestinationType;
 
       // Branch
       $ionicPlatform.on("deviceready", function() {
@@ -133,5 +137,20 @@ function handleOpenURL(url) {
 
   let shared = angular.element(document.body).injector().get('sharedParameter');
   shared.setProperty(c);
+
+
+  let state = angular.element(document.body).injector().get('$state');
+
+  let checkPlatform = angular.element(document.body).injector().get('checkPlatform');
+  let title = document.title;
+
+  if(title != "Home" && title != "login"){
+
+
+    state.go('men.home')
+
+  }
+
+
 }
 

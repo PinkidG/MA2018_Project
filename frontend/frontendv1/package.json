@@ -22,6 +22,7 @@
     "branch-cordova-sdk": "^3.0.0",
     "cordova-browser": "^5.0.3",
     "cordova-ios": "4.5.4",
+    "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-dialogs": "^2.0.1",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
@@ -43,7 +44,8 @@
       },
       "cordova-plugin-urlhandler": {
         "URL_SCHEME": "branchnewmed"
-      }
+      },
+      "cordova-plugin-camera": {}
     },
     "platforms": [
       "browser",

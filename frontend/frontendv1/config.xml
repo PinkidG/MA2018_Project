@@ -97,4 +97,5 @@
     <plugin name="cordova-plugin-urlhandler" spec="^0.7.2">
         <variable name="URL_SCHEME" value="branchnewmed" />
     </plugin>
+    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
 </widget>

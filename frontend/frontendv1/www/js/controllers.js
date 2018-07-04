@@ -510,7 +510,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
 
   .controller('home2Ctrl',
 
-    function ($scope, sharedProperties, TopicService, $mdDialog,checkPlatform) {
+    function ($scope, sharedProperties, VideoService, TopicService, $mdDialog,checkPlatform) {
       $scope.user = sharedProperties.getProperty();
 
       TopicService.topics().then(function(topics) {
@@ -528,6 +528,32 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
           $mdDialog.show(confirm);
         }
       });
+
+
+      $scope.upload = function() {
+
+
+        if (!checkPlatform.isBrowser) {
+          navigator.camera.getPicture(onSuccess, onFail, {
+            quality: 50,
+            destinationType: Camera.DestinationType.FILE_URI,
+            sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+            mediaType: Camera.MediaType.VIDEO
+          });
+
+          function onSuccess(imageURI) {
+            var reader = new FileReader();
+            let data = reader.readAsDataURL(imageURI);
+            VideoService.uploadVideo(data);
+          }
+
+          function onFail(message) {
+            alert('Failed because: ' + message);
+          }
+
+        }
+      }
+
     })
 
   .controller('patientenCtrl', ['$scope', '$stateParams',

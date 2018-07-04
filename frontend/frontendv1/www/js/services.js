@@ -140,6 +140,36 @@ angular.module('app.services', [])
     };
   })
 
+  .service('VideoService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+
+    var endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+      return end;
+    };
+
+    var uploadVideo = function(videoData) {
+      return $q(function(resolve, reject) {
+        $http.post(endpoint().url + '/video', videoData).then(function(result) {
+          if (result.data.message) {
+            resolve(result.data.message);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+          return
+        });
+      });
+    };
+    return {
+      uploadVideo: uploadVideo
+    };
+  })
+
   .service('checkPlatform', function () {
     return{
       isBrowser: ionic.Platform.is('browser')
@@ -230,7 +260,7 @@ angular.module('app.services', [])
       addTopicEntry: addTopicEntry
     };
   })
-    
+
   .service('UserService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
     var endpoint = function getEndpoint() {

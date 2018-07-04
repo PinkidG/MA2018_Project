@@ -59,7 +59,6 @@ angular.module('app.services', [])
       if (isBrowser){
         end = API_ENDPOINT_OTHER
       }
-
       return end;
     };
 
@@ -74,10 +73,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -94,10 +90,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -119,14 +112,12 @@ angular.module('app.services', [])
 
   .service('DiaryService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
-
     var endpoint = function getEndpoint() {
       var isBrowser = ionic.Platform.is('browser');
       var end = API_ENDPOINT_APP
       if (isBrowser){
         end = API_ENDPOINT_OTHER
       }
-
       return end;
     };
 
@@ -139,15 +130,11 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
     };
-
     return {
       diary: diary
     };
@@ -169,7 +156,6 @@ angular.module('app.services', [])
       if (isBrowser){
         end = API_ENDPOINT_OTHER
       }
-
       return end;
     };
 
@@ -182,10 +168,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -200,10 +183,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -250,9 +230,8 @@ angular.module('app.services', [])
       addTopicEntry: addTopicEntry
     };
   })
-
+    
   .service('UserService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
-
 
     var endpoint = function getEndpoint() {
       var isBrowser = ionic.Platform.is('browser');
@@ -260,7 +239,6 @@ angular.module('app.services', [])
       if (isBrowser){
         end = API_ENDPOINT_OTHER
       }
-
       return end;
     };
 
@@ -273,10 +251,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -291,9 +266,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-
         });
       });
     };
@@ -307,7 +280,6 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
         });
       });
@@ -341,18 +313,17 @@ angular.module('app.services', [])
     }
   })
 
-.service('sharedProperties', function () {
-  var property = "";
-
-  return {
+  .service('sharedProperties', function () {
+    var property = "";
+    return {
       getProperty: function () {
-           return property;
+        return property;
       },
-       setProperty: function(value) {
-           property = value;
-       }
-  };
-})
+      setProperty: function(value) {
+        property = value;
+      }
+   };
+  })
 
 .config(function ($httpProvider) {
   $httpProvider.interceptors.push('AuthInterceptor');

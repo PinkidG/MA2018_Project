@@ -1,7 +1,7 @@
 angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospaced.elastic'])
 
 .controller('homeCtrl',
-function ($scope, sharedProperties, TopicService,  $stateParams) {
+function ($scope, sharedProperties, TopicService) {
 
   $scope.illnames = [];
   var date = new Date($scope.user.dateOfBirth);
@@ -22,17 +22,14 @@ function ($scope, sharedProperties, TopicService,  $stateParams) {
   $scope.diaryEntries = $scope.user.diaryEntries.slice();
   $scope.diaryEntries.reverse();
 
-
   //Forumseinträge des Patienten
   TopicService.topics().then(function(topics) {
 
     $scope.entries = topics
   }, function(errMsg) {
-
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-
       let confirm = $mdDialog.confirm()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
@@ -41,31 +38,14 @@ function ($scope, sharedProperties, TopicService,  $stateParams) {
       $mdDialog.show(confirm);
     }
   });
-
-
-
-
-
 })
 
-.controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+.controller('menPatientCtrl', ['$scope', '$stateParams', 
 function ($scope, $stateParams) {
-
-
-}])
-
-.controller('menPatientCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
-
-
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $state, $cordovaDialogs, $mdDialog) {
+function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $state, $mdDialog) {
   AuthService.logout();
   $scope.user = {
     email: '',
@@ -84,16 +64,13 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
             'Fingerbdruck scannen!', // this will be shown in the native scanner popup
             'Manuell', // this will become the 'Enter password' button label
             function (msg) {
-
               $scope.user.email = email
               $scope.user.password = password;
-
             }, // success handler: fingerprint accepted
             function (msg) {
               //alert('not ok: ' + JSON.stringify(msg))
             }); // error handler with errorcode and localised reason
         }
-
       }, // type returned to success callback: 'face' on iPhone X, 'touch' on other devices
       function (msg) {
         alert('not available, message: ' + JSON.stringify(msg))
@@ -104,10 +81,8 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
   $scope.login = function (ev) {
     AuthService.login($scope.user).then(function (user) {
 
-
       window.localStorage.setItem("email", $scope.user.email);
       window.localStorage.setItem("password", $scope.user.password);
-
 
       UserService.refreshUser(user.userId).then(function (ruser) {
         sharedProperties.setProperty(ruser);
@@ -117,19 +92,16 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
           $state.go('men.home');
         }
       }, function (errMsg) {
-
         if (!checkPlatform.isBrowser) {
           navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
           }, "Server-Fehler", ["Erneut versuchen"]);
         } else {
-
           let confirm = $mdDialog.confirm()
             .title('Server-Fehler')
             .textContent(errMsg.statusText)
             .ariaLabel('Lucky day')
             .targetEvent(ev)
             .ok("Erneut versuchen");
-
           $mdDialog.show(confirm);
         }
       });
@@ -138,14 +110,12 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
         navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
         }, "Benutzer-Fehler (1M)", ["Erneut versuchen"]);
       } else {
-
         let confirm = $mdDialog.alert()
           .title('Benutzer-Fehler (1B)')
           .textContent(errMsg.statusText)
           .ariaLabel('Lucky day')
           .targetEvent(ev)
           .ok("Erneut versuchen");
-
         $mdDialog.show(confirm).then(function () {
           console.log("Dialog shown...")
         });
@@ -154,9 +124,7 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
   };
 
     // When button is clicked, the popup will be shown...
-
   $scope.showPopup = function(ev) {
-
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm("Sind Sie ein Arzt oder ein Patient?", function(buttonIndex) {
         switch(buttonIndex) {
@@ -169,7 +137,6 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
         }
       }, "Registrieren", [ "Arzt", "Patient"]);
     } else {
-
       var confirm = $mdDialog.confirm()
         .title('Registrieren')
         .textContent('Sind Sie ein Arzt oder ein Patient?')
@@ -177,18 +144,13 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
         .targetEvent(ev)
         .ok("Patient")
         .cancel("Arzt");
-
       $mdDialog.show(confirm).then(function() {
         $state.go('registrierenPatient');
       }, function() {
         $state.go('registrierenArzt');
       });
-
-      // Web page
     }
-
   }
-
 })
 
 .controller('registrierenPatientCtrl',
@@ -213,13 +175,11 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
           $state.go('men.home');
         }, "Erfolg", [ "Okay"]);
       } else {
-
         var confirm = $mdDialog.alert()
           .title('Erfolg')
           .textContent('Registrierung erfolgreich! (Patient)')
           .ariaLabel('Lucky day')
           .ok("Okay");
-
         $mdDialog.show(confirm).then(function() {
           $state.go('men.home');
         });
@@ -228,22 +188,19 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
       if ( !checkPlatform.isBrowser ) {
         navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Patient)", ["Erneut versuchen"]);
       } else {
-
         let confirm = $mdDialog.alert()
           .title('Fehler (Patient)')
           .textContent(errMsg.statusText)
           .ariaLabel('Lucky day')
           .ok("Erneut versuchen");
-
         $mdDialog.show(confirm);
       }
     });
   };
-
 })
 
 .controller('registrierenArztCtrl',
-function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDialogs, $mdDialog) {
+function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog) {
 
   $scope.user = {
     gender: '',
@@ -263,13 +220,11 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
           $state.go('men.home2');
         }, "Erfolg", [ "Okay"]);
       } else {
-
         var confirm = $mdDialog.alert()
           .title('Erfolg')
           .textContent('Registrierung erfolgreich! (Arzt)')
           .ariaLabel('Lucky day')
           .ok("Okay");
-
         $mdDialog.show(confirm).then(function() {
           $state.go('men.home2');
         });
@@ -278,60 +233,42 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
       if ( !checkPlatform.isBrowser ) {
         navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Arzt)", ["Erneut versuchen"]);
       } else {
-
         let confirm = $mdDialog.alert()
           .title('Fehler (Arzt)')
           .textContent(errMsg.statusText)
           .ariaLabel('Lucky day')
           .ok("Erneut versuchen");
-
         $mdDialog.show(confirm);
       }
     });
   };
-
 })
 
-.controller('arztCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+.controller('arztCtrl', ['$scope', '$stateParams', 
 function ($scope, $stateParams) {
-
-
 }])
 
-.controller('videosCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+.controller('videosCtrl', ['$scope', '$stateParams', 
 function ($scope, $stateParams) {
-
-
 }])
 
-.controller('videoCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+.controller('videoCtrl', ['$scope', '$stateParams', 
 function ($scope, $stateParams) {
-
-
 }])
 
 .controller('frageCtrl',
-function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
+function ($scope, $stateParams,checkPlatform, TopicService, $mdDialog) {
 
   let topicId = $stateParams.topicId;
   $scope.myTopicId = topicId;
 
   TopicService.topic(topicId).then(function(topicEntry) {
-
     $scope.topicEntries = topicEntry.entries
     $scope.topicTitle = topicEntry.title
   }, function(errMsg) {
-
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-
       let confirm = $mdDialog.confirm()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
@@ -340,21 +277,18 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
       $mdDialog.show(confirm);
     }
   });
-
 })
 
 .controller('fragenCtrl',
-function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
-  TopicService.topics().then(function(topics) {
+function ($scope, checkPlatform, TopicService, $mdDialog) {
 
+  TopicService.topics().then(function(topics) {
     $scope.entries = topics;
 
   }, function(errMsg) {
-
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-
       let confirm = $mdDialog.confirm()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
@@ -363,10 +297,7 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
       $mdDialog.show(confirm);
     }
   });
-
-
 })
-
 
   .controller('frageNeuCtrl',
     function ($scope, $stateParams,$state,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
@@ -381,11 +312,9 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
           $state.go('men.fragen');
 
         }, function(errMsg) {
-
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
           } else {
-
             let confirm = $mdDialog.confirm()
               .title('Topic-Fehler')
               .textContent(errMsg.statusText)
@@ -394,13 +323,11 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
             $mdDialog.show(confirm);
           }
         });
-
       }
-
     })
 
   .controller('frageEintragNeuCtrl',
-    function ($scope, $stateParams,$state,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog, $ionicHistory) {
+    function ($scope, $stateParams, checkPlatform, TopicService, $mdDialog, $ionicHistory) {
       $scope.entry = {
         topicId: $stateParams.topicId,
         message: ''
@@ -410,13 +337,10 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
 
         TopicService.addTopicEntry($scope.entry.topicId, $scope.entry.message).then(function(topics) {
           $ionicHistory.goBack()
-
         }, function(errMsg) {
-
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "AddTopicEntry-Fehler", ["Erneut versuchen"]);
           } else {
-
             let confirm = $mdDialog.confirm()
               .title('AddTopicEntry-Fehler')
               .textContent(errMsg.statusText)
@@ -425,13 +349,11 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
             $mdDialog.show(confirm);
           }
         });
-
       }
-
     })
 
   .controller('sucheCtrl',
-    function ($scope, $stateParams) {
+    function ($scope) {
 
       $scope.search = {
         text: ""
@@ -439,17 +361,11 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
 
       $scope.search = function() {
         console.log($scope.search.text)
-
       };
-
     })
 
-  .controller('suchergebnisCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+  .controller('suchergebnisCtrl', ['$scope', '$stateParams', 
     function ($scope, $stateParams) {
-
-
     }])
 
   .controller('patientCtrl',
@@ -460,9 +376,7 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
       UserService.getUserById($scope.userId).then(function(user) {
         $scope.user = user;
         $scope.entries = user.entries;
-
         $scope.topics = [];
-
         $scope.illnames = [];
         let date = new Date($scope.user.dateOfBirth);
         $scope.datefor = date.toLocaleDateString("de");
@@ -480,7 +394,6 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
         $scope.diaryEntries = $scope.user.diaryEntries.slice();
         $scope.diaryEntries.reverse();
 
-
         //Forumseinträge des Patienten
         for(i=0;i<$scope.entries.length;i++) {
           TopicService.topic($scope.entries[i].topicId).then(function(topic) {
@@ -492,18 +405,11 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
           });
         }
 
-
-
-
-
-
-
       }, function(errMsg) {
 
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "User-Fehler", ["Erneut versuchen"]);
         } else {
-
           let confirm = $mdDialog.confirm()
             .title('User-Fehler')
             .textContent(errMsg.statusText)
@@ -512,24 +418,29 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
           $mdDialog.show(confirm);
         }
       });
-
     })
 
   .controller('tagebuchCtrl',
-    function ($scope, $stateParams, UserService) {
+    function ($scope, $stateParams, UserService, sharedProperties) {
+
+        $scope.user = sharedProperties.getProperty();
+        if ($scope.user.role == 'Doctor') {
+          $scope.show = false;
+         } else {
+           $scope.show = true;
+         }
 
       let userId = $stateParams.userId;
 
       UserService.getUserById(userId).then(function(user) {
-      $scope.user = user;
-      $scope.diaryEntries = $scope.user.diaryEntries.slice();
-      $scope.diaryEntries.reverse();
-    });
-
+        $scope.user = user;
+        $scope.diaryEntries = $scope.user.diaryEntries.slice();
+        $scope.diaryEntries.reverse();
+      });
     })
 
   .controller('neuTagebuchCtrl',
-    function ($scope, $stateParams, sharedProperties, DiaryService, UserService, checkPlatform , $ionicHistory, $mdDialog) {
+    function ($scope, sharedProperties, DiaryService, UserService, checkPlatform , $ionicHistory, $mdDialog) {
 
     $scope.diaryEntry = {
         title: '',
@@ -548,14 +459,12 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
             if ( !checkPlatform.isBrowser ) {
               navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Server-Fehler", ["Erneut versuchen"]);
             } else {
-
               let confirm = $mdDialog.confirm()
                 .title('Server-Fehler')
                 .textContent(errMsg.statusText)
                 .ariaLabel('Lucky day')
                 .targetEvent(ev)
                 .ok("Erneut versuchen");
-
               $mdDialog.show(confirm);
             }
         });
@@ -576,41 +485,35 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
       };
     })
 
-
     .controller('menCtrl',
-      function ($scope, AuthService, sharedProperties, $stateParams, $state) {
+      function ($scope, sharedProperties, $state) {
 
         $scope.init = function () {
-          $scope.user = sharedProperties.getProperty();
-          if ($scope.user.role == 'Doctor') {
-            $scope.showPatient = true;
+         $scope.user = sharedProperties.getProperty();
+         if ($scope.user.role == 'Doctor') {
+           $scope.showPatient = true;
           } else {
             $scope.showPatient = false;
           }
-      }
-
+       }
         $scope.logout = function() {
           $state.go('login');
         }
-
         $scope.init();
-
       })
 
   .controller('home2Ctrl',
 
-    function ($scope, sharedProperties, TopicService,  $mdDialog,checkPlatform, $stateParams) {
+    function ($scope, sharedProperties, TopicService, $mdDialog,checkPlatform) {
       $scope.user = sharedProperties.getProperty();
 
       TopicService.topics().then(function(topics) {
 
         $scope.entries = topics
       }, function(errMsg) {
-
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
         } else {
-
           let confirm = $mdDialog.confirm()
             .title('Topic-Fehler')
             .textContent(errMsg.statusText)
@@ -619,24 +522,20 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
           $mdDialog.show(confirm);
         }
       });
-
-
     })
 
-  .controller('patientenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+  .controller('patientenCtrl', ['$scope', '$stateParams', 
     function ($scope, $stateParams) {
-
-
     }])
 
   .controller('neuenPatientenZuweisenCtrl',
-    function ($scope, $state, $stateParams ,UserService, checkPlatform,  sharedProperties, $mdDialog, $ionicLoading) {
+    function ($scope, $state ,UserService, checkPlatform, $mdDialog, $ionicLoading) {
+
     $scope.resultUser = [];
     $scope.search = {
       string: ""
     };
+
       $scope.searchUser = function() {
         UserService.searchUser($scope.search.string).then(function(ruser) {
           $scope.resultUser.push(ruser)
@@ -645,19 +544,17 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Such-Fehler", ["Erneut versuchen"]);
           } else {
-
             let confirm = $mdDialog.confirm()
               .title('Such-Fehler')
               .textContent(errMsg.statusText)
               .ariaLabel('Lucky day')
               .targetEvent(ev)
               .ok("Erneut versuchen");
-
             $mdDialog.show(confirm);
           }
         });
-
       }
+
       $scope.addUser = function(user){
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm("Möchten Sie " + user.firstName +  user.lastName + " zu Ihren Patienten hinzufügen?" , function(buttonIndex) {
@@ -678,7 +575,6 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
             }
           }, "Hinzufügen", [ "Ja", "Nein"]);
         } else {
-
           var confirm = $mdDialog.confirm()
             .title('Hinzufügen')
             .textContent("Möchten Sie " + user.firstName +  user.lastName + " zu Ihren Patienten hinzufügen?")
@@ -699,29 +595,13 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
                   .ariaLabel('Lucky day')
                   .ok("Erneut versuchen");
                 $mdDialog.show(confirm);
-
             });
           }, function() {
             console.log("Cancel")
           });
-
-          // Web page
         }
-
       }
-
-
-
     })
-
-
-
-
-
-
-
-
-
 
   .controller('AppCtrl',
 
@@ -741,5 +621,4 @@ function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS, $location) {
         template: 'Sorry, You have to login again.'
       });
     });
-
   })

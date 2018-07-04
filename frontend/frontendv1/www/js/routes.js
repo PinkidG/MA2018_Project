@@ -2,14 +2,9 @@ angular.module('app.routes', [])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
   $stateProvider
 
-
-      .state('men.home', {
+  .state('men.home', {
     url: '/home-patient',
     views: {
       'side-menu21': {
@@ -113,15 +108,15 @@ angular.module('app.routes', [])
     }
   })
 
-    .state('men.frageNeu', {
-      url: '/questionAdd',
-      views: {
-        'side-menu21': {
-          templateUrl: 'templates/neueFrage.html',
-          controller: 'frageNeuCtrl'
-        }
-      }
-    })
+  .state('men.frageNeu', {
+    url: '/questionAdd',
+    views: {
+      'side-menu21': {
+         templateUrl: 'templates/neueFrage.html',
+        controller: 'frageNeuCtrl'
+       }
+     }
+  })
 
     .state('men.frageEintragNeu', {
       url: '/questionEntryAdd/:topicId',
@@ -188,8 +183,6 @@ angular.module('app.routes', [])
       }
     }
   })
+
   $urlRouterProvider.otherwise('/login')
-
-
-
 });

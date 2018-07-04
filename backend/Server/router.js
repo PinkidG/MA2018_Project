@@ -70,6 +70,8 @@ module.exports = function(app) {
     apiRoutes.get('/user/:name', requireAuth, UserController.getUserByName);
     apiRoutes.post('/user/add/:userId', requireAuth, UserController.addUserToUser);
     apiRoutes.post('/user/:userId/addIllness/:illnessId', requireAuth, UserController.addIllness);
+    apiRoutes.post('/user/:userId/appendVideo/:videoId', requireAuth, UserController.addVideo);
+
 
     // Topic route
     apiRoutes.post('/topic', requireAuth, TopicController.register);
@@ -80,10 +82,13 @@ module.exports = function(app) {
     apiRoutes.post('/entry/topic', requireAuth, EntryController.register);
     apiRoutes.get('/entries', requireAuth, EntryController.getAll);
     apiRoutes.get('/entry/:id', requireAuth, EntryController.getById);
+   // apiRoutes.get('/entry/delete/:id', requireAuth, EntryController.deleteEntry());
 
     //Video route
     apiRoutes.post('/video', requireAuth, upload.single('video'), VideoController.register);
     apiRoutes.get('/video/:title', requireAuth, VideoController.getByTitle);
+    apiRoutes.get('/videoById/:id', requireAuth, VideoController.getById);
+    apiRoutes.get('/videos', requireAuth, VideoController.getAll);
 
     // DiaryEntry route
     apiRoutes.post('/diary', requireAuth, DiaryEntryController.register);

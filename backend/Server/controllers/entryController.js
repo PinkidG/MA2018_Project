@@ -125,6 +125,10 @@ exports.getById = function(req, res) {
     });
 };
 
+exports.deleteEntry = function(req, res) {
+
+};
+
 exports.registerWithTopic = function(req, res, newTopic, topic) {
     const message = req.body.message;
     const entId = req.body.entryId;

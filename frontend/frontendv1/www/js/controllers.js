@@ -73,6 +73,7 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
   };
 
   ionic.Platform.ready(function () {
+    if (!checkPlatform.isBrowser) {
     window.plugins.touchid.isAvailable(
       function (type) {
         let email = window.localStorage.getItem("email");
@@ -97,7 +98,7 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
       function (msg) {
         alert('not available, message: ' + JSON.stringify(msg))
       } // error handler: no TouchID available
-    );
+    );}
   });
 
   $scope.login = function (ev) {

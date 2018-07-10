@@ -16,6 +16,8 @@ function setVideoInfo(request) {
 //========================================
 exports.register = function(req, res) {
 
+console.log("Video Post requested")
+
     const user = req.user;
 
     if (req.user.role === "Doctor" || req.user.role === "Admin") {
@@ -27,9 +29,12 @@ exports.register = function(req, res) {
         }
 
         let file = req.file,
-            path = process.cwd() + '/data/';
+            path = process.cwd() + "\\Server\\data\\";
 
-        console.log(file);
+	console.log(path)
+	console.log(file.originalname)
+
+        //console.log(file);
         // Logic for handling missing file, wrong mimetype, no buffer, etc.
 
         let buffer = file.buffer, //Note: buffer only populates if you set inMemory: true.
@@ -56,6 +61,7 @@ exports.register = function(req, res) {
 
             let stream = fs.createWriteStream(path + fileName);
             stream.write(buffer);
+
             stream.on('error', function() {
                 console.log('Could not write file to memory.');
                 res.status(400).send({

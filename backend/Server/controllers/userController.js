@@ -346,26 +346,6 @@ exports.getUserByName = function(req, res) {
     }
 };
 
-exports.deleteUser = function(req, res) {
-
-    const id = req.user.userId;
-
-        let myquery = {userId: id};
-
-        User.deleteOne(myquery, function (err) {
-            if (err) {
-                return res.status(403).send({
-                    error: 'Request error!.',
-                    description: err.message
-                });
-            }
-
-            let data = {
-                message: 'User deleted successfully'
-            };
-            res.jsonp(data);
-        });
-};
 
 exports.deleteUser = function(req, res) {
 
@@ -384,7 +364,7 @@ exports.deleteUser = function(req, res) {
         let data = {
             message: 'User deleted successfully'
         };
-        res.jsonp(data);
+        res.json(data);
     });
 };
 

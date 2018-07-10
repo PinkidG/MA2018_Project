@@ -105,7 +105,7 @@ console.log("Video Post requested")
 
 exports.getByTitle = function(req, res) {
     const title = req.params.title;
-    const path = process.cwd() + '/data/'+ title + '.mp4';
+    const path = process.cwd() + '\\Server\\data\\'+ title + '.mp4';
 
     fse.exists(path, function(exists) {
         if (exists) {

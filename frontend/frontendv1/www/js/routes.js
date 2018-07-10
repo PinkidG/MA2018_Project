@@ -2,14 +2,9 @@ angular.module('app.routes', [])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
   $stateProvider
 
-
-      .state('men.home', {
+  .state('men.home', {
     url: '/home-patient',
     views: {
       'side-menu21': {
@@ -20,7 +15,7 @@ angular.module('app.routes', [])
   })
 
   .state('men.patient', {
-    url: '/patient-overview',
+    url: '/patient-overview/:userId',
     views: {
       'side-menu21': {
         templateUrl: 'templates/patient.html',
@@ -30,7 +25,7 @@ angular.module('app.routes', [])
   })
 
   .state('men.tagebuch', {
-    url: '/patientdiary',
+    url: '/patientdiary/:userId',
     views: {
       'side-menu21': {
         templateUrl: 'templates/tagebuch.html',
@@ -113,12 +108,22 @@ angular.module('app.routes', [])
     }
   })
 
-    .state('men.frageNeu', {
-      url: '/questionAdd',
+  .state('men.frageNeu', {
+    url: '/questionAdd',
+    views: {
+      'side-menu21': {
+         templateUrl: 'templates/neueFrage.html',
+        controller: 'frageNeuCtrl'
+       }
+     }
+  })
+
+    .state('men.frageEintragNeu', {
+      url: '/questionEntryAdd/:topicId',
       views: {
         'side-menu21': {
-          templateUrl: 'templates/neueFrage.html',
-          controller: 'frageNeuCtrl'
+          templateUrl: 'templates/neuerFragenEintrag.html',
+          controller: 'frageEintragNeuCtrl'
         }
       }
     })
@@ -178,8 +183,16 @@ angular.module('app.routes', [])
       }
     }
   })
+
+    .state('men.account', {
+      url: '/settings',
+      views: {
+        'side-menu21': {
+          templateUrl: 'templates/einstellungen.html',
+        controller: 'accountCtrl'
+        }
+      }
+    })
+
   $urlRouterProvider.otherwise('/login')
-
-
-
 });

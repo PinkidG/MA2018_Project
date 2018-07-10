@@ -1,11 +1,18 @@
 angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospaced.elastic'])
 
 .controller('homeCtrl',
-function ($scope, sharedProperties, TopicService,  $stateParams) {
+
+function ($scope,$state, sharedProperties, sharedParameter, TopicService, checkPlatform, UserService) {
+
   $scope.illnames = [];
-  var date = new Date($scope.user.dateOfBirth);
 
   $scope.user = sharedProperties.getProperty();
+  UserService.refreshUser($scope.user.userId).then(function (ruser) {
+    sharedProperties.setProperty(ruser);
+  })
+  $scope.user = sharedProperties.getProperty();
+
+  var date = new Date($scope.user.dateOfBirth);
   $scope.datefor = date.toLocaleDateString("de");
 
   for(i=0;i<$scope.user.illnesses.length;i++) {
@@ -17,23 +24,18 @@ function ($scope, sharedProperties, TopicService,  $stateParams) {
     $scope.illnesses = $scope.illnames.toString();
   }
 
-  $scope.isDoctor = $scope.user.role == "Doctor" || $scope.user.role == "Admin"
-
   //2 neusten Tagebucheinträge
   $scope.diaryEntries = $scope.user.diaryEntries.slice();
   $scope.diaryEntries.reverse();
-
 
   //Forumseinträge des Patienten
   TopicService.topics().then(function(topics) {
 
     $scope.entries = topics
   }, function(errMsg) {
-
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-
       let confirm = $mdDialog.confirm()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
@@ -43,85 +45,120 @@ function ($scope, sharedProperties, TopicService,  $stateParams) {
     }
   });
 
-
-
-
-
+  let parameter = sharedParameter.getProperty();
+  if(parameter != ""){
+    $state.go("men.frage",{"topicId": parameter});
+  }
 })
 
-.controller('tagebuchCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+.controller('menPatientCtrl', ['$scope', '$stateParams',
 function ($scope, $stateParams) {
-
-
-}])
-
-.controller('menPatientCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
-
-
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $state, $cordovaDialogs, $mdDialog) {
+function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , sharedProperties , $state, $mdDialog, $location) {
+  AuthService.logout();
+  $scope.user = {
+    email: '',
+    password: ''
+  };
 
-    AuthService.logout();
-    $scope.user = {
-        email: '',
-        password: ''
-      };
+  $ionicPlatform.ready(function () {
+  $ionicPlatform.on("resume", function() {
+    var path = $location.path();
+    let sub = 'login';
+    if(path.includes(sub)){
+      $scope.checkForTouchID()
+    }
+  });
 
-      $scope.login = function(ev) {
-        AuthService.login($scope.user).then(function(user) {
-          UserService.refreshUser(user.userId).then(function(ruser) {
-          sharedProperties.setProperty(ruser);
-          if (ruser.role == "Doctor") {
-            $state.go('men.home2');
-          } else {
-            $state.go('men.home');
-          }
-        }, function(errMsg) {
+    $ionicPlatform.on("pause", function() {
+      $scope.user.password = ''
 
-            if ( !checkPlatform.isBrowser ) {
-              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Server-Fehler", ["Erneut versuchen"]);
-            } else {
+      $scope.$apply()
+    });
+  });
 
-              let confirm = $mdDialog.confirm()
-                .title('Server-Fehler')
-                .textContent(errMsg.statusText)
-                .ariaLabel('Lucky day')
-                .targetEvent(ev)
-                .ok("Erneut versuchen");
+  $scope.checkForTouchID = function () {
+    $ionicPlatform.ready(function () {
+      if (!checkPlatform.isBrowser) {
+        window.plugins.touchid.isAvailable(
+          function (type) {
+            let email = window.localStorage.getItem("email");
+            let password = window.localStorage.getItem("password");
 
-              $mdDialog.show(confirm);
+            if (email != null && email !== '') {
+              window.plugins.touchid.verifyFingerprintWithCustomPasswordFallbackAndEnterPasswordLabel(
+                'Fingerbdruck scannen!', // this will be shown in the native scanner popup
+                'Manuell', // this will become the 'Enter password' button label
+                function (msg) {
+                  $scope.user.email = email;
+                  $scope.user.password = password;
+                  $scope.$apply()
+                }, // success handler: fingerprint accepted
+                function (msg) {
+                  //alert('not ok: ' + JSON.stringify(msg))
+                }); // error handler with errorcode and localised reason
             }
-        });
-        }, function(errMsg) {
-          if ( !checkPlatform.isBrowser ) {
-            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Benutzer-Fehler (1M)", ["Erneut versuchen"]);
-          } else {
+          }, // type returned to success callback: 'face' on iPhone X, 'touch' on other devices
+          function (msg) {
+            alert('not available, message: ' + JSON.stringify(msg))
+          } // error handler: no TouchID available
+        );
+      }
+    });
+  };
 
-            let confirm = $mdDialog.alert()
-              .title('Benutzer-Fehler (1B)')
-              .textContent(errMsg.statusText)
-              .ariaLabel('Lucky day')
-              .targetEvent(ev)
-              .ok("Erneut versuchen");
 
-            $mdDialog.show(confirm).then(function() {
-              console.log("Dialog shown...")
-            });
-          }
+
+
+  $scope.login = function (ev) {
+    AuthService.login($scope.user).then(function (user) {
+
+      window.localStorage.setItem("email", $scope.user.email);
+      window.localStorage.setItem("password", $scope.user.password);
+
+      UserService.refreshUser(user.userId).then(function (ruser) {
+        sharedProperties.setProperty(ruser);
+        if (ruser.role == "Doctor") {
+          $state.go('men.home2');
+        } else {
+          $state.go('men.home');
+        }
+      }, function (errMsg) {
+        if (!checkPlatform.isBrowser) {
+          navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
+          }, "Server-Fehler", ["Erneut versuchen"]);
+        } else {
+          let confirm = $mdDialog.confirm()
+            .title('Server-Fehler')
+            .textContent(errMsg.statusText)
+            .ariaLabel('Lucky day')
+            .targetEvent(ev)
+            .ok("Erneut versuchen");
+          $mdDialog.show(confirm);
+        }
+      });
+    }, function (errMsg) {
+      if (!checkPlatform.isBrowser) {
+        navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
+        }, "Benutzer-Fehler (1M)", ["Erneut versuchen"]);
+      } else {
+        let confirm = $mdDialog.alert()
+          .title('Benutzer-Fehler (1B)')
+          .textContent(errMsg.statusText)
+          .ariaLabel('Lucky day')
+          .targetEvent(ev)
+          .ok("Erneut versuchen");
+        $mdDialog.show(confirm).then(function () {
+          console.log("Dialog shown...")
         });
-      };
+      }
+    });
+  };
 
     // When button is clicked, the popup will be shown...
-
   $scope.showPopup = function(ev) {
-
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm("Sind Sie ein Arzt oder ein Patient?", function(buttonIndex) {
         switch(buttonIndex) {
@@ -134,7 +171,6 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
         }
       }, "Registrieren", [ "Arzt", "Patient"]);
     } else {
-
       var confirm = $mdDialog.confirm()
         .title('Registrieren')
         .textContent('Sind Sie ein Arzt oder ein Patient?')
@@ -142,18 +178,13 @@ function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $
         .targetEvent(ev)
         .ok("Patient")
         .cancel("Arzt");
-
       $mdDialog.show(confirm).then(function() {
         $state.go('registrierenPatient');
       }, function() {
         $state.go('registrierenArzt');
       });
-
-      // Web page
     }
-
   }
-
 })
 
 .controller('registrierenPatientCtrl',
@@ -178,13 +209,11 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
           $state.go('men.home');
         }, "Erfolg", [ "Okay"]);
       } else {
-
         var confirm = $mdDialog.alert()
           .title('Erfolg')
           .textContent('Registrierung erfolgreich! (Patient)')
           .ariaLabel('Lucky day')
           .ok("Okay");
-
         $mdDialog.show(confirm).then(function() {
           $state.go('men.home');
         });
@@ -193,22 +222,19 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
       if ( !checkPlatform.isBrowser ) {
         navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Patient)", ["Erneut versuchen"]);
       } else {
-
         let confirm = $mdDialog.alert()
           .title('Fehler (Patient)')
           .textContent(errMsg.statusText)
           .ariaLabel('Lucky day')
           .ok("Erneut versuchen");
-
         $mdDialog.show(confirm);
       }
     });
   };
-
 })
 
 .controller('registrierenArztCtrl',
-function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDialogs, $mdDialog) {
+function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog) {
 
   $scope.user = {
     gender: '',
@@ -228,13 +254,11 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
           $state.go('men.home2');
         }, "Erfolg", [ "Okay"]);
       } else {
-
         var confirm = $mdDialog.alert()
           .title('Erfolg')
           .textContent('Registrierung erfolgreich! (Arzt)')
           .ariaLabel('Lucky day')
           .ok("Okay");
-
         $mdDialog.show(confirm).then(function() {
           $state.go('men.home2');
         });
@@ -243,59 +267,42 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
       if ( !checkPlatform.isBrowser ) {
         navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Arzt)", ["Erneut versuchen"]);
       } else {
-
         let confirm = $mdDialog.alert()
           .title('Fehler (Arzt)')
           .textContent(errMsg.statusText)
           .ariaLabel('Lucky day')
           .ok("Erneut versuchen");
-
         $mdDialog.show(confirm);
       }
     });
   };
-
 })
 
-.controller('arztCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+.controller('arztCtrl', ['$scope', '$stateParams',
 function ($scope, $stateParams) {
-
-
 }])
 
-.controller('videosCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+.controller('videosCtrl', ['$scope', '$stateParams',
 function ($scope, $stateParams) {
-
-
 }])
 
-.controller('videoCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+.controller('videoCtrl', ['$scope', '$stateParams',
 function ($scope, $stateParams) {
-
-
 }])
 
-.controller('frageCtrl',
-function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
+.controller('frageCtrl', function ($scope, $stateParams,sharedParameter, checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
 
-  let topicId = $stateParams.topicId
+  sharedParameter.setProperty("");
+  let topicId = $stateParams.topicId;
+  $scope.myTopicId = topicId;
 
   TopicService.topic(topicId).then(function(topicEntry) {
-
     $scope.topicEntries = topicEntry.entries
     $scope.topicTitle = topicEntry.title
   }, function(errMsg) {
-
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-
       let confirm = $mdDialog.confirm()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
@@ -304,20 +311,18 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
       $mdDialog.show(confirm);
     }
   });
-
 })
 
 .controller('fragenCtrl',
-function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
+function ($scope, checkPlatform, TopicService, $mdDialog) {
+
   TopicService.topics().then(function(topics) {
+    $scope.entries = topics;
 
-    $scope.entries = topics
   }, function(errMsg) {
-
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-
       let confirm = $mdDialog.confirm()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
@@ -326,10 +331,7 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
       $mdDialog.show(confirm);
     }
   });
-
-
 })
-
 
   .controller('frageNeuCtrl',
     function ($scope, $stateParams,$state,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
@@ -344,11 +346,9 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
           $state.go('men.fragen');
 
         }, function(errMsg) {
-
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
           } else {
-
             let confirm = $mdDialog.confirm()
               .title('Topic-Fehler')
               .textContent(errMsg.statusText)
@@ -357,15 +357,37 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
             $mdDialog.show(confirm);
           }
         });
-
       }
+    })
 
+  .controller('frageEintragNeuCtrl',
+    function ($scope, $stateParams, checkPlatform, TopicService, $mdDialog, $ionicHistory) {
+      $scope.entry = {
+        topicId: $stateParams.topicId,
+        message: ''
+      };
 
+      $scope.addTopicEntry = function() {
 
+        TopicService.addTopicEntry($scope.entry.topicId, $scope.entry.message).then(function(topics) {
+          $ionicHistory.goBack()
+        }, function(errMsg) {
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "AddTopicEntry-Fehler", ["Erneut versuchen"]);
+          } else {
+            let confirm = $mdDialog.confirm()
+              .title('AddTopicEntry-Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+            $mdDialog.show(confirm);
+          }
+        });
+      }
     })
 
   .controller('sucheCtrl',
-    function ($scope, $stateParams) {
+    function ($scope) {
 
       $scope.search = {
         text: ""
@@ -373,36 +395,90 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
 
       $scope.search = function() {
         console.log($scope.search.text)
-
       };
-
     })
 
-  .controller('suchergebnisCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+  .controller('suchergebnisCtrl', ['$scope', '$stateParams',
     function ($scope, $stateParams) {
-
-
     }])
 
-  .controller('patientCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-    function ($scope, $stateParams) {
+  .controller('patientCtrl',
+    function ($scope, $stateParams, UserService, TopicService,  checkPlatform,  $state, $mdDialog, $ionicLoading) {
 
+    $scope.userId = $stateParams.userId;
 
-    }])
+      $ionicLoading.show()
+      UserService.getUserById($scope.userId).then(function(user) {
+        $scope.user = user;
+        $scope.entries = user.entries;
+        $scope.topics = [];
+        $scope.illnames = [];
+        let date = new Date($scope.user.dateOfBirth);
+        $scope.datefor = date.toLocaleDateString("de");
+
+        for(i=0;i<$scope.user.illnesses.length;i++) {
+          $scope.illnames.push($scope.user.illnesses[i].name);
+        }
+        if ($scope.illnames.length == 0) {
+          $scope.illnesses = "Keine Befunde"
+        } else {
+          $scope.illnesses = $scope.illnames.toString();
+        }
+
+        //2 neusten Tagebucheinträge
+        $scope.diaryEntries = $scope.user.diaryEntries.slice();
+        $scope.diaryEntries.reverse();
+
+        //Forumseinträge des Patienten
+        for(i=0;i<$scope.entries.length;i++) {
+          TopicService.topic($scope.entries[i].topicId).then(function(topic) {
+            if ($scope.topics.filter(e => e.topicId === topic.topicId).length == 0) {
+              $scope.topics.push(topic)
+            }
+          }, function(errMsg) {
+            console.log(errMsg);
+          });
+          $ionicLoading.hide()
+
+        }
+        $ionicLoading.hide()
+      }, function(errMsg) {
+
+        $ionicLoading.hide()
+        if ( !checkPlatform.isBrowser ) {
+          navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "User-Fehler", ["Erneut versuchen"]);
+        } else {
+          let confirm = $mdDialog.confirm()
+            .title('User-Fehler')
+            .textContent(errMsg.statusText)
+            .ariaLabel('Lucky day')
+            .ok("Erneut versuchen");
+          $mdDialog.show(confirm);
+        }
+      });
+    })
 
   .controller('tagebuchCtrl',
-    function ($scope, $stateParams, sharedProperties) {
+    function ($scope, $stateParams, UserService, sharedProperties) {
 
-      $scope.user = sharedProperties.getProperty();
-      $scope.diaryEntries = $scope.user.diaryEntries.slice();
-      $scope.diaryEntries.reverse();
+        $scope.user = sharedProperties.getProperty();
+        if ($scope.user.role == 'Doctor') {
+          $scope.show = false;
+         } else {
+           $scope.show = true;
+         }
 
+      let userId = $stateParams.userId;
+
+      UserService.getUserById(userId).then(function(user) {
+        $scope.user = user;
+        $scope.diaryEntries = $scope.user.diaryEntries.slice();
+        $scope.diaryEntries.reverse();
+      });
     })
 
   .controller('neuTagebuchCtrl',
-    function ($scope, $stateParams, sharedProperties, DiaryService, UserService, checkPlatform , $state, $mdDialog) {
+    function ($scope, sharedProperties, DiaryService, UserService, checkPlatform , $ionicHistory, $mdDialog) {
 
     $scope.diaryEntry = {
         title: '',
@@ -415,20 +491,18 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
           if (user) {
             UserService.refreshUser(user.userId).then(function(ruser) {
             sharedProperties.setProperty(ruser);
-            $state.go('men.tagebuch');
+            $ionicHistory.goBack();
           }, function(errMsg) {
 
             if ( !checkPlatform.isBrowser ) {
               navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Server-Fehler", ["Erneut versuchen"]);
             } else {
-
               let confirm = $mdDialog.confirm()
                 .title('Server-Fehler')
                 .textContent(errMsg.statusText)
                 .ariaLabel('Lucky day')
                 .targetEvent(ev)
                 .ok("Erneut versuchen");
-
               $mdDialog.show(confirm);
             }
         });
@@ -449,61 +523,324 @@ function ($scope, $stateParams,checkPlatform, sharedProperties, TopicService, $c
       };
     })
 
-
     .controller('menCtrl',
-      function ($scope, AuthService, sharedProperties, $stateParams, $state) {
+      function ($scope, sharedProperties, $state) {
 
         $scope.init = function () {
-          $scope.user = sharedProperties.getProperty();
-          if ($scope.user.role == 'Doctor') {
-            $scope.showPatient = true;
+         $scope.user = sharedProperties.getProperty();
+         if ($scope.user.role == 'Doctor') {
+           $scope.showPatient = true;
           } else {
             $scope.showPatient = false;
           }
-      }
-
+       }
         $scope.logout = function() {
           $state.go('login');
         }
-
         $scope.init();
-
       })
 
   .controller('home2Ctrl',
 
-    function ($scope, sharedProperties, $stateParams) {
+    function ($scope, sharedProperties, VideoService, TopicService, $mdDialog,checkPlatform) {
       $scope.user = sharedProperties.getProperty();
+
+      TopicService.topics().then(function(topics) {
+
+        $scope.entries = topics
+      }, function(errMsg) {
+        if ( !checkPlatform.isBrowser ) {
+          navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
+        } else {
+          let confirm = $mdDialog.confirm()
+            .title('Topic-Fehler')
+            .textContent(errMsg.statusText)
+            .ariaLabel('Lucky day')
+            .ok("Erneut versuchen");
+          $mdDialog.show(confirm);
+        }
+      });
+
+
+      VideoService.videos().then(function(videos){
+        $scope.videos = videos;
+
+
+      }, function(errMsg) {
+        if ( !checkPlatform.isBrowser ) {
+          navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Video-Fehler", ["Erneut versuchen"]);
+        } else {
+          let confirm = $mdDialog.confirm()
+            .title('Video-Fehler')
+            .textContent(errMsg.statusText)
+            .ariaLabel('Lucky day')
+            .ok("Erneut versuchen");
+          $mdDialog.show(confirm);
+        }
+      });
+
+
+
+      $scope.upload = function() {
+        if (!checkPlatform.isBrowser) {
+          navigator.camera.getPicture(onSuccess, onFail, {
+            quality: 75,
+            destinationType: Camera.DestinationType.FILE_URI,
+            sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+            mediaType: Camera.MediaType.VIDEO
+          });
+
+          function onSuccess(imageURI) {
+
+
+            function onPrompt(results) {
+              alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
+            }
+
+            navigator.notification.prompt(
+              'Bitte einen Titel eingeben:',  // message
+              function (results) {
+
+                if(results.buttonIndex === 1){
+                  var blob = null
+                  var xhr = new XMLHttpRequest()
+                  xhr.open("GET", imageURI)
+                  xhr.responseType = "blob"
+                  xhr.onload = function()
+                  {
+                    blob = xhr.response
+                    VideoService.uploadVideo(blob, results.input1);
+                  }
+                  xhr.send()
+                }
+              },                  // callback to invoke
+              'Titel',            // title
+              ['Fertig','Abbrechen'],             // buttonLabels
+              ''                 // defaultText
+            );
+
+
+
+          }
+
+          function onFail(message) {
+            alert('Failed because: ' + message);
+          }
+
+        }
+      }
+
     })
 
-  .controller('patientenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
+  .controller('patientenCtrl', ['$scope', '$stateParams',
     function ($scope, $stateParams) {
-
-
     }])
 
-  .controller('neuenPatientenZuweisenCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-    function ($scope, $stateParams) {
+  .controller('neuenPatientenZuweisenCtrl',
+    function ($scope, $state ,UserService, checkPlatform, $mdDialog, $ionicLoading) {
 
-    }])
+    $scope.resultUser = [];
+    $scope.search = {
+      string: ""
+    };
+
+      $scope.searchUser = function() {
+        UserService.searchUser($scope.search.string).then(function(ruser) {
+          $scope.resultUser.push(ruser)
+        }, function(errMsg) {
+
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Such-Fehler", ["Erneut versuchen"]);
+          } else {
+            let confirm = $mdDialog.confirm()
+              .title('Such-Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .targetEvent(ev)
+              .ok("Erneut versuchen");
+            $mdDialog.show(confirm);
+          }
+        });
+      }
+
+      $scope.addUser = function(user){
+        if ( !checkPlatform.isBrowser ) {
+          navigator.notification.confirm("Möchten Sie " + user.firstName +  user.lastName + " zu Ihren Patienten hinzufügen?" , function(buttonIndex) {
+            switch(buttonIndex) {
+              case 1:
+                $ionicLoading.show();
+                UserService.addUserToUser(user.userId).then(function(myUser) {
+                  $ionicLoading.hide();
+                  $state.go('men.home2');
+                }, function(errMsg) {
+                  $ionicLoading.hide();
+                  navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "AddUser-Fehler", ["Erneut versuchen"]);
+                });
+                break;
+              case 2:
+                console.log("Cancel")
+                break;
+            }
+          }, "Hinzufügen", [ "Ja", "Nein"]);
+        } else {
+          var confirm = $mdDialog.confirm()
+            .title('Hinzufügen')
+            .textContent("Möchten Sie " + user.firstName +  user.lastName + " zu Ihren Patienten hinzufügen?")
+            .ariaLabel('Lucky day')
+            .ok("Ja")
+            .cancel("Nein");
+
+          $mdDialog.show(confirm).then(function() {
+            $ionicLoading.show();
+            UserService.addUserToUser(user.userId).then(function(myUser) {
+              $ionicLoading.hide();
+              $state.go('men.home2');
+            }, function(errMsg) {
+              $ionicLoading.hide();
+                let confirm = $mdDialog.confirm()
+                  .title('AddUser-Fehler')
+                  .textContent(errMsg.statusText)
+                  .ariaLabel('Lucky day')
+                  .ok("Erneut versuchen");
+                $mdDialog.show(confirm);
+            });
+          }, function() {
+            console.log("Cancel")
+          });
+        }
+      }
+    })
+
+  .controller('accountCtrl',
+    function ($scope, $state, sharedProperties, UserService, checkPlatform, $mdDialog, UserService) {
+
+      $scope.user = sharedProperties.getProperty();
+      UserService.refreshUser($scope.user.userId).then(function (ruser) {
+        sharedProperties.setProperty(ruser);
+      })
+      $scope.user = sharedProperties.getProperty();
+
+      $scope.date = new Date($scope.user.dateOfBirth);
+
+      $scope.save = function() {
+
+        UserService.updateUser($scope.user).then(function(user) {
+         sharedProperties.setProperty(user);
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm("Update erfolgreich!", function(buttonIndex) {
+          }, "Erfolg", [ "Okay"]);
+          } else {
+           var confirm = $mdDialog.alert()
+              .title('Erfolg')
+              .textContent('Update erfolgreich!')
+              .ariaLabel('Lucky day')
+              .ok("Okay");
+            $mdDialog.show(confirm);
+          }
+          }, function(errMsg) {
+            if ( !checkPlatform.isBrowser ) {
+              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
+            } else {
+              let confirm = $mdDialog.alert()
+              .title('Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+              $mdDialog.show(confirm);
+            }
+        });
+      };
+
+      $scope.delete = function(ev) {
+
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm("Wollen Sie wirklich löschen?", function(buttonIndex) {
+              switch(buttonIndex) {
+                case 1:
+                UserService.deleteUser().then(function(msg) {
+                  navigator.notification.confirm("Löschen erfolgreich!", function(buttonIndex) {
+                  }, "Erfolg", [ "Okay"]);
+                  $state.go('login');
+                }, function(errMsg) {
+                  navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
+                })
+                  break;
+                case 2:
+                  break;
+              }
+            }, "Löschen bestätigen", [ "Ja", "Nein"]);
+          } else {
+            var confirm = $mdDialog.confirm()
+              .title('Löschen bestätigen')
+              .textContent('Wollen Sie wirklich löschen?')
+              .ariaLabel('Lucky day')
+              .targetEvent(ev)
+              .ok("Ja")
+              .cancel("Nein");
+            $mdDialog.show(confirm).then(function() {
+              UserService.deleteUser().then(function(msg) {
+                var confirm = $mdDialog.alert()
+                    .title('Erfolg')
+                    .textContent('Löschen erfolgreich!')
+                    .ariaLabel('Lucky day')
+                    .ok("Okay");
+                  $mdDialog.show(confirm);
+                  $state.go('login');
+              }, function(errMsg) {
+                let confirm = $mdDialog.alert()
+                .title('Fehler')
+                .textContent(errMsg.statusText)
+                .ariaLabel('Lucky day')
+                .ok("Erneut versuchen");
+                $mdDialog.show(confirm);
+              })
+            }, function() {
+            });
+          }
 
 
+   /*       UserService.deleteUser().then(function(msg) {
 
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm("Löschen erfolgreich!", function(buttonIndex) {
+          }, "Erfolg", [ "Okay"]);
+          } else {
+           var confirm = $mdDialog.alert()
+              .title('Erfolg')
+              .textContent('Löschen erfolgreich!')
+              .ariaLabel('Lucky day')
+              .ok("Okay");
+            $mdDialog.show(confirm);
+          }
+          $state.go('login');
+          }, function(errMsg) {
+            if ( !checkPlatform.isBrowser ) {
+              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
+            } else {
+              let confirm = $mdDialog.alert()
+              .title('Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+              $mdDialog.show(confirm);
+            }
+        }); */
+      };
+  })
 
+  .controller('AppCtrl',
 
+function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS, $location) {
+    var path = $location.path();
+    $scope.options = $scope.options || {};
+    if (path === "")
+      $scope.options.hideBackButton = true;
+    else
+      $scope.options.hideBackButton = false;
 
-
-
-
-
-
-    .controller('AppCtrl',
-
-function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS) {
+  if(!$scope.$$phase) {
+    $scope.$apply()
+  }
 
     $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
       AuthService.logout();
@@ -513,5 +850,4 @@ function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS) {
         template: 'Sorry, You have to login again.'
       });
     });
-
   })

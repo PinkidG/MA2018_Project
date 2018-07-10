@@ -5,16 +5,22 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services', 'app.constants', 'monospaced.elastic'])
+angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'app.directives','app.services', 'app.constants', 'monospaced.elastic'])
 
 
-.config(function($ionicConfigProvider, $sceDelegateProvider){
+.config(function($ionicConfigProvider, $sceDelegateProvider, $mdGestureProvider){
 
+  $mdGestureProvider.skipClickHijack();
   $ionicConfigProvider.views.maxCache(0);
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
 
 })
-  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform) {
+  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform, sharedParameter) {
+
+    $rootScope.goBackState = function(){
+      $ionicViewSwitcher.nextDirection('back');
+      $ionicHistory.goBack();
+    }
 
     $ionicPlatform.ready(function() {
       if (
@@ -29,13 +35,21 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
         StatusBar.styleDefault();
       }
 
+      pictureSource = navigator.camera.PictureSourceType;
+      destinationType = navigator.camera.DestinationType;
+
       // Branch
       $ionicPlatform.on("deviceready", function() {
         branchInit();
+
       });
 
       $ionicPlatform.on("resume", function() {
-        branchInit();
+        $ionicPlatform.ready(function() {
+          branchInit();
+        });
+
+
       });
 
       function branchInit() {
@@ -45,7 +59,9 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
             // read deep link data on click
             alert("Deep Link Data: " + JSON.stringify(data));
           }
-        });
+        }.catch( (err) => {
+          alert('Branch Init Error: ' + JSON.stringify(err));
+        }));
       }
     });
 
@@ -114,3 +130,27 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
     }
   };
 });
+
+function handleOpenURL(url) {
+  let urlObject = new URL(url);
+  let c = urlObject.searchParams.get("topicId");
+
+  let shared = angular.element(document.body).injector().get('sharedParameter');
+  shared.setProperty(c);
+
+
+  let state = angular.element(document.body).injector().get('$state');
+
+  let checkPlatform = angular.element(document.body).injector().get('checkPlatform');
+  let title = document.title;
+
+  if(title != "Home" && title != "login"){
+
+
+    state.go('men.home')
+
+  }
+
+
+}
+

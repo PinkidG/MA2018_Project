@@ -2,12 +2,17 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
 
 .controller('homeCtrl',
 
-function ($scope,$state, sharedProperties, sharedParameter, TopicService, checkPlatform ) {
+function ($scope,$state, sharedProperties, sharedParameter, TopicService, checkPlatform, UserService) {
 
   $scope.illnames = [];
-  var date = new Date($scope.user.dateOfBirth);
 
   $scope.user = sharedProperties.getProperty();
+  UserService.refreshUser($scope.user.userId).then(function (ruser) {
+    sharedProperties.setProperty(ruser);
+  })
+  $scope.user = sharedProperties.getProperty();
+
+  var date = new Date($scope.user.dateOfBirth);
   $scope.datefor = date.toLocaleDateString("de");
 
   for(i=0;i<$scope.user.illnesses.length;i++) {
@@ -636,9 +641,15 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
     })
 
   .controller('accountCtrl', 
-    function ($scope, sharedProperties, UserService, checkPlatform, $mdDialog) {
+    function ($scope, sharedProperties, UserService, checkPlatform, $mdDialog, UserService) {
 
       $scope.user = sharedProperties.getProperty();
+      UserService.refreshUser($scope.user.userId).then(function (ruser) {
+        sharedProperties.setProperty(ruser);
+      })
+      $scope.user = sharedProperties.getProperty();
+
+      $scope.date = new Date($scope.user.dateOfBirth);
 
       $scope.save = function() {
         

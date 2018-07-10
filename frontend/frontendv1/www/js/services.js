@@ -302,6 +302,21 @@ angular.module('app.services', [])
       });
     };
 
+    let deleteUser = function() {
+      return $q(function(resolve, reject) {
+        $http.delete(endpoint().url + '/user/delete').then(function(result) {
+          if (result.data.message) {
+            resolve(result.data.message);
+          } else {
+            reject(result.data.error);
+          }
+        }).catch((err) => {
+          reject(err);
+          return
+        });
+      });
+    };
+
     let searchUser = function(lastName) {
       return $q(function(resolve, reject) {
         $http.get(endpoint().url + '/usern/' + lastName).then(function(result) {
@@ -347,6 +362,7 @@ angular.module('app.services', [])
     return {
       refreshUser: refreshUser,
       updateUser: updateUser,
+      deleteUser: deleteUser,
       searchUser: searchUser,
       getUserById: getUserById,
       addUserToUser: addUserToUser

@@ -641,7 +641,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
     })
 
   .controller('accountCtrl', 
-    function ($scope, sharedProperties, UserService, checkPlatform, $mdDialog, UserService) {
+    function ($scope, $state, sharedProperties, UserService, checkPlatform, $mdDialog, UserService) {
 
       $scope.user = sharedProperties.getProperty();
       UserService.refreshUser($scope.user.userId).then(function (ruser) {
@@ -666,6 +666,35 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
               .ok("Okay");
             $mdDialog.show(confirm);
           }
+          }, function(errMsg) {
+            if ( !checkPlatform.isBrowser ) {
+              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
+            } else {
+              let confirm = $mdDialog.alert()
+              .title('Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+              $mdDialog.show(confirm);
+            }
+        });
+      };
+
+      $scope.delete = function() {
+        
+        UserService.deleteUser().then(function(msg) {
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm("Löschen erfolgreich!", function(buttonIndex) {
+          }, "Erfolg", [ "Okay"]);
+          } else {
+           var confirm = $mdDialog.alert()
+              .title('Erfolg')
+              .textContent('Löschen erfolgreich!')
+              .ariaLabel('Lucky day')
+              .ok("Okay");
+            $mdDialog.show(confirm);
+          }
+          $state.go('login');
           }, function(errMsg) {
             if ( !checkPlatform.isBrowser ) {
               navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);

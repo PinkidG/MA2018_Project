@@ -25,15 +25,9 @@
     <h3 id="home2-heading28" style="color:#000000;">Videos</h3>
     <button id="home2-button13" class="button button-stable button-block" ng-click="upload()">Hochladen</button>
     <div class="list card" id="home2-card220">
-      <ion-item class="item-thumbnail-left" id="home2-list-item151" ui-sref="men.video()">
+      <ion-item class="item-thumbnail-left" id="home2-list-item151" ui-sref="men.video()" ng-repeat="video in videos|limitTo:2">
         <img src="img/JG0W1siQEq7kxb7sKYoQ_oberschenkelbruch.jpg">
-        <h2>OP-Vorbereitung: Oberschenkelbrüche</h2>
-        <p>#Oberschenkel #Bruch #OP #kinder</p>
-      </ion-item>
-      <ion-item class="item-thumbnail-left" id="home2-list-item152" ui-sref="men.video()">
-        <img src="img/KsK7D71R0WOwAXCo5Xiq_Schienbeinbruch.jpg">
-        <h2>OP-Vorbereitung: Schienbeinbruch</h2>
-        <p>#Schienbein #Bruch #OP #Kinder</p>
+        <h2>{{video.title}}</h2>
       </ion-item>
       <ion-item class="item-icon-right" id="home2-list-item153" ui-sref="men.videos()">mehr
         <i class="icon ion-ios-arrow-forward"></i>

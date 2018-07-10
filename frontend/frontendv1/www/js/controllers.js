@@ -56,38 +56,61 @@ function ($scope, $stateParams) {
 }])
 
 .controller('loginCtrl',
-function ($scope, AuthService, UserService, checkPlatform , sharedProperties , $state, $mdDialog) {
+function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , sharedProperties , $state, $mdDialog, $location) {
   AuthService.logout();
   $scope.user = {
     email: '',
     password: ''
   };
 
-  ionic.Platform.ready(function () {
-    if (!checkPlatform.isBrowser) {
-    window.plugins.touchid.isAvailable(
-      function (type) {
-        let email = window.localStorage.getItem("email");
-        let password = window.localStorage.getItem("password");
-
-        if (email != null && email !== '') {
-          window.plugins.touchid.verifyFingerprintWithCustomPasswordFallbackAndEnterPasswordLabel(
-            'Fingerbdruck scannen!', // this will be shown in the native scanner popup
-            'Manuell', // this will become the 'Enter password' button label
-            function (msg) {
-              $scope.user.email = email;
-              $scope.user.password = password;
-            }, // success handler: fingerprint accepted
-            function (msg) {
-              //alert('not ok: ' + JSON.stringify(msg))
-            }); // error handler with errorcode and localised reason
-        }
-      }, // type returned to success callback: 'face' on iPhone X, 'touch' on other devices
-      function (msg) {
-        alert('not available, message: ' + JSON.stringify(msg))
-      } // error handler: no TouchID available
-    );}
+  $ionicPlatform.ready(function () {
+  $ionicPlatform.on("resume", function() {
+    var path = $location.path();
+    let sub = 'login';
+    if(path.includes(sub)){
+      $scope.checkForTouchID()
+    }
   });
+
+    $ionicPlatform.on("pause", function() {
+      $scope.user.password = ''
+
+      $scope.$apply()
+    });
+  });
+
+  $scope.checkForTouchID = function () {
+    $ionicPlatform.ready(function () {
+      if (!checkPlatform.isBrowser) {
+        window.plugins.touchid.isAvailable(
+          function (type) {
+            let email = window.localStorage.getItem("email");
+            let password = window.localStorage.getItem("password");
+
+            if (email != null && email !== '') {
+              window.plugins.touchid.verifyFingerprintWithCustomPasswordFallbackAndEnterPasswordLabel(
+                'Fingerbdruck scannen!', // this will be shown in the native scanner popup
+                'Manuell', // this will become the 'Enter password' button label
+                function (msg) {
+                  $scope.user.email = email;
+                  $scope.user.password = password;
+                  $scope.$apply()
+                }, // success handler: fingerprint accepted
+                function (msg) {
+                  //alert('not ok: ' + JSON.stringify(msg))
+                }); // error handler with errorcode and localised reason
+            }
+          }, // type returned to success callback: 'face' on iPhone X, 'touch' on other devices
+          function (msg) {
+            alert('not available, message: ' + JSON.stringify(msg))
+          } // error handler: no TouchID available
+        );
+      }
+    });
+  };
+
+
+
 
   $scope.login = function (ev) {
     AuthService.login($scope.user).then(function (user) {
@@ -380,10 +403,11 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
     }])
 
   .controller('patientCtrl',
-    function ($scope, $stateParams, UserService, TopicService,  checkPlatform,  $state, $mdDialog) {
+    function ($scope, $stateParams, UserService, TopicService,  checkPlatform,  $state, $mdDialog, $ionicLoading) {
 
-       $scope.userId = $stateParams.userId;
+    $scope.userId = $stateParams.userId;
 
+      $ionicLoading.show()
       UserService.getUserById($scope.userId).then(function(user) {
         $scope.user = user;
         $scope.entries = user.entries;
@@ -414,10 +438,13 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
           }, function(errMsg) {
             console.log(errMsg);
           });
-        }
+          $ionicLoading.hide()
 
+        }
+        $ionicLoading.hide()
       }, function(errMsg) {
 
+        $ionicLoading.hide()
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "User-Fehler", ["Erneut versuchen"]);
         } else {
@@ -535,21 +562,65 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
       });
 
 
+      VideoService.videos().then(function(videos){
+        $scope.videos = videos;
+
+
+      }, function(errMsg) {
+        if ( !checkPlatform.isBrowser ) {
+          navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Video-Fehler", ["Erneut versuchen"]);
+        } else {
+          let confirm = $mdDialog.confirm()
+            .title('Video-Fehler')
+            .textContent(errMsg.statusText)
+            .ariaLabel('Lucky day')
+            .ok("Erneut versuchen");
+          $mdDialog.show(confirm);
+        }
+      });
+
+
+
       $scope.upload = function() {
-
-
         if (!checkPlatform.isBrowser) {
           navigator.camera.getPicture(onSuccess, onFail, {
-            quality: 50,
+            quality: 75,
             destinationType: Camera.DestinationType.FILE_URI,
             sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
             mediaType: Camera.MediaType.VIDEO
           });
 
           function onSuccess(imageURI) {
-            var reader = new FileReader();
-            let data = reader.readAsDataURL(imageURI);
-            VideoService.uploadVideo(data);
+
+
+            function onPrompt(results) {
+              alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
+            }
+
+            navigator.notification.prompt(
+              'Bitte einen Titel eingeben:',  // message
+              function (results) {
+
+                if(results.buttonIndex === 1){
+                  var blob = null
+                  var xhr = new XMLHttpRequest()
+                  xhr.open("GET", imageURI)
+                  xhr.responseType = "blob"
+                  xhr.onload = function()
+                  {
+                    blob = xhr.response
+                    VideoService.uploadVideo(blob, results.input1);
+                  }
+                  xhr.send()
+                }
+              },                  // callback to invoke
+              'Titel',            // title
+              ['Fertig','Abbrechen'],             // buttonLabels
+              ''                 // defaultText
+            );
+
+
+
           }
 
           function onFail(message) {
@@ -640,7 +711,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
       }
     })
 
-  .controller('accountCtrl', 
+  .controller('accountCtrl',
     function ($scope, $state, sharedProperties, UserService, checkPlatform, $mdDialog, UserService) {
 
       $scope.user = sharedProperties.getProperty();
@@ -652,7 +723,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
       $scope.date = new Date($scope.user.dateOfBirth);
 
       $scope.save = function() {
-        
+
         UserService.updateUser($scope.user).then(function(user) {
          sharedProperties.setProperty(user);
           if ( !checkPlatform.isBrowser ) {
@@ -681,7 +752,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
       };
 
       $scope.delete = function(ev) {
-        
+
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm("Wollen Sie wirklich löschen?", function(buttonIndex) {
               switch(buttonIndex) {
@@ -723,7 +794,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
                 .ok("Erneut versuchen");
                 $mdDialog.show(confirm);
               })
-            }, function() { 
+            }, function() {
             });
           }
 
@@ -766,6 +837,10 @@ function($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS, $location) {
       $scope.options.hideBackButton = true;
     else
       $scope.options.hideBackButton = false;
+
+  if(!$scope.$$phase) {
+    $scope.$apply()
+  }
 
     $scope.$on(AUTH_EVENTS.notAuthenticated, function(event) {
       AuthService.logout();

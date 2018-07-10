@@ -151,11 +151,32 @@ angular.module('app.services', [])
       return end;
     };
 
-    var uploadVideo = function(videoData) {
+    var uploadVideo = function(image, title) {
+
+      var fd = new FormData();
+      fd.append('video', image, title+".mp4");
+
+      var deffered = $q.defer();
+      $http.post(endpoint().url + "/video", fd, {
+        transformRequest: angular.identity,
+        headers: {'Content-Type': undefined}
+
+      }).success(function (response) {
+        deffered.resolve(response);
+
+      }).error(function (response) {
+        deffered.reject(response.message);
+      });
+
+      return deffered.promise;
+    };
+
+
+    let videos = function () {
       return $q(function(resolve, reject) {
-        $http.post(endpoint().url + '/video', videoData).then(function(result) {
-          if (result.data.message) {
-            resolve(result.data.message);
+        $http.get(endpoint().url + '/videos').then(function(result) {
+          if (result.data) {
+            resolve(result.data.video);
           } else {
             reject(result.data.msg);
           }
@@ -166,9 +187,11 @@ angular.module('app.services', [])
       });
     };
     return {
-      uploadVideo: uploadVideo
+      uploadVideo: uploadVideo,
+      videos: videos
     };
   })
+
 
   .service('checkPlatform', function () {
     return{

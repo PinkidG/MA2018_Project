@@ -680,9 +680,56 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
         });
       };
 
-      $scope.delete = function() {
+      $scope.delete = function(ev) {
         
-        UserService.deleteUser().then(function(msg) {
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm("Wollen Sie wirklich löschen?", function(buttonIndex) {
+              switch(buttonIndex) {
+                case 1:
+                UserService.deleteUser().then(function(msg) {
+                  navigator.notification.confirm("Löschen erfolgreich!", function(buttonIndex) {
+                  }, "Erfolg", [ "Okay"]);
+                  $state.go('login');
+                }, function(errMsg) {
+                  navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
+                })
+                  break;
+                case 2:
+                  break;
+              }
+            }, "Löschen bestätigen", [ "Ja", "Nein"]);
+          } else {
+            var confirm = $mdDialog.confirm()
+              .title('Löschen bestätigen')
+              .textContent('Wollen Sie wirklich löschen?')
+              .ariaLabel('Lucky day')
+              .targetEvent(ev)
+              .ok("Ja")
+              .cancel("Nein");
+            $mdDialog.show(confirm).then(function() {
+              UserService.deleteUser().then(function(msg) {
+                var confirm = $mdDialog.alert()
+                    .title('Erfolg')
+                    .textContent('Löschen erfolgreich!')
+                    .ariaLabel('Lucky day')
+                    .ok("Okay");
+                  $mdDialog.show(confirm);
+                  $state.go('login');
+              }, function(errMsg) {
+                let confirm = $mdDialog.alert()
+                .title('Fehler')
+                .textContent(errMsg.statusText)
+                .ariaLabel('Lucky day')
+                .ok("Erneut versuchen");
+                $mdDialog.show(confirm);
+              })
+            }, function() { 
+            });
+          }
+
+
+   /*       UserService.deleteUser().then(function(msg) {
+
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm("Löschen erfolgreich!", function(buttonIndex) {
           }, "Erfolg", [ "Okay"]);
@@ -706,7 +753,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
               .ok("Erneut versuchen");
               $mdDialog.show(confirm);
             }
-        });
+        }); */
       };
   })
 

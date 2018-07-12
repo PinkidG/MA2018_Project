@@ -39,7 +39,7 @@ function ($scope, $state, sharedProperties, sharedParameter, TopicService, check
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-      let confirm = $mdDialog.confirm()
+      let confirm = $mdDialog.alert()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
         .ariaLabel('Lucky day')
@@ -133,7 +133,7 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
           navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
           }, "Server-Fehler", ["Erneut versuchen"]);
         } else {
-          let confirm = $mdDialog.confirm()
+          let confirm = $mdDialog.alert()
             .title('Server-Fehler')
             .textContent(errMsg.statusText)
             .ariaLabel('Lucky day')
@@ -316,7 +316,7 @@ function ($scope, $stateParams) {
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-      let confirm = $mdDialog.confirm()
+      let confirm = $mdDialog.alert()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
         .ariaLabel('Lucky day')
@@ -339,7 +339,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
-      let confirm = $mdDialog.confirm()
+      let confirm = $mdDialog.alert()
         .title('Topic-Fehler')
         .textContent(errMsg.statusText)
         .ariaLabel('Lucky day')
@@ -365,7 +365,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
           } else {
-            let confirm = $mdDialog.confirm()
+            let confirm = $mdDialog.alert()
               .title('Topic-Fehler')
               .textContent(errMsg.statusText)
               .ariaLabel('Lucky day')
@@ -391,7 +391,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "AddTopicEntry-Fehler", ["Erneut versuchen"]);
           } else {
-            let confirm = $mdDialog.confirm()
+            let confirm = $mdDialog.alert()
               .title('AddTopicEntry-Fehler')
               .textContent(errMsg.statusText)
               .ariaLabel('Lucky day')
@@ -464,7 +464,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "User-Fehler", ["Erneut versuchen"]);
         } else {
-          let confirm = $mdDialog.confirm()
+          let confirm = $mdDialog.alert()
             .title('User-Fehler')
             .textContent(errMsg.statusText)
             .ariaLabel('Lucky day')
@@ -515,7 +515,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
             if ( !checkPlatform.isBrowser ) {
               navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Server-Fehler", ["Erneut versuchen"]);
             } else {
-              let confirm = $mdDialog.confirm()
+              let confirm = $mdDialog.alert()
                 .title('Server-Fehler')
                 .textContent(errMsg.statusText)
                 .ariaLabel('Lucky day')
@@ -530,7 +530,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Diary-Fehler", ["Erneut versuchen"]);
           } else {
-            let confirm = $mdDialog.confirm()
+            let confirm = $mdDialog.alert()
               .title('Diary-Fehler')
               .textContent(errMsg.statusText)
               .ariaLabel('Lucky day')
@@ -578,7 +578,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
         } else {
-          let confirm = $mdDialog.confirm()
+          let confirm = $mdDialog.alert()
             .title('Topic-Fehler')
             .textContent(errMsg.statusText)
             .ariaLabel('Lucky day')
@@ -613,7 +613,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Video-Fehler", ["Erneut versuchen"]);
         } else {
-          let confirm = $mdDialog.confirm()
+          let confirm = $mdDialog.alert()
             .title('Video-Fehler')
             .textContent(errMsg.statusText)
             .ariaLabel('Lucky day')
@@ -695,7 +695,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           if ( !checkPlatform.isBrowser ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Such-Fehler", ["Erneut versuchen"]);
           } else {
-            let confirm = $mdDialog.confirm()
+            let confirm = $mdDialog.alert()
               .title('Such-Fehler')
               .textContent(errMsg.statusText)
               .ariaLabel('Lucky day')
@@ -740,7 +740,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
               $state.go('men.home2');
             }, function(errMsg) {
               $ionicLoading.hide();
-                let confirm = $mdDialog.confirm()
+                let confirm = $mdDialog.alert()
                   .title('AddUser-Fehler')
                   .textContent(errMsg.statusText)
                   .ariaLabel('Lucky day')

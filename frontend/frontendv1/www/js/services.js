@@ -184,7 +184,7 @@ angular.module('app.services', [])
     var uploadVideo = function(image, title) {
 
       var fd = new FormData();
-      fd.append('video', image, title+".mp4");
+      fd.append('video', image, title.trim()+".mp4");
 
       var deffered = $q.defer();
       $http.post(endpoint().url + "/video", fd, {
@@ -205,8 +205,18 @@ angular.module('app.services', [])
     let videos = function () {
       return $q(function(resolve, reject) {
         $http.get(endpoint().url + '/videos').then(function(result) {
-          if (result.data) {
-            resolve(result.data.video);
+          if (result.data.video) {
+            let list = [];
+            result.data.video.forEach(function(video){
+              let title = video.title.replace('.mp4','').replace('.mov','').trim();
+              let id = video.id;
+              let videoObject = {
+                title: title,
+                id: id
+              };
+              list.push(videoObject)
+            });
+            resolve(list);
           } else {
             reject(result.data.msg);
           }
@@ -220,8 +230,25 @@ angular.module('app.services', [])
     let videoById = function (id) {
       return $q(function(resolve, reject) {
         $http.get(endpoint().url + '/videoById/'+id).then(function(result) {
-          if (result.data) {
-            resolve(result.data.video);
+          if (result.data.video) {
+
+            let list = [];
+            result.data.video.forEach(function(video){
+              let title = video.title.replace('.mp4','').replace('.mov','').trim();
+              let id = video.id;
+
+
+              let videoObject = {
+                title: title,
+                id: id
+              };
+
+
+              list.push(videoObject)
+            });
+
+
+            resolve(list);
           } else {
             reject(result.data.msg);
           }

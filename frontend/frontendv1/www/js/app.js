@@ -12,7 +12,7 @@ angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'a
 
   $mdGestureProvider.skipClickHijack();
   $ionicConfigProvider.views.maxCache(0);
-  $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
+  $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**', '*://pinkisworld.ddnss.de/api/**']);
 
 })
   .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform, sharedParameter) {

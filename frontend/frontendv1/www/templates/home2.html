@@ -24,7 +24,7 @@
     <h3 id="home2-heading28" style="color:#000000;">Videos</h3>
     <button id="home2-button13" class="button button-stable button-block" ng-click="upload()">Hochladen</button>
     <div class="list card" id="home2-card220">
-      <ion-item class="item-thumbnail-left" id="home2-list-item151" ui-sref="men.video({videoId: {{video.id}}})" ng-repeat="video in videos|limitTo:2">
+      <ion-item class="item-thumbnail-left" id="home2-list-item151" ui-sref="men.video({video: {{video}}})" ng-repeat="video in videos|limitTo:2">
         <img src="img/JG0W1siQEq7kxb7sKYoQ_oberschenkelbruch.jpg">
         <h2>{{video.title}}</h2>
       </ion-item>

@@ -289,17 +289,14 @@ function ($scope, $stateParams) {
 function ($scope, $stateParams) {
 }])
 
-.controller('videoCtrl',function ($scope, $stateParams, VideoService, checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
+.controller('videoCtrl',function ($scope, $stateParams, VideoService,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $ionicLoading) {
 
-  let id = $stateParams.videoId;
+  let video = $stateParams.video;
+  $scope.video = video;
 
-  VideoService.videoById(id).then(function (video) {
-
-    $scope.video = video
-  });
-
-
-
+  $scope.getIframeSrc = function (videoTitle) {
+    return 'http://pinkisworld.ddnss.de/api/video/' + videoTitle;
+  };
 
 })
 
@@ -617,22 +614,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
       VideoService.videos().then(function(videos){
 
-        let list = [];
-        videos.forEach(function(video){
-          let title = video.title.replace('.mp4','').replace('.mov','');
-          let id = video.id;
-
-
-          let videoObject = {
-            title: title,
-            id: id
-          }
-
-
-          list.push(videoObject)
-        });
-
-        $scope.videos = list;
+        $scope.videos = videos;
         $ionicLoading.hide();
 
       }, function(errMsg) {

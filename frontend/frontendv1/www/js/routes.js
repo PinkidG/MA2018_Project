@@ -89,7 +89,7 @@ angular.module('app.routes', [])
   })
 
   .state('men.video', {
-    url: '/Video/:videoId',
+    url: '/Video/{video:json}',
     views: {
       'side-menu21': {
         templateUrl: 'templates/video.html',

@@ -1,11 +1,12 @@
 <ion-view title="Fragen" id="page17">
+  <ion-nav-buttons side="secondary">
+      <button ui-sref="men.frageNeu()" class="button button-light button-icon icon ion-ios-plus-outline"></button>
+    </ion-nav-buttons>
   <ion-content padding="true" class="has-header">
-    <div class="list card" id="fragen-card223">
+    <div class="list card" id="fragen-card223" ng-show="show">
       <ion-item class="item-icon-left" id="fragen-list-item163" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries">
         <i class="icon ion-help"></i>{{item.title}}
-        <span class="item-note">#tag1 #tag2</span>
       </ion-item>
     </div>
-    <button id="fragen-button14" class="button button-stable button-block" ui-sref="men.frageNeu()">Neue Frage</button>
   </ion-content>
 </ion-view>

@@ -331,7 +331,12 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
   $ionicLoading.show()
   TopicService.topics().then(function(topics) {
-    $scope.entries = topics;
+    if (topics.length == 0) {
+      $scope.show = false;
+    } else {
+      $scope.entries = topics;
+      $scope.show = true;
+    }
     $ionicLoading.hide()
 
   }, function(errMsg) {
@@ -403,14 +408,36 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
     })
 
   .controller('sucheCtrl',
-    function ($scope) {
+    function ($scope, SearchService, $ionicLoading) {
 
       $scope.search = {
         text: ""
       }
 
       $scope.search = function() {
-        console.log($scope.search.text)
+
+        $ionicLoading.show()
+        SearchService.search($scope.search.text).then(function(results){
+
+
+
+
+
+
+        $ionicLoading.hide()
+        }, function(errMsg) {
+          $ionicLoading.hide()
+          if ( !checkPlatform.isBrowser ) {
+            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Search-Fehler", ["Erneut versuchen"]);
+          } else {
+            let confirm = $mdDialog.alert()
+              .title('Search-Fehler')
+              .textContent(errMsg.statusText)
+              .ariaLabel('Lucky day')
+              .ok("Erneut versuchen");
+            $mdDialog.show(confirm);
+          }
+        })
       };
     })
 

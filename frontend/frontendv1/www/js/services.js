@@ -140,6 +140,36 @@ angular.module('app.services', [])
     };
   })
 
+  .service('SearchService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+
+    var endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+      return end;
+    };
+
+    var search = function(searchTerm) {
+      return $q(function(resolve, reject) {
+        $http.post(endpoint().url + '/search', searchTerm).then(function(result) {
+          if (result.data.topics && result.data.videos) {
+            resolve(result.data);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+          return
+        });
+      });
+    };
+    return {
+      search: search
+    };
+  })
+
   .service('VideoService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
     var endpoint = function getEndpoint() {

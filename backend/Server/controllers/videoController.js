@@ -6,8 +6,16 @@ function setVideoInfo(request) {
     return {
         id: request.videoId,
         title: request.title,
-        video: request.video,
         user: request.user
+    };
+}
+
+function setVideoInfoWithData(request) {
+    return {
+        id: request.videoId,
+        title: request.title,
+        video: request.video,
+	user: request.user
     };
 }
 
@@ -180,6 +188,7 @@ exports.getAll = function(req, res) {
         let array = [];
 
         result.forEach(function(element) {
+		console.log(element);
             array.push(setVideoInfo(element))
         });
 

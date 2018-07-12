@@ -16,7 +16,6 @@ function setVideoInfo(request) {
     return {
         id: request.videoId,
         title: request.title,
-        video: request.video,
         user: request.user
     };
 }

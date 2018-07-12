@@ -77,7 +77,6 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
 
     $ionicPlatform.on("pause", function() {
       $scope.user.password = ''
-
       $scope.$apply()
     });
   });

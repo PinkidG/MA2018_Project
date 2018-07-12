@@ -90,7 +90,7 @@ module.exports = function(app) {
 
     //Video route
     apiRoutes.post('/video', requireAuth, upload.single('video'), VideoController.register);
-    apiRoutes.get('/video/:title', requireAuth, VideoController.getByTitle);
+    apiRoutes.get('/video/:title', VideoController.getByTitle);
     apiRoutes.get('/videoById/:id', requireAuth, VideoController.getById);
     apiRoutes.get('/videos', requireAuth, VideoController.getAll);
 

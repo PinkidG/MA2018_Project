@@ -2,10 +2,11 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
 
 .controller('homeCtrl',
 
-function ($scope,$state, sharedProperties, sharedParameter, TopicService, checkPlatform, UserService) {
+function ($scope, $state, sharedProperties, sharedParameter, TopicService, checkPlatform, UserService, $ionicLoading) {
 
   $scope.illnames = [];
 
+  $ionicLoading.show()
   $scope.user = sharedProperties.getProperty();
   UserService.refreshUser($scope.user.userId).then(function (ruser) {
     sharedProperties.setProperty(ruser);
@@ -30,9 +31,11 @@ function ($scope,$state, sharedProperties, sharedParameter, TopicService, checkP
 
   //Forumseinträge des Patienten
   TopicService.topics().then(function(topics) {
-
     $scope.entries = topics
+    $ionicLoading.hide()
+
   }, function(errMsg) {
+    $ionicLoading.hide()
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
@@ -314,12 +317,15 @@ function ($scope, $stateParams) {
 })
 
 .controller('fragenCtrl',
-function ($scope, checkPlatform, TopicService, $mdDialog) {
+function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
+  $ionicLoading.show()
   TopicService.topics().then(function(topics) {
     $scope.entries = topics;
+    $ionicLoading.hide()
 
   }, function(errMsg) {
+    $ionicLoading.hide()
     if ( !checkPlatform.isBrowser ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
@@ -459,14 +465,15 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
     })
 
   .controller('tagebuchCtrl',
-    function ($scope, $stateParams, UserService, sharedProperties) {
+    function ($scope, $stateParams, UserService, sharedProperties, $ionicLoading) {
 
-        $scope.user = sharedProperties.getProperty();
+      $ionicLoading.show()
+      $scope.user = sharedProperties.getProperty();
         if ($scope.user.role == 'Doctor') {
           $scope.show = false;
-         } else {
-           $scope.show = true;
-         }
+        } else {
+          $scope.show = true;
+        }
 
       let userId = $stateParams.userId;
 
@@ -474,6 +481,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
         $scope.user = user;
         $scope.diaryEntries = $scope.user.diaryEntries.slice();
         $scope.diaryEntries.reverse();
+        $ionicLoading.hide();
       });
     })
 
@@ -542,8 +550,9 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
 
   .controller('home2Ctrl',
 
-    function ($scope, sharedProperties, VideoService, TopicService, $mdDialog,checkPlatform, UserService) {
+    function ($scope, sharedProperties, VideoService, TopicService, $mdDialog, checkPlatform, UserService, $ionicLoading) {
 
+      $ionicLoading.show()
       $scope.user = sharedProperties.getProperty();
       UserService.refreshUser($scope.user.userId).then(function (ruser) {
         sharedProperties.setProperty(ruser);
@@ -551,9 +560,11 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
       })
 
       TopicService.topics().then(function(topics) {
-
         $scope.entries = topics
+        $ionicLoading.hide()
+
       }, function(errMsg) {
+        $ionicLoading.hide()
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
         } else {
@@ -569,9 +580,10 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
 
       VideoService.videos().then(function(videos){
         $scope.videos = videos;
-
+        $ionicLoading.hide()
 
       }, function(errMsg) {
+        $ionicLoading.hide()
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Video-Fehler", ["Erneut versuchen"]);
         } else {
@@ -717,8 +729,9 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
     })
 
   .controller('accountCtrl',
-    function ($scope, $state, sharedProperties, UserService, checkPlatform, $mdDialog, UserService) {
+    function ($scope, $state, sharedProperties, UserService, checkPlatform, $mdDialog, UserService, $ionicLoading) {
 
+      $ionicLoading.show()
       $scope.user = sharedProperties.getProperty();
       UserService.refreshUser($scope.user.userId).then(function (ruser) {
         sharedProperties.setProperty(ruser);
@@ -726,6 +739,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
         $scope.date = new Date($scope.user.dateOfBirth);
       })
         $scope.date = new Date($scope.user.dateOfBirth);
+        $ionicLoading.hide()
 
       $scope.save = function() {
 

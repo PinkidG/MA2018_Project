@@ -9,24 +9,24 @@ function ($scope,$state, sharedProperties, sharedParameter, TopicService, checkP
   $scope.user = sharedProperties.getProperty();
   UserService.refreshUser($scope.user.userId).then(function (ruser) {
     sharedProperties.setProperty(ruser);
+    $scope.user = sharedProperties.getProperty();
+    var date = new Date($scope.user.dateOfBirth);
+    $scope.datefor = date.toLocaleDateString("de");
+  
+    for(i=0;i<$scope.user.illnesses.length;i++) {
+      $scope.illnames.push($scope.user.illnesses[i].name);
+    }
+    if ($scope.illnames.length == 0) {
+      $scope.illnesses = "Keine Befunde"
+    } else {
+      $scope.illnesses = $scope.illnames.toString();
+    }
+    //2 neusten Tagebucheinträge
+    $scope.diaryEntries = $scope.user.diaryEntries.slice();
+    $scope.diaryEntries.reverse();
   })
-  $scope.user = sharedProperties.getProperty();
-
   var date = new Date($scope.user.dateOfBirth);
   $scope.datefor = date.toLocaleDateString("de");
-
-  for(i=0;i<$scope.user.illnesses.length;i++) {
-    $scope.illnames.push($scope.user.illnesses[i].name);
-  }
-  if ($scope.illnames.length == 0) {
-    $scope.illnesses = "Keine Befunde"
-  } else {
-    $scope.illnesses = $scope.illnames.toString();
-  }
-
-  //2 neusten Tagebucheinträge
-  $scope.diaryEntries = $scope.user.diaryEntries.slice();
-  $scope.diaryEntries.reverse();
 
   //Forumseinträge des Patienten
   TopicService.topics().then(function(topics) {
@@ -542,8 +542,13 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
 
   .controller('home2Ctrl',
 
-    function ($scope, sharedProperties, VideoService, TopicService, $mdDialog,checkPlatform) {
+    function ($scope, sharedProperties, VideoService, TopicService, $mdDialog,checkPlatform, UserService) {
+
       $scope.user = sharedProperties.getProperty();
+      UserService.refreshUser($scope.user.userId).then(function (ruser) {
+        sharedProperties.setProperty(ruser);
+        $scope.user = sharedProperties.getProperty();
+      })
 
       TopicService.topics().then(function(topics) {
 
@@ -717,10 +722,10 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
       $scope.user = sharedProperties.getProperty();
       UserService.refreshUser($scope.user.userId).then(function (ruser) {
         sharedProperties.setProperty(ruser);
+        $scope.user = sharedProperties.getProperty();
+        $scope.date = new Date($scope.user.dateOfBirth);
       })
-      $scope.user = sharedProperties.getProperty();
-
-      $scope.date = new Date($scope.user.dateOfBirth);
+        $scope.date = new Date($scope.user.dateOfBirth);
 
       $scope.save = function() {
 
@@ -797,34 +802,6 @@ function ($scope, checkPlatform, TopicService, $mdDialog) {
             }, function() {
             });
           }
-
-
-   /*       UserService.deleteUser().then(function(msg) {
-
-          if ( !checkPlatform.isBrowser ) {
-            navigator.notification.confirm("Löschen erfolgreich!", function(buttonIndex) {
-          }, "Erfolg", [ "Okay"]);
-          } else {
-           var confirm = $mdDialog.alert()
-              .title('Erfolg')
-              .textContent('Löschen erfolgreich!')
-              .ariaLabel('Lucky day')
-              .ok("Okay");
-            $mdDialog.show(confirm);
-          }
-          $state.go('login');
-          }, function(errMsg) {
-            if ( !checkPlatform.isBrowser ) {
-              navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
-            } else {
-              let confirm = $mdDialog.alert()
-              .title('Fehler')
-              .textContent(errMsg.statusText)
-              .ariaLabel('Lucky day')
-              .ok("Erneut versuchen");
-              $mdDialog.show(confirm);
-            }
-        }); */
       };
   })
 

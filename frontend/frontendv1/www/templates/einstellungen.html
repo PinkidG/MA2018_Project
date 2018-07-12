@@ -1,0 +1,52 @@
+<ion-view title="Einstellungen" id="page24">
+  <ion-content padding="true" class="has-header">
+    <h3 id="einstellungen-heading30" style="color:#000000;">Allgemeine Informationen</h3>
+    <form id="einstellungen-form10" class="list">
+      <label class="item item-input" id="einstellungen-input22">
+        <span class="input-label">Name</span>
+        <input type="text" value="{{user.lastName}}" ng-model="user.lastName">
+      </label>
+      <label class="item item-input" id="einstellungen-input24">
+        <span class="input-label">Vorname</span>
+        <input type="text" value="{{user.firstName}}" ng-model="user.firstName">
+      </label>
+      <label class="item item-input" id="einstellungen-input25">
+        <span class="input-label">E-Mail</span>
+        <input type="email" value="{{user.email}}" ng-model="user.email">
+      </label>
+      <label class="item item-input" id="einstellungen-input31">
+        <span class="input-label">Geburtstag</span>
+        <input type="date" value="{{date | date:'yyyy-MM-dd'}}" ng-model="user.dateOfBirth">
+      </label>
+      <label class="item item-input item-select" id="einstellungen-input34">
+        <span class="input-label">Geschlecht</span>
+          <select ng-if="user.gender == 'Männlich'" ng-model="user.gender">
+            <option selected>Männlich</option>
+            <option>Weiblich</option>
+          </select>
+          <select ng-if="user.gender == 'Weiblich'" ng-model="user.gender">
+            <option>Männlich</option>
+            <option selected>Weiblich</option>
+          </select>
+          <select ng-if="user.gender == null" ng-model="user.gender">
+            <option>Männlich</option>
+            <option>Weiblich</option>
+          </select>
+      </label>
+      <button id="einstellungen-button9" class="button button-positive button-block" ng-click="save()">Sichern</button>
+    </form>
+    <form id="einstellungen-form14" class="list">
+      <h3 id="einstellungen-heading29" style="color:#000000;">Passwort ändern</h3>
+      <label class="item item-input" id="einstellungen-input30">
+        <span class="input-label">Neues Passwort</span>
+        <input type="password" placeholder="" ng-model="user.password">
+      </label>
+      <label class="item item-input" id="einstellungen-input29">
+        <span class="input-label">Altes Passwort</span>
+        <input type="password" placeholder="">
+      </label>
+      <button id="einstellungen-button16" class="button button-positive button-block">Sichern</button>
+    </form>
+    <button class="button button-assertive button-block" ng-click="delete($event)">User löschen</button>
+  </ion-content>
+</ion-view>

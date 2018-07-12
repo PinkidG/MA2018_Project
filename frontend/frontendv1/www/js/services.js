@@ -59,7 +59,6 @@ angular.module('app.services', [])
       if (isBrowser){
         end = API_ENDPOINT_OTHER
       }
-
       return end;
     };
 
@@ -74,10 +73,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -94,10 +90,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -119,14 +112,12 @@ angular.module('app.services', [])
 
   .service('DiaryService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
-
     var endpoint = function getEndpoint() {
       var isBrowser = ionic.Platform.is('browser');
       var end = API_ENDPOINT_APP
       if (isBrowser){
         end = API_ENDPOINT_OTHER
       }
-
       return end;
     };
 
@@ -139,19 +130,68 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
     };
-
     return {
       diary: diary
     };
   })
+
+  .service('VideoService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+
+    var endpoint = function getEndpoint() {
+      var isBrowser = ionic.Platform.is('browser');
+      var end = API_ENDPOINT_APP
+      if (isBrowser){
+        end = API_ENDPOINT_OTHER
+      }
+      return end;
+    };
+
+    var uploadVideo = function(image, title) {
+
+      var fd = new FormData();
+      fd.append('video', image, title+".mp4");
+
+      var deffered = $q.defer();
+      $http.post(endpoint().url + "/video", fd, {
+        transformRequest: angular.identity,
+        headers: {'Content-Type': undefined}
+
+      }).success(function (response) {
+        deffered.resolve(response);
+
+      }).error(function (response) {
+        deffered.reject(response.message);
+      });
+
+      return deffered.promise;
+    };
+
+
+    let videos = function () {
+      return $q(function(resolve, reject) {
+        $http.get(endpoint().url + '/videos').then(function(result) {
+          if (result.data) {
+            resolve(result.data.video);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+          return
+        });
+      });
+    };
+    return {
+      uploadVideo: uploadVideo,
+      videos: videos
+    };
+  })
+
 
   .service('checkPlatform', function () {
     return{
@@ -169,7 +209,6 @@ angular.module('app.services', [])
       if (isBrowser){
         end = API_ENDPOINT_OTHER
       }
-
       return end;
     };
 
@@ -182,10 +221,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -200,10 +236,7 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
@@ -219,11 +252,26 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
+        });
+      });
+    };
 
-          return
+    let addTopicEntry = function (topicId, message) {
+      return $q(function(resolve, reject) {
+        let topicObject = {
+          topicId: topicId,
+          message: message
+        };
+
+        $http.post(endpoint().url + '/entry/topic', topicObject).then(function(result) {
+          if (result.data) {
+            resolve(result.data.topic);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
         });
       });
     };
@@ -231,12 +279,12 @@ angular.module('app.services', [])
     return {
       topics: topics,
       topic: topic,
-      addTopic: addTopic
+      addTopic: addTopic,
+      addTopicEntry: addTopicEntry
     };
   })
 
   .service('UserService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
-
 
     var endpoint = function getEndpoint() {
       var isBrowser = ionic.Platform.is('browser');
@@ -244,7 +292,6 @@ angular.module('app.services', [])
       if (isBrowser){
         end = API_ENDPOINT_OTHER
       }
-
       return end;
     };
 
@@ -257,17 +304,91 @@ angular.module('app.services', [])
             reject(result.data.msg);
           }
         }).catch((err) => {
-
           reject(err);
-          // Do messaging and error handling here
-
           return
         });
       });
     };
 
+    var updateUser = function(user) {
+      return $q(function(resolve, reject) {
+        $http.post(endpoint().url + '/user/update', user).then(function(result) {
+          if (result.data.User) {
+            resolve(result.data.User);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+          return
+        });
+      });
+    };
+
+    let deleteUser = function() {
+      return $q(function(resolve, reject) {
+        $http.delete(endpoint().url + '/user/delete').then(function(result) {
+          if (result.data.message) {
+            resolve(result.data.message);
+          } else {
+            reject(result.data.error);
+          }
+        }).catch((err) => {
+          reject(err);
+          return
+        });
+      });
+    };
+
+    let searchUser = function(lastName) {
+      return $q(function(resolve, reject) {
+        $http.get(endpoint().url + '/usern/' + lastName).then(function(result) {
+          if (result.data.User) {
+            resolve(result.data.User);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    };
+
+    let getUserById = function(userId) {
+      return $q(function(resolve, reject) {
+        $http.get(endpoint().url + '/user/' + userId).then(function(result) {
+          if (result.data.User) {
+            resolve(result.data.User);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    };
+
+    let addUserToUser = function (userId) {
+      return $q(function(resolve, reject) {
+        $http.post(endpoint().url + '/user/add/' + userId, {id: userId}).then(function(result) {
+          if (result.data.user) {
+            resolve(result.data.user);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    };
+
     return {
-      refreshUser: refreshUser
+      refreshUser: refreshUser,
+      updateUser: updateUser,
+      deleteUser: deleteUser,
+      searchUser: searchUser,
+      getUserById: getUserById,
+      addUserToUser: addUserToUser
     };
   })
 
@@ -277,18 +398,30 @@ angular.module('app.services', [])
     }
   })
 
-.service('sharedProperties', function () {
-  var property = "";
-
-  return {
+  .service('sharedProperties', function () {
+    var property = "";
+    return {
       getProperty: function () {
-           return property;
+        return property;
       },
-       setProperty: function(value) {
-           property = value;
-       }
-  };
-})
+      setProperty: function(value) {
+        property = value;
+      }
+   };
+  })
+
+  .service('sharedParameter', function () {
+    var property = "";
+
+    return {
+      getProperty: function () {
+        return property;
+      },
+      setProperty: function(value) {
+        property = value;
+      }
+    };
+  })
 
 .config(function ($httpProvider) {
   $httpProvider.interceptors.push('AuthInterceptor');

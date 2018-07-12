@@ -6,16 +6,7 @@ function setVideoInfo(request) {
     return {
         id: request.videoId,
         title: request.title,
-        user: request.user
-    };
-}
-
-function setVideoInfoWithData(request) {
-    return {
-        id: request.videoId,
-        title: request.title,
-        video: request.video,
-	user: request.user
+        userId: request.userId
     };
 }
 
@@ -27,6 +18,7 @@ exports.register = function(req, res) {
 console.log("Video Post requested")
 
     const user = req.user;
+    const userId = req.user.userId;
 
     if (req.user.role === "Doctor" || req.user.role === "Admin") {
 
@@ -38,9 +30,6 @@ console.log("Video Post requested")
 
         let file = req.file,
             path = process.cwd() + "\\Server\\data\\";
-
-	console.log(path)
-	console.log(file.originalname)
 
         //console.log(file);
         // Logic for handling missing file, wrong mimetype, no buffer, etc.
@@ -77,19 +66,19 @@ console.log("Video Post requested")
                 });
             });
             stream.on('finish', function() {
-                console.log('File saved successfully.');
+                /*console.log('File saved successfully.');
                 let data = {
                     message: 'File saved successfully.'
                 };
-                res.jsonp(data);
+                res.jsonp(data);*/
             });
             stream.end();
 
             // If video is unique, create video
             let video = new Video({
                 title: fileName,
-                user: user,
-                video: buffer
+                userId: userId,
+                video: buffer,
             });
 
             video.save(function (err) {
@@ -101,6 +90,9 @@ console.log("Video Post requested")
                     if (err) {
                         return next(err);
                     }
+                });
+                res.status(200).json({
+                    video: setVideoInfo(video)
                 });
             });
         });
@@ -197,4 +189,25 @@ exports.getAll = function(req, res) {
         });
 
     })
+};
+
+exports.deleteVideo = function(req, res) {
+
+    const id = req.params.id;
+
+    let myquery = {videoId: id};
+
+    Video.deleteOne(myquery, function (err) {
+        if (err) {
+            return res.status(403).send({
+                error: 'Request error!.',
+                description: err.message
+            });
+        }
+
+        let data = {
+            message: 'Video deleted successfully'
+        };
+        res.json(data);
+    });
 };

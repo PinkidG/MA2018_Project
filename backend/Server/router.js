@@ -93,6 +93,7 @@ module.exports = function(app) {
     apiRoutes.get('/video/:title', VideoController.getByTitle);
     apiRoutes.get('/videoById/:id', requireAuth, VideoController.getById);
     apiRoutes.get('/videos', requireAuth, VideoController.getAll);
+    apiRoutes.delete('/video/delete/:id', requireAuth, VideoController.deleteVideo);
 
     // DiaryEntry route
     apiRoutes.post('/diary', requireAuth, DiaryEntryController.register);

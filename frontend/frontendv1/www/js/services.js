@@ -186,9 +186,28 @@ angular.module('app.services', [])
         });
       });
     };
+
+    let videoById = function (id) {
+      return $q(function(resolve, reject) {
+        $http.get(endpoint().url + '/videoById/'+id).then(function(result) {
+          if (result.data) {
+            resolve(result.data.video);
+          } else {
+            reject(result.data.msg);
+          }
+        }).catch((err) => {
+          reject(err);
+          return
+        });
+      });
+    };
+
+
+
     return {
       uploadVideo: uploadVideo,
-      videos: videos
+      videos: videos,
+      videoById: videoById
     };
   })
 

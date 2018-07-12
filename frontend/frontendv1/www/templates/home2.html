@@ -6,7 +6,7 @@
       <ion-item class="item-avatar" id="home2-list-item133" ui-sref="men.patient({userId: {{patient.userId}}})" ng-repeat="patient in user.users">
         <img src="img/70anb3aSHimEqVCC9ARA_patient.jpg">
         <h2>{{patient.profile.firstName}} {{patient.profile.lastName}}</h2>
-        <p>...</p>
+        <p>{{patient.gender}}</p>
       </ion-item>
       <ion-item class="item-icon-right" id="home2-list-item157" ui-sref="men.patienten()">mehr
         <i class="icon ion-ios-arrow-forward"></i>
@@ -15,8 +15,7 @@
     <h3 id="home2-heading26" style="color:#000000;">Fragen</h3>
     <div class="list card" id="home2-card221">
       <ion-item class="item-icon-left" id="home2-list-item154" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries|limitTo:2">
-        <i class="icon ion-help"></i>{{item.title}}}
-        <span class="item-note">#OP #Oberschenkel #Bruch</span>
+        <i class="icon ion-help"></i>{{item.title}}
       </ion-item>
       <ion-item class="item-icon-right" id="home2-list-item166" ui-sref="men.fragen()">mehr
         <i class="icon ion-ios-arrow-forward"></i>
@@ -25,7 +24,7 @@
     <h3 id="home2-heading28" style="color:#000000;">Videos</h3>
     <button id="home2-button13" class="button button-stable button-block" ng-click="upload()">Hochladen</button>
     <div class="list card" id="home2-card220">
-      <ion-item class="item-thumbnail-left" id="home2-list-item151" ui-sref="men.video()" ng-repeat="video in videos|limitTo:2">
+      <ion-item class="item-thumbnail-left" id="home2-list-item151" ui-sref="men.video({videoId: {{video.id}}})" ng-repeat="video in videos|limitTo:2">
         <img src="img/JG0W1siQEq7kxb7sKYoQ_oberschenkelbruch.jpg">
         <h2>{{video.title}}</h2>
       </ion-item>

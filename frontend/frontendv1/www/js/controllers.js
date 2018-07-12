@@ -13,7 +13,7 @@ function ($scope, $state, sharedProperties, sharedParameter, TopicService, check
     $scope.user = sharedProperties.getProperty();
     var date = new Date($scope.user.dateOfBirth);
     $scope.datefor = date.toLocaleDateString("de");
-  
+
     for(i=0;i<$scope.user.illnesses.length;i++) {
       $scope.illnames.push($scope.user.illnesses[i].name);
     }
@@ -289,9 +289,19 @@ function ($scope, $stateParams) {
 function ($scope, $stateParams) {
 }])
 
-.controller('videoCtrl', ['$scope', '$stateParams',
-function ($scope, $stateParams) {
-}])
+.controller('videoCtrl',function ($scope, $stateParams, VideoService, checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
+
+  let id = $stateParams.videoId;
+
+  VideoService.videoById(id).then(function (video) {
+
+    $scope.video = video
+  });
+
+
+
+
+})
 
 .controller('frageCtrl', function ($scope, $stateParams,sharedParameter, checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
 
@@ -579,11 +589,27 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
 
       VideoService.videos().then(function(videos){
-        $scope.videos = videos;
-        $ionicLoading.hide()
+
+        let list = [];
+        videos.forEach(function(video){
+          let title = video.title.replace('.mp4','').replace('.mov','');
+          let id = video.id;
+
+
+          let videoObject = {
+            title: title,
+            id: id
+          }
+
+
+          list.push(videoObject)
+        });
+
+        $scope.videos = list;
+        $ionicLoading.hide();
 
       }, function(errMsg) {
-        $ionicLoading.hide()
+        $ionicLoading.hide();
         if ( !checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Video-Fehler", ["Erneut versuchen"]);
         } else {

@@ -1,6 +1,8 @@
 <ion-view title="Tagebuch" id="page2">
+  <ion-nav-buttons side="secondary">
+    <button ng-show="show" ui-sref="men.neuTagebuch()" class="button button-light button-icon icon ion-ios-plus-outline"></button>
+  </ion-nav-buttons>
   <ion-content padding="true" class="has-header">
-    <button id="tagebuch-button12" ng-show="show" style="text-align:right;" ui-sref="men.neuTagebuch()" class="button button-light button-icon icon ion-ios-plus-outline"></button>
     <div class="list card" ng-repeat="item in diaryEntries">
       <ion-item class="item item-avatar">
         <img src="img/sad.png" ng-if="item.status == 'bad'">

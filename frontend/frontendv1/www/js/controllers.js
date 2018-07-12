@@ -408,7 +408,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
     })
 
   .controller('sucheCtrl',
-    function ($scope, SearchService, $ionicLoading) {
+    function ($scope, checkPlatform, SearchService, $ionicLoading) {
 
       $scope.search = {
         text: ""
@@ -418,7 +418,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
         $ionicLoading.show()
         SearchService.search($scope.search.text).then(function(results){
-
+          
 
 
 

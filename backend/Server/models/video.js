@@ -27,6 +27,13 @@ const VideoSchema = new Schema({
         ref: 'User',
         childPath: "videos"
     }],
+    userId: {
+        type: Number,
+        references: 'user',
+        referencesKey: 'id',
+        allowNull: false,
+        required: true
+    },
 });
 
 VideoSchema.plugin(relationship, {

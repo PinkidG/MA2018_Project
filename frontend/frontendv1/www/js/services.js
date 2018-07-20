@@ -54,7 +54,7 @@ angular.module('app.services', [])
     }
 
     var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.is('browser');
+      var isBrowser = ionic.Platform.platforms.includes('browser');
       var end = API_ENDPOINT_APP
       if (isBrowser){
         end = API_ENDPOINT_OTHER
@@ -113,7 +113,7 @@ angular.module('app.services', [])
   .service('DiaryService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
     var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.is('browser');
+      var isBrowser = ionic.Platform.platforms.includes('browser');
       var end = API_ENDPOINT_APP
       if (isBrowser){
         end = API_ENDPOINT_OTHER
@@ -143,7 +143,7 @@ angular.module('app.services', [])
   .service('SearchService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
     var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.is('browser');
+      var isBrowser = ionic.Platform.platforms.includes('browser');
       var end = API_ENDPOINT_APP
       if (isBrowser){
         end = API_ENDPOINT_OTHER
@@ -173,7 +173,7 @@ angular.module('app.services', [])
   .service('VideoService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
     var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.is('browser');
+      var isBrowser = ionic.Platform.platforms.includes('browser');
       var end = API_ENDPOINT_APP
       if (isBrowser){
         end = API_ENDPOINT_OTHER
@@ -270,8 +270,18 @@ angular.module('app.services', [])
 
 
   .service('checkPlatform', function () {
+
+    let isBrowser = function () {
+      if(ionic.Platform.platforms == null ||ionic.Platform.platforms == undefined){
+        return true
+      }
+      return ionic.Platform.platforms.indexOf('browser') > -1
+    }
+
+
+
     return{
-      isBrowser: ionic.Platform.is('browser')
+      isBrowser: isBrowser
     }
   })
 
@@ -280,7 +290,7 @@ angular.module('app.services', [])
     this.selectedTopic;
 
     let endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.is('browser');
+      var isBrowser = ionic.Platform.platforms.includes('browser');
       var end = API_ENDPOINT_APP
       if (isBrowser){
         end = API_ENDPOINT_OTHER
@@ -363,7 +373,7 @@ angular.module('app.services', [])
   .service('UserService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
 
     var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.is('browser');
+      var isBrowser = ionic.Platform.platforms.includes('browser');
       var end = API_ENDPOINT_APP
       if (isBrowser){
         end = API_ENDPOINT_OTHER
@@ -466,12 +476,6 @@ angular.module('app.services', [])
       getUserById: getUserById,
       addUserToUser: addUserToUser
     };
-  })
-
-  .service('checkPlatform', function () {
-    return{
-      isBrowser: ionic.Platform.is('browser')
-    }
   })
 
   .service('sharedProperties', function () {

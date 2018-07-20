@@ -10,6 +10,6 @@ angular.module('app.constants', [])
   })
 
   .constant('API_ENDPOINT_OTHER', {
-    url: 'http://localhost:8080/api'
+    url: 'http://localhost:3000/api'
     //  For a simulator use: url: 'http://127.0.0.1:8080/api'
   });

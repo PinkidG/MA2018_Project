@@ -2,7 +2,7 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
 
 .controller('homeCtrl',
 
-function ($scope, $state, sharedProperties, sharedParameter, TopicService, checkPlatform, UserService, $ionicLoading) {
+function ($scope, $state, sharedProperties, sharedParameter, TopicService, checkPlatform, UserService, $mdDialog, $ionicLoading) {
 
   $scope.illnames = [];
 
@@ -417,7 +417,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           searchTerm: $scope.search.text
         }
         SearchService.search(searchObj).then(function(results){
-          
+
         $scope.topics = results.topics;
 
 

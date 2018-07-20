@@ -15,7 +15,7 @@ angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'a
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**', '*://pinkisworld.ddnss.de/api/**']);
 
 })
-  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform, sharedParameter) {
+  .run(function ($rootScope, $state, AuthService, AUTH_EVENTS, $ionicPlatform, checkPlatform) {
 
     $rootScope.goBackState = function(){
       $ionicViewSwitcher.nextDirection('back');
@@ -34,9 +34,12 @@ angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'a
       if (window.StatusBar) {
         StatusBar.styleDefault();
       }
+      if(!checkPlatform.isBrowser){
+        pictureSource = navigator.camera.PictureSourceType;
+        destinationType = navigator.camera.DestinationType;
+      }
 
-      pictureSource = navigator.camera.PictureSourceType;
-      destinationType = navigator.camera.DestinationType;
+
 
       // Branch
       $ionicPlatform.on("deviceready", function() {

@@ -1,11 +1,11 @@
 <ion-view title="Patienten" id="page19">
   <ion-content padding="true" class="has-header">
-    <a ui-sref="men.neuenPatientenZuweisen()" id="patienten-button15" class="button button-stable button-block">neu zuweisen</a>
+    <a ui-sref="men.neuenPatientenZuweisen()" id="patienten-button15" class="button button-stable button-block">Neu zuweisen</a>
     <div class="list card" id="patienten-card224">
-      <ion-item class="item-avatar" id="patienten-list-item167" ui-sref="men.patient()">
-        <img src="img/70anb3aSHimEqVCC9ARA_patient.jpg">
-        <h2>Max Mustermann</h2>
-        <p>Oberschenkelbruch</p>
+      <ion-item class="item-avatar" id="home2-list-item133" ui-sref="men.patient({userId: {{patient.userId}}})" ng-repeat="patient in user.users | orderBy:'profile.lastName'">
+        <img src="img/patient.png">
+        <h2>{{patient.profile.firstName}} {{patient.profile.lastName}}</h2>
+        <p>{{patient.gender}}</p>
       </ion-item>
     </div>
   </ion-content>

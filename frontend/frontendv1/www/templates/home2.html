@@ -3,8 +3,8 @@
     <h2 id="home2-heading19" style="color:#000000;">Hallo {{user.firstName}} {{user.lastName}}</h2>
     <h3 id="home2-heading20" style="color:#000000;">Aktuelle Patienten</h3>
     <div class="list card" id="home2-card216">
-      <ion-item class="item-avatar" id="home2-list-item133" ui-sref="men.patient({userId: {{patient.userId}}})" ng-repeat="patient in user.users">
-        <img src="img/70anb3aSHimEqVCC9ARA_patient.jpg">
+      <ion-item class="item-avatar" id="home2-list-item133" ui-sref="men.patient({userId: {{patient.userId}}})" ng-repeat="patient in user.users|limitTo:4">
+        <img src="img/patient.png">
         <h2>{{patient.profile.firstName}} {{patient.profile.lastName}}</h2>
         <p>{{patient.gender}}</p>
       </ion-item>
@@ -25,7 +25,7 @@
     <button id="home2-button13" class="button button-stable button-block" ng-click="upload()">Hochladen</button>
     <div class="list card" id="home2-card220">
       <ion-item class="item-thumbnail-left" id="home2-list-item151" ui-sref="men.video({video: {{video}}})" ng-repeat="video in videos|limitTo:2">
-        <img src="img/JG0W1siQEq7kxb7sKYoQ_oberschenkelbruch.jpg">
+        <img src="img/video.png">
         <h2>{{video.title}}</h2>
       </ion-item>
       <ion-item class="item-icon-right" id="home2-list-item153" ui-sref="men.videos()">mehr

@@ -6,7 +6,7 @@ function ($scope, $state, sharedProperties, sharedParameter, TopicService, check
 
   $scope.illnames = [];
 
-  $ionicLoading.show()
+  $ionicLoading.show();
   $scope.user = sharedProperties.getProperty();
   UserService.refreshUser($scope.user.userId).then(function (ruser) {
     sharedProperties.setProperty(ruser);
@@ -17,7 +17,7 @@ function ($scope, $state, sharedProperties, sharedParameter, TopicService, check
     for(i=0;i<$scope.user.illnesses.length;i++) {
       $scope.illnames.push($scope.user.illnesses[i].name);
     }
-    if ($scope.illnames.length == 0) {
+    if ($scope.illnames.length === 0) {
       $scope.illnesses = "Keine Befunde"
     } else {
       $scope.illnesses = $scope.illnames.toString();
@@ -129,12 +129,12 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
         }
       }, function (errMsg) {
         if (!checkPlatform.isBrowser) {
-          navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
+          navigator.notification.confirm(errMsg.data, function (buttonIndex) {
           }, "Server-Fehler", ["Erneut versuchen"]);
         } else {
           let confirm = $mdDialog.alert()
             .title('Server-Fehler')
-            .textContent(errMsg.statusText)
+            .textContent(errMsg.data)
             .ariaLabel('Lucky day')
             .targetEvent(ev)
             .ok("Erneut versuchen");
@@ -143,12 +143,12 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
       });
     }, function (errMsg) {
       if (!checkPlatform.isBrowser) {
-        navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {
+        navigator.notification.confirm("Bitte Benutznamen und Passwort überprüfen.", function (buttonIndex) {
         }, "Benutzer-Fehler (1M)", ["Erneut versuchen"]);
       } else {
         let confirm = $mdDialog.alert()
           .title('Benutzer-Fehler (1B)')
-          .textContent(errMsg.statusText)
+          .textContent("Bitte Benutznamen und Passwort überprüfen.")
           .ariaLabel('Lucky day')
           .targetEvent(ev)
           .ok("Erneut versuchen");
@@ -222,11 +222,11 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
       }
     }, function(errMsg) {
       if ( !checkPlatform.isBrowser ) {
-        navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Patient)", ["Erneut versuchen"]);
+        navigator.notification.confirm(errMsg.data.error, function(buttonIndex) {}, "Fehler (Patient)", ["Erneut versuchen"]);
       } else {
         let confirm = $mdDialog.alert()
           .title('Fehler (Patient)')
-          .textContent(errMsg.statusText)
+          .textContent(errMsg.data.error)
           .ariaLabel('Lucky day')
           .ok("Erneut versuchen");
         $mdDialog.show(confirm);
@@ -267,11 +267,11 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog)
       }
     }, function(errMsg) {
       if ( !checkPlatform.isBrowser ) {
-        navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler (Arzt)", ["Erneut versuchen"]);
+        navigator.notification.confirm(errMsg.data.error, function(buttonIndex) {}, "Fehler (Arzt)", ["Erneut versuchen"]);
       } else {
         let confirm = $mdDialog.alert()
           .title('Fehler (Arzt)')
-          .textContent(errMsg.statusText)
+          .textContent(errMsg.data.error)
           .ariaLabel('Lucky day')
           .ok("Erneut versuchen");
         $mdDialog.show(confirm);
@@ -503,7 +503,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
   .controller('tagebuchCtrl',
     function ($scope, $stateParams, UserService, sharedProperties, $ionicLoading) {
 
-      $ionicLoading.show()
+      $ionicLoading.show();
       $scope.user = sharedProperties.getProperty();
         if ($scope.user.role == 'Doctor') {
           $scope.show = false;
@@ -584,24 +584,22 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
         $scope.init();
       })
 
-  .controller('home2Ctrl',
+  .controller('home2Ctrl', function ($scope, sharedProperties, VideoService, TopicService, $mdDialog, checkPlatform, UserService, $ionicLoading) {
 
-    function ($scope, sharedProperties, VideoService, TopicService, $mdDialog, checkPlatform, UserService, $ionicLoading) {
-
-      $ionicLoading.show()
+      $ionicLoading.show();
       $scope.user = sharedProperties.getProperty();
       UserService.refreshUser($scope.user.userId).then(function (ruser) {
         sharedProperties.setProperty(ruser);
         $scope.user = sharedProperties.getProperty();
-      })
+      });
 
       TopicService.topics().then(function(topics) {
-        $scope.entries = topics
-        $ionicLoading.hide()
+        $scope.entries = topics;
+        $ionicLoading.hide();
 
       }, function(errMsg) {
-        $ionicLoading.hide()
-        if ( !checkPlatform.isBrowser ) {
+        $ionicLoading.hide();
+        if (!checkPlatform.isBrowser ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
         } else {
           let confirm = $mdDialog.alert()
@@ -686,9 +684,16 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
     })
 
-  .controller('patientenCtrl', ['$scope', '$stateParams',
-    function ($scope, $stateParams) {
-    }])
+  .controller('patientenCtrl', function ($scope, sharedProperties, UserService, $ionicLoading) {
+    $ionicLoading.show();
+    $scope.user = sharedProperties.getProperty();
+    UserService.refreshUser($scope.user.userId).then(function (ruser) {
+      sharedProperties.setProperty(ruser);
+      $scope.user = sharedProperties.getProperty();
+      $ionicLoading.hide()
+    });
+
+  })
 
   .controller('neuenPatientenZuweisenCtrl',
     function ($scope, $state ,UserService, checkPlatform, $mdDialog, $ionicLoading) {
@@ -699,23 +704,25 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
     };
 
       $scope.searchUser = function() {
+        $scope.resultUser = [];
+
         UserService.searchUser($scope.search.string).then(function(ruser) {
           $scope.resultUser.push(ruser)
         }, function(errMsg) {
 
           if ( !checkPlatform.isBrowser ) {
-            navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Such-Fehler", ["Erneut versuchen"]);
+            navigator.notification.confirm(errMsg.data.error, function(buttonIndex) {}, "Such-Fehler", ["Erneut versuchen"]);
           } else {
             let confirm = $mdDialog.alert()
               .title('Such-Fehler')
-              .textContent(errMsg.statusText)
+              .textContent(errMsg.data.error)
               .ariaLabel('Lucky day')
-              .targetEvent(ev)
+              .targetEvent()
               .ok("Erneut versuchen");
             $mdDialog.show(confirm);
           }
         });
-      }
+      };
 
       $scope.addUser = function(user){
         if ( !checkPlatform.isBrowser ) {
@@ -728,7 +735,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
                   $state.go('men.home2');
                 }, function(errMsg) {
                   $ionicLoading.hide();
-                  navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "AddUser-Fehler", ["Erneut versuchen"]);
+                  navigator.notification.confirm(errMsg.data.error, function(buttonIndex) {}, "AddUser-Fehler", ["Erneut versuchen"]);
                 });
                 break;
               case 2:
@@ -753,7 +760,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
               $ionicLoading.hide();
                 let confirm = $mdDialog.alert()
                   .title('AddUser-Fehler')
-                  .textContent(errMsg.statusText)
+                  .textContent(errMsg.data.error)
                   .ariaLabel('Lucky day')
                   .ok("Erneut versuchen");
                 $mdDialog.show(confirm);

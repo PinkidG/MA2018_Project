@@ -21,7 +21,27 @@ angular.module('app.services', [])
     };
   })
 
-  .service('AuthService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+  .service('APIConnector', function (API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+
+    let USELOCASERVER = false;
+
+
+    function getAPIEndpoint() {
+      if (USELOCASERVER){
+          return API_ENDPOINT_OTHER
+      }
+      else{
+        return API_ENDPOINT_APP
+      }
+
+    }
+
+    return {
+      getAPIEndpoint: getAPIEndpoint
+    }
+  })
+
+  .service('AuthService', function($q, $http, APIConnector) {
     var LOCAL_TOKEN_KEY = 'yourTokenKey';
     var isAuthenticated = false;
     var authToken;
@@ -53,19 +73,10 @@ angular.module('app.services', [])
       window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     }
 
-    var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.platforms.includes('browser');
-      var end = API_ENDPOINT_APP
-      if (isBrowser){
-        end = API_ENDPOINT_OTHER
-      }
-      return end;
-    };
-
     var register = function(user) {
       return $q(function(resolve, reject) {
 
-        $http.post(endpoint().url + '/auth/register', user).then(function(result) {
+        $http.post(APIConnector.getAPIEndpoint().url + '/auth/register', user).then(function(result) {
           if (result.data.token) {
             storeUserCredentials(result.data.token);
             resolve(result.data.user);
@@ -82,7 +93,7 @@ angular.module('app.services', [])
     var login = function(user) {
       return $q(function(resolve, reject) {
 
-        $http.post(endpoint().url + '/auth/login', user).then(function(result) {
+        $http.post(APIConnector.getAPIEndpoint().url + '/auth/login', user).then(function(result) {
           if (result.data.token) {
             storeUserCredentials(result.data.token);
             resolve(result.data.user);
@@ -110,20 +121,11 @@ angular.module('app.services', [])
     };
   })
 
-  .service('DiaryService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
-
-    var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.platforms.includes('browser');
-      var end = API_ENDPOINT_APP
-      if (isBrowser){
-        end = API_ENDPOINT_OTHER
-      }
-      return end;
-    };
+  .service('DiaryService', function($q, $http, APIConnector) {
 
     var diary = function(diaryEntry) {
       return $q(function(resolve, reject) {
-        $http.post(endpoint().url + '/diary', diaryEntry).then(function(result) {
+        $http.post(APIConnector.getAPIEndpoint().url + '/diary', diaryEntry).then(function(result) {
           if (result.data.user) {
             resolve(result.data.user);
           } else {
@@ -140,20 +142,11 @@ angular.module('app.services', [])
     };
   })
 
-  .service('SearchService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
-
-    var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.platforms.includes('browser');
-      var end = API_ENDPOINT_APP
-      if (isBrowser){
-        end = API_ENDPOINT_OTHER
-      }
-      return end;
-    };
+  .service('SearchService', function($q, $http, APIConnector) {
 
     var search = function(searchTerm) {
       return $q(function(resolve, reject) {
-        $http.post(endpoint().url + '/search', searchTerm).then(function(result) {
+        $http.post(APIConnector.getAPIEndpoint().url + '/search', searchTerm).then(function(result) {
           if (result.data.topics && result.data.videos) {
             resolve(result.data);
           } else {
@@ -170,16 +163,7 @@ angular.module('app.services', [])
     };
   })
 
-  .service('VideoService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
-
-    var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.platforms.includes('browser');
-      var end = API_ENDPOINT_APP
-      if (isBrowser){
-        end = API_ENDPOINT_OTHER
-      }
-      return end;
-    };
+  .service('VideoService', function($q, $http, APIConnector) {
 
     var uploadVideo = function(image, title) {
 
@@ -187,7 +171,7 @@ angular.module('app.services', [])
       fd.append('video', image, title.trim()+".mp4");
 
       var deffered = $q.defer();
-      $http.post(endpoint().url + "/video", fd, {
+      $http.post(APIConnector.getAPIEndpoint().url + "/video", fd, {
         transformRequest: angular.identity,
         headers: {'Content-Type': undefined}
 
@@ -204,7 +188,7 @@ angular.module('app.services', [])
 
     let videos = function () {
       return $q(function(resolve, reject) {
-        $http.get(endpoint().url + '/videos').then(function(result) {
+        $http.get(APIConnector.getAPIEndpoint().url + '/videos').then(function(result) {
           if (result.data.video) {
             let list = [];
             result.data.video.forEach(function(video){
@@ -229,7 +213,7 @@ angular.module('app.services', [])
 
     let videoById = function (id) {
       return $q(function(resolve, reject) {
-        $http.get(endpoint().url + '/videoById/'+id).then(function(result) {
+        $http.get(APIConnector.getAPIEndpoint().url + '/videoById/'+id).then(function(result) {
           if (result.data.video) {
 
             let list = [];
@@ -285,22 +269,14 @@ angular.module('app.services', [])
     }
   })
 
-  .service('TopicService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+  .service('TopicService', function($q, $http, APIConnector) {
 
     this.selectedTopic;
 
-    let endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.platforms.includes('browser');
-      var end = API_ENDPOINT_APP
-      if (isBrowser){
-        end = API_ENDPOINT_OTHER
-      }
-      return end;
-    };
 
     let topics = function () {
       return $q(function(resolve, reject) {
-        $http.get(endpoint().url + '/topics').then(function(result) {
+        $http.get(APIConnector.getAPIEndpoint().url + '/topics').then(function(result) {
           if (result.data) {
             resolve(result.data.topic);
           } else {
@@ -315,7 +291,7 @@ angular.module('app.services', [])
 
     let topic = function (topicId) {
       return $q(function(resolve, reject) {
-        $http.get(endpoint().url + '/topic/' + topicId).then(function(result) {
+        $http.get(APIConnector.getAPIEndpoint().url + '/topic/' + topicId).then(function(result) {
           if (result.data) {
             resolve(result.data.topic);
           } else {
@@ -331,7 +307,7 @@ angular.module('app.services', [])
 
     let addTopic = function (topicObj) {
       return $q(function(resolve, reject) {
-        $http.post(endpoint().url + '/topic', topicObj).then(function(result) {
+        $http.post(APIConnector.getAPIEndpoint().url + '/topic', topicObj).then(function(result) {
           if (result.data) {
             resolve(result.data.topic);
           } else {
@@ -350,7 +326,7 @@ angular.module('app.services', [])
           message: message
         };
 
-        $http.post(endpoint().url + '/entry/topic', topicObject).then(function(result) {
+        $http.post(APIConnector.getAPIEndpoint().url + '/entry/topic', topicObject).then(function(result) {
           if (result.data) {
             resolve(result.data.topic);
           } else {
@@ -370,20 +346,12 @@ angular.module('app.services', [])
     };
   })
 
-  .service('UserService', function($q, $http, API_ENDPOINT_APP, API_ENDPOINT_OTHER) {
+  .service('UserService', function($q, $http, APIConnector) {
 
-    var endpoint = function getEndpoint() {
-      var isBrowser = ionic.Platform.platforms.includes('browser');
-      var end = API_ENDPOINT_APP
-      if (isBrowser){
-        end = API_ENDPOINT_OTHER
-      }
-      return end;
-    };
 
     var refreshUser = function(userId) {
       return $q(function(resolve, reject) {
-        $http.get(endpoint().url + '/user/' + userId).then(function(result) {
+        $http.get(APIConnector.getAPIEndpoint().url + '/user/' + userId).then(function(result) {
           if (result.data.User) {
             resolve(result.data.User);
           } else {
@@ -398,7 +366,7 @@ angular.module('app.services', [])
 
     var updateUser = function(user) {
       return $q(function(resolve, reject) {
-        $http.post(endpoint().url + '/user/update', user).then(function(result) {
+        $http.post(APIConnector.getAPIEndpoint().url + '/user/update', user).then(function(result) {
           if (result.data.User) {
             resolve(result.data.User);
           } else {
@@ -413,7 +381,7 @@ angular.module('app.services', [])
 
     let deleteUser = function() {
       return $q(function(resolve, reject) {
-        $http.delete(endpoint().url + '/user/delete').then(function(result) {
+        $http.delete(APIConnector.getAPIEndpoint().url + '/user/delete').then(function(result) {
           if (result.data.message) {
             resolve(result.data.message);
           } else {
@@ -428,7 +396,7 @@ angular.module('app.services', [])
 
     let searchUser = function(lastName) {
       return $q(function(resolve, reject) {
-        $http.get(endpoint().url + '/usern/' + lastName).then(function(result) {
+        $http.get(APIConnector.getAPIEndpoint().url + '/usern/' + lastName).then(function(result) {
           if (result.data.User) {
             resolve(result.data.User);
           } else {
@@ -442,7 +410,7 @@ angular.module('app.services', [])
 
     let getUserById = function(userId) {
       return $q(function(resolve, reject) {
-        $http.get(endpoint().url + '/user/' + userId).then(function(result) {
+        $http.get(APIConnector.getAPIEndpoint().url + '/user/' + userId).then(function(result) {
           if (result.data.User) {
             resolve(result.data.User);
           } else {
@@ -456,7 +424,7 @@ angular.module('app.services', [])
 
     let addUserToUser = function (userId) {
       return $q(function(resolve, reject) {
-        $http.post(endpoint().url + '/user/add/' + userId, {id: userId}).then(function(result) {
+        $http.post(APIConnector.getAPIEndpoint().url + '/user/add/' + userId, {id: userId}).then(function(result) {
           if (result.data.user) {
             resolve(result.data.user);
           } else {

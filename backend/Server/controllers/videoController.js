@@ -2,12 +2,27 @@
 const fs = require('fs');
 const fse = require('fs-extra');
 const Video = require('../models/video');
+const User = require('../models/user');
+
 function setVideoInfo(request) {
     return {
         id: request.videoId,
         title: request.title,
         userId: request.userId
     };
+}
+
+function setUserInfo(request) {
+
+    var userInfo = {
+        userId: request.userId,
+        firstName: request.profile.firstName,
+        lastName: request.profile.lastName,
+        email: request.email,
+        role: request.role,
+    };
+
+    return userInfo;
 }
 
 //========================================
@@ -147,7 +162,7 @@ exports.getById = function(req, res, next) {
 
     Video.findOne({ videoId: id }).populate({
         path: 'videos',
-        select: '-_id -__v -users -video'
+        select: '-_id -__v -video'
     }).exec(function(err, video) {
         if (err) {
             return res.status(403).send({
@@ -159,10 +174,29 @@ exports.getById = function(req, res, next) {
         if (video == null) {
             return res.status(422).send({ error: 'Video not found.' });
         }
-        // If topic is not unique, return error
-        res.status(200).json({
-            video: setVideoInfo(video)
-        });
+	
+
+
+	User.findOne({ userId: video.userId})
+    	.populate({path: 'users', select: '-_id -users -__v -password -entries'})
+    	.lean()
+    	.exec(function(err, user) {
+        	if (err) {
+            		return res.status(403).send({
+                	error: 'Request error!.',
+                	description: err.message});
+       		}
+		if (user == null) {
+            		return res.status(422).send({ error: 'User not found.' });
+        	}
+		res.status(200).json({
+            		video: setVideoInfo(video),
+			user: setUserInfo(user)});
+
+
+	});
+        
+        
     });
 };
 

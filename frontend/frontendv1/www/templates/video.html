@@ -9,9 +9,11 @@
     <ion-list id="video-list17">
       <ion-item class="item-avatar" id="video-list-item92">
         <img src="img/arzt.png">
-        <h2>Dr. Peter Oetker</h2>
-        <p>Facharzt für Kinderchirurgie</p>
+        <h2>Dr. {{video.firstName}} {{video.lastName}}</h2>
+        <p>{{video.role}}</p>
       </ion-item>
     </ion-list>
+    <a id="patienten-button15" ng-click="share()" class="button button-stable button-block">Video teilen</a>
+
   </ion-content>
 </ion-view>

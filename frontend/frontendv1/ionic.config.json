@@ -1,6 +1,6 @@
 {
   "name": "frontendv1",
-  "app_id": "",
+  "app_id": "de.dhbw.newmed",
   "type": "ionic1",
   "proxies": [
     {

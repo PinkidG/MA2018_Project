@@ -27,6 +27,7 @@
     "cordova-plugin-dialogs": "^2.0.1",
     "cordova-plugin-ionic-keyboard": "^2.1.2",
     "cordova-plugin-ionic-webview": "^1.2.1",
+    "cordova-plugin-share": "^0.1.3",
     "cordova-plugin-touch-id": "^3.3.1",
     "cordova-plugin-urlhandler": "^0.7.2",
     "cordova-plugin-whitelist": "^1.3.3"
@@ -45,7 +46,8 @@
       "cordova-plugin-urlhandler": {
         "URL_SCHEME": "branchnewmed"
       },
-      "cordova-plugin-camera": {}
+      "cordova-plugin-camera": {},
+      "nl.madebymark.share": {}
     },
     "platforms": [
       "browser",

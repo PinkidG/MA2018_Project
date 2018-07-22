@@ -4,7 +4,7 @@
     </ion-nav-buttons>
   <ion-content padding="true" class="has-header">
     <div class="list card" id="fragen-card223" ng-show="show">
-      <ion-item class="item-icon-left" id="fragen-list-item163" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries">
+      <ion-item class="item-icon-left" id="fragen-list-item163"  on-hold="share(item.id)" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries">
         <i class="icon ion-help"></i>{{item.title}}
       </ion-item>
     </div>

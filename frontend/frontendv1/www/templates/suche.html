@@ -14,9 +14,9 @@
         </ion-item>
     </div>
     <div class="list card" id="suche-card212">
-      <ion-item class="item-thumbnail-left" id="videos-list-item87" ui-sref="men.video()">
-        <img src="img/JG0W1siQEq7kxb7sKYoQ_oberschenkelbruch.jpg">
-        <h2>OP-Vorbereitung: Oberschenkelbrüche</h2>
+      <ion-item class="item-thumbnail-left" id="video-list-item151" ui-sref="men.video({video: {{video}}})" ng-repeat="video in videos">
+        <img src="img/video.png">
+        <h2>{{video.title}}</h2>
       </ion-item>
     </div>
   </ion-content>

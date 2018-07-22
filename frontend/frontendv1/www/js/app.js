@@ -136,21 +136,43 @@ angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'a
 
 function handleOpenURL(url) {
   let urlObject = new URL(url);
-  let c = urlObject.searchParams.get("topicId");
+  let topicId = urlObject.searchParams.get("topicId");
+  let videoId = urlObject.searchParams.get("videoId");
 
   let shared = angular.element(document.body).injector().get('sharedParameter');
-  shared.setProperty(c);
+  if(topicId != null){
+    shared.setProperty("topicId", topicId);
+  }
+  else if(videoId != null){
+    let shared = angular.element(document.body).injector().get('sharedParameter');
+    shared.setProperty("videoId", videoId);
+  }
+
+
+
+  let sharedUser = angular.element(document.body).injector().get('sharedProperties');
+  let user = sharedUser.getProperty();
 
 
   let state = angular.element(document.body).injector().get('$state');
-
-  let checkPlatform = angular.element(document.body).injector().get('checkPlatform');
   let title = document.title;
 
-  if(title != "Home" && title != "login"){
+  if(title !== "Home" && title !== "login"){
 
-
-    state.go('men.home')
+    if (user.role !== 'Patient'){
+      state.go('men.home2');
+    }
+    else{
+      state.go('men.home')
+    }
+  }
+  else if(title === "Home"){
+    if(topicId != null){
+      state.go("men.frage",{"topicId": topicId});
+    }
+    else if(videoId != null){
+      state.go("men.video",{"video": {id: videoId}});
+    }
 
   }
 

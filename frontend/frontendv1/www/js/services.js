@@ -194,9 +194,11 @@ angular.module('app.services', [])
             result.data.video.forEach(function(video){
               let title = video.title.replace('.mp4','').replace('.mov','').trim();
               let id = video.id;
+              let userId = video.userId;
               let videoObject = {
                 title: title,
-                id: id
+                id: id,
+                userId: userId
               };
               list.push(videoObject)
             });
@@ -214,25 +216,26 @@ angular.module('app.services', [])
     let videoById = function (id) {
       return $q(function(resolve, reject) {
         $http.get(APIConnector.getAPIEndpoint().url + '/videoById/'+id).then(function(result) {
-          if (result.data.video) {
+          if (result.data.video && result.data.user) {
 
-            let list = [];
-            result.data.video.forEach(function(video){
+            let video = result.data.video
               let title = video.title.replace('.mp4','').replace('.mov','').trim();
               let id = video.id;
-
+              let userId = video.userId;
+              let firstName = result.data.user.firstName;
+              let lastName = result.data.user.lastName;
+              let role = result.data.user.role;
 
               let videoObject = {
                 title: title,
-                id: id
+                id: id,
+                userId: userId,
+                firstName: firstName,
+                lastName: lastName,
+                role: role
               };
 
-
-              list.push(videoObject)
-            });
-
-
-            resolve(list);
+            resolve(videoObject);
           } else {
             reject(result.data.msg);
           }
@@ -260,7 +263,7 @@ angular.module('app.services', [])
         return true
       }
       return ionic.Platform.platforms.indexOf('browser') > -1
-    }
+    };
 
 
 
@@ -459,14 +462,19 @@ angular.module('app.services', [])
   })
 
   .service('sharedParameter', function () {
-    var property = "";
+    var value = "";
+    var type = "";
 
     return {
       getProperty: function () {
-        return property;
+        return{
+          value: value,
+          type: type
+        }
       },
-      setProperty: function(value) {
-        property = value;
+      setProperty: function(typeValue, propertyValue) {
+        value = propertyValue;
+        type = typeValue;
       }
     };
   })

@@ -1,4 +1,4 @@
-angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospaced.elastic'])
+angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospaced.elastic' ])
 
 .controller('homeCtrl',
 
@@ -36,7 +36,7 @@ function ($scope, $state, sharedProperties, sharedParameter, TopicService, check
 
   }, function(errMsg) {
     $ionicLoading.hide()
-    if ( !checkPlatform.isBrowser ) {
+    if ( !checkPlatform.isBrowser() ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
       let confirm = $mdDialog.alert()
@@ -49,8 +49,14 @@ function ($scope, $state, sharedProperties, sharedParameter, TopicService, check
   });
 
   let parameter = sharedParameter.getProperty();
-  if(parameter != ""){
-    $state.go("men.frage",{"topicId": parameter});
+  if(parameter.type !== ""){
+
+    if(parameter.type === "videoId"){
+      state.go("men.video",{"video": {id: parameter.value}});
+    }
+    else if(parameter.type === "topicId"){
+      $state.go("men.frage",{"topicId": parameter.value});
+    }
   }
 })
 
@@ -83,7 +89,7 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
 
   $scope.checkForTouchID = function () {
     $ionicPlatform.ready(function () {
-      if (!checkPlatform.isBrowser) {
+      if (!checkPlatform.isBrowser()) {
         window.plugins.touchid.isAvailable(
           function (type) {
             let email = window.localStorage.getItem("email");
@@ -128,7 +134,7 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
           $state.go('men.home');
         }
       }, function (errMsg) {
-        if (!checkPlatform.isBrowser) {
+        if (!checkPlatform.isBrowser()) {
           navigator.notification.confirm(errMsg.data, function (buttonIndex) {
           }, "Server-Fehler", ["Erneut versuchen"]);
         } else {
@@ -142,7 +148,7 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
         }
       });
     }, function (errMsg) {
-      if (!checkPlatform.isBrowser) {
+      if (!checkPlatform.isBrowser()) {
         navigator.notification.confirm("Bitte Benutznamen und Passwort überprüfen.", function (buttonIndex) {
         }, "Benutzer-Fehler (1M)", ["Erneut versuchen"]);
       } else {
@@ -161,7 +167,7 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
 
     // When button is clicked, the popup will be shown...
   $scope.showPopup = function(ev) {
-    if ( !checkPlatform.isBrowser ) {
+    if ( !checkPlatform.isBrowser() ) {
       navigator.notification.confirm("Sind Sie ein Arzt oder ein Patient?", function(buttonIndex) {
         switch(buttonIndex) {
           case 1:
@@ -206,7 +212,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
     AuthService.register($scope.user).then(function(user) {
       sharedProperties.setProperty(user);
 
-      if ( !checkPlatform.isBrowser ) {
+      if ( !checkPlatform.isBrowser() ) {
         navigator.notification.confirm("Registrierung erfolgreich! (Patient)", function(buttonIndex) {
           $state.go('men.home');
         }, "Erfolg", [ "Okay"]);
@@ -221,7 +227,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
         });
       }
     }, function(errMsg) {
-      if ( !checkPlatform.isBrowser ) {
+      if ( !checkPlatform.isBrowser() ) {
         navigator.notification.confirm(errMsg.data.error, function(buttonIndex) {}, "Fehler (Patient)", ["Erneut versuchen"]);
       } else {
         let confirm = $mdDialog.alert()
@@ -251,7 +257,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog)
   $scope.signup = function() {
     AuthService.register($scope.user).then(function(user) {
       sharedProperties.setProperty(user);
-      if ( !checkPlatform.isBrowser ) {
+      if ( !checkPlatform.isBrowser() ) {
         navigator.notification.confirm("Registrierung erfolgreich! (Arzt)", function(buttonIndex) {
           $state.go('men.home2');
         }, "Erfolg", [ "Okay"]);
@@ -266,7 +272,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog)
         });
       }
     }, function(errMsg) {
-      if ( !checkPlatform.isBrowser ) {
+      if ( !checkPlatform.isBrowser() ) {
         navigator.notification.confirm(errMsg.data.error, function(buttonIndex) {}, "Fehler (Arzt)", ["Erneut versuchen"]);
       } else {
         let confirm = $mdDialog.alert()
@@ -284,19 +290,61 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog)
 function ($scope, $stateParams) {
 }])
 
-.controller('videosCtrl', ['$scope', '$stateParams',
-function ($scope, $stateParams) {
-}])
+.controller('videosCtrl', function ($scope, $stateParams, VideoService,checkPlatform, sharedProperties, $cordovaDialogs, $ionicLoading) {
+  $ionicLoading.show();
+  VideoService.videos().then(function(videos){
 
-.controller('videoCtrl',function ($scope, $stateParams, VideoService,checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $ionicLoading) {
+    $scope.videos = videos;
+    $ionicLoading.hide();
 
+  }, function(errMsg) {
+    $ionicLoading.hide();
+    if ( !checkPlatform.isBrowser() ) {
+      navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Video-Fehler", ["Erneut versuchen"]);
+    } else {
+      let confirm = $mdDialog.alert()
+        .title('Video-Fehler')
+        .textContent(errMsg.statusText)
+        .ariaLabel('Lucky day')
+        .ok("Erneut versuchen");
+      $mdDialog.show(confirm);
+    }
+  });
+})
+
+.controller('videoCtrl',function ($scope, $stateParams, VideoService,checkPlatform, sharedProperties, sharedParameter, $cordovaDialogs, $ionicLoading) {
+
+  sharedParameter.setProperty("");
+  $ionicLoading.show();
   let video = $stateParams.video;
-  $scope.video = video;
 
-  $scope.getIframeSrc = function (videoTitle) {
-    return 'http://pinkisworld.ddnss.de/api/video/' + videoTitle;
-  };
+  VideoService.videoById(video.id).then(function(video){
 
+    $scope.video = video;
+    $scope.getIframeSrc = function (videoTitle) {
+      return 'http://pinkisworld.ddnss.de/api/video/' + videoTitle;
+    };
+
+    $scope.share = function(){
+      navigator.share("NewMed Video-Link: branchnewmed://?videoId=" + video.id,"Diese Frage teilen","plain/text")
+
+    };
+
+    $ionicLoading.hide();
+
+  }, function(errMsg) {
+    $ionicLoading.hide();
+    if ( !checkPlatform.isBrowser() ) {
+      navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Video-Fehler", ["Erneut versuchen"]);
+    } else {
+      let confirm = $mdDialog.alert()
+        .title('Video-Fehler')
+        .textContent(errMsg.statusText)
+        .ariaLabel('Lucky day')
+        .ok("Erneut versuchen");
+      $mdDialog.show(confirm);
+    }
+  });
 })
 
 .controller('frageCtrl', function ($scope, $stateParams,sharedParameter, checkPlatform, sharedProperties, TopicService, $cordovaDialogs, $mdDialog) {
@@ -309,7 +357,7 @@ function ($scope, $stateParams) {
     $scope.topicEntries = topicEntry.entries
     $scope.topicTitle = topicEntry.title
   }, function(errMsg) {
-    if ( !checkPlatform.isBrowser ) {
+    if ( !checkPlatform.isBrowser() ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
       let confirm = $mdDialog.alert()
@@ -325,7 +373,7 @@ function ($scope, $stateParams) {
 .controller('fragenCtrl',
 function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
-  $ionicLoading.show()
+  $ionicLoading.show();
   TopicService.topics().then(function(topics) {
     if (topics.length == 0) {
       $scope.show = false;
@@ -333,11 +381,17 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
       $scope.entries = topics;
       $scope.show = true;
     }
-    $ionicLoading.hide()
+    $ionicLoading.hide();
+
+    $scope.share = function (id) {
+      navigator.share("NewMed Fragen-Link: branchnewmed://?topicId=" + id,"Diese Frage teilen","plain/text")
+    }
+
+
 
   }, function(errMsg) {
     $ionicLoading.hide()
-    if ( !checkPlatform.isBrowser ) {
+    if ( !checkPlatform.isBrowser() ) {
       navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
     } else {
       let confirm = $mdDialog.alert()
@@ -363,7 +417,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           $state.go('men.fragen');
 
         }, function(errMsg) {
-          if ( !checkPlatform.isBrowser ) {
+          if ( !checkPlatform.isBrowser() ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
           } else {
             let confirm = $mdDialog.alert()
@@ -389,7 +443,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
         TopicService.addTopicEntry($scope.entry.topicId, $scope.entry.message).then(function(topics) {
           $ionicHistory.goBack()
         }, function(errMsg) {
-          if ( !checkPlatform.isBrowser ) {
+          if ( !checkPlatform.isBrowser() ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "AddTopicEntry-Fehler", ["Erneut versuchen"]);
           } else {
             let confirm = $mdDialog.alert()
@@ -419,6 +473,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
         SearchService.search(searchObj).then(function(results){
 
         $scope.topics = results.topics;
+        $scope.videos = results.videos,
 
 
 
@@ -426,7 +481,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
         $ionicLoading.hide()
         }, function(errMsg) {
           $ionicLoading.hide()
-          if ( !checkPlatform.isBrowser ) {
+          if ( !checkPlatform.isBrowser() ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Search-Fehler", ["Erneut versuchen"]);
           } else {
             let confirm = $mdDialog.alert()
@@ -487,7 +542,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
       }, function(errMsg) {
 
         $ionicLoading.hide()
-        if ( !checkPlatform.isBrowser ) {
+        if ( !checkPlatform.isBrowser() ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "User-Fehler", ["Erneut versuchen"]);
         } else {
           let confirm = $mdDialog.alert()
@@ -538,7 +593,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
             $ionicHistory.goBack();
           }, function(errMsg) {
 
-            if ( !checkPlatform.isBrowser ) {
+            if ( !checkPlatform.isBrowser() ) {
               navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Server-Fehler", ["Erneut versuchen"]);
             } else {
               let confirm = $mdDialog.alert()
@@ -553,7 +608,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           }
         }, function(errMsg) {
 
-          if ( !checkPlatform.isBrowser ) {
+          if ( !checkPlatform.isBrowser() ) {
             navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Diary-Fehler", ["Erneut versuchen"]);
           } else {
             let confirm = $mdDialog.alert()
@@ -584,7 +639,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
         $scope.init();
       })
 
-  .controller('home2Ctrl', function ($scope, sharedProperties, VideoService, TopicService, $mdDialog, checkPlatform, UserService, $ionicLoading) {
+  .controller('home2Ctrl', function ($scope, sharedProperties,sharedParameter, $state, VideoService, TopicService, $mdDialog, checkPlatform, UserService, $ionicLoading) {
 
       $ionicLoading.show();
       $scope.user = sharedProperties.getProperty();
@@ -599,7 +654,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
       }, function(errMsg) {
         $ionicLoading.hide();
-        if (!checkPlatform.isBrowser ) {
+        if (!checkPlatform.isBrowser() ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Topic-Fehler", ["Erneut versuchen"]);
         } else {
           let confirm = $mdDialog.alert()
@@ -619,7 +674,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
       }, function(errMsg) {
         $ionicLoading.hide();
-        if ( !checkPlatform.isBrowser ) {
+        if ( !checkPlatform.isBrowser() ) {
           navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Video-Fehler", ["Erneut versuchen"]);
         } else {
           let confirm = $mdDialog.alert()
@@ -634,7 +689,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
 
       $scope.upload = function() {
-        if (!checkPlatform.isBrowser) {
+        if (!checkPlatform.isBrowser()) {
           navigator.camera.getPicture(onSuccess, onFail, {
             quality: 75,
             destinationType: Camera.DestinationType.FILE_URI,
@@ -680,7 +735,18 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           }
 
         }
+      };
+
+    let parameter = sharedParameter.getProperty();
+    if(parameter.type !== ""){
+
+      if(parameter.type === "videoId"){
+        state.go("men.video",{"video": {id: parameter.value}});
       }
+      else if(parameter.type === "topicId"){
+        $state.go("men.frage",{"topicId": parameter.value});
+      }
+    }
 
     })
 
@@ -710,7 +776,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
           $scope.resultUser.push(ruser)
         }, function(errMsg) {
 
-          if ( !checkPlatform.isBrowser ) {
+          if ( !checkPlatform.isBrowser() ) {
             navigator.notification.confirm(errMsg.data.error, function(buttonIndex) {}, "Such-Fehler", ["Erneut versuchen"]);
           } else {
             let confirm = $mdDialog.alert()
@@ -725,7 +791,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
       };
 
       $scope.addUser = function(user){
-        if ( !checkPlatform.isBrowser ) {
+        if ( !checkPlatform.isBrowser() ) {
           navigator.notification.confirm("Möchten Sie " + user.firstName +  user.lastName + " zu Ihren Patienten hinzufügen?" , function(buttonIndex) {
             switch(buttonIndex) {
               case 1:
@@ -773,7 +839,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
     })
 
   .controller('accountCtrl',
-    function ($scope, $state, sharedProperties, UserService, checkPlatform, $mdDialog, UserService, $ionicLoading) {
+    function ($scope, $state, sharedProperties, checkPlatform, $mdDialog, UserService, $ionicLoading) {
 
       $ionicLoading.show()
       $scope.user = sharedProperties.getProperty();
@@ -789,7 +855,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
         UserService.updateUser($scope.user).then(function(user) {
          sharedProperties.setProperty(user);
-          if ( !checkPlatform.isBrowser ) {
+          if ( !checkPlatform.isBrowser() ) {
             navigator.notification.confirm("Update erfolgreich!", function(buttonIndex) {
           }, "Erfolg", [ "Okay"]);
           } else {
@@ -801,7 +867,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
             $mdDialog.show(confirm);
           }
           }, function(errMsg) {
-            if ( !checkPlatform.isBrowser ) {
+            if ( !checkPlatform.isBrowser() ) {
               navigator.notification.confirm(errMsg.statusText, function(buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
             } else {
               let confirm = $mdDialog.alert()
@@ -816,7 +882,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
 
       $scope.delete = function(ev) {
 
-          if ( !checkPlatform.isBrowser ) {
+          if ( !checkPlatform.isBrowser() ) {
             navigator.notification.confirm("Wollen Sie wirklich löschen?", function(buttonIndex) {
               switch(buttonIndex) {
                 case 1:

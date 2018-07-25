@@ -52,7 +52,7 @@ function ($scope, $state, sharedProperties, sharedParameter, TopicService, check
   if(parameter.type !== ""){
 
     if(parameter.type === "videoId"){
-      state.go("men.video",{"video": {id: parameter.value}});
+      $state.go("men.video",{"video": {id: parameter.value}});
     }
     else if(parameter.type === "topicId"){
       $state.go("men.frage",{"topicId": parameter.value});
@@ -214,7 +214,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
 
       if ( !checkPlatform.isBrowser() ) {
         navigator.notification.confirm("Registrierung erfolgreich! (Patient)", function(buttonIndex) {
-          $state.go('men.home');
+          $state.go('login');
         }, "Erfolg", [ "Okay"]);
       } else {
         var confirm = $mdDialog.alert()
@@ -223,7 +223,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $cordovaDi
           .ariaLabel('Lucky day')
           .ok("Okay");
         $mdDialog.show(confirm).then(function() {
-          $state.go('men.home');
+          $state.go('login');
         });
       }
     }, function(errMsg) {
@@ -259,7 +259,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog)
       sharedProperties.setProperty(user);
       if ( !checkPlatform.isBrowser() ) {
         navigator.notification.confirm("Registrierung erfolgreich! (Arzt)", function(buttonIndex) {
-          $state.go('men.home2');
+          $state.go('login');
         }, "Erfolg", [ "Okay"]);
       } else {
         var confirm = $mdDialog.alert()
@@ -268,7 +268,7 @@ function($scope, AuthService,checkPlatform, sharedProperties, $state, $mdDialog)
           .ariaLabel('Lucky day')
           .ok("Okay");
         $mdDialog.show(confirm).then(function() {
-          $state.go('men.home2');
+          $state.go('login');
         });
       }
     }, function(errMsg) {
@@ -326,7 +326,7 @@ function ($scope, $stateParams) {
     };
 
     $scope.share = function(){
-      navigator.share("NewMed Video-Link: branchnewmed://?videoId=" + video.id,"Diese Frage teilen","plain/text")
+      navigator.share("NewMed Video-Link: http://newmeddhbw.app.link?videoId=" + video.id,"Diese Frage teilen","plain/text")
 
     };
 
@@ -384,7 +384,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
     $ionicLoading.hide();
 
     $scope.share = function (id) {
-      navigator.share("NewMed Fragen-Link: branchnewmed://?topicId=" + id,"Diese Frage teilen","plain/text")
+      navigator.share("NewMed Fragen-Link: http://newmeddhbw.app.link?topicId=" + id,"Diese Frage teilen","plain/text")
     }
 
 
@@ -741,7 +741,7 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
     if(parameter.type !== ""){
 
       if(parameter.type === "videoId"){
-        state.go("men.video",{"video": {id: parameter.value}});
+        $state.go("men.video",{"video": {id: parameter.value}});
       }
       else if(parameter.type === "topicId"){
         $state.go("men.frage",{"topicId": parameter.value});

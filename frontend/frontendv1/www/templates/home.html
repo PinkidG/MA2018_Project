@@ -32,28 +32,15 @@
     <h3 id="home-heading8" style="color:#000000;">Meine Fragen</h3>
     <div class="list card" id="home-card26">
       <ion-item class="item-icon-left" id="home-list-item49" ui-sref="men.frage({topicId: {{item.id}}})" ng-repeat="item in entries|limitTo:1">
-        <i class="icon ion-help"></i>{{item.title}}}
-        <span class="item-note">#tag1 #tag2</span>
+        <i class="icon ion-help"></i>{{item.title}}
+        <span class="item-note"> </span>
       </ion-item>
       <ion-item class="item-icon-right" id="home-list-item74" ui-sref="men.fragen()">mehr
         <i class="icon ion-ios-arrow-forward"></i>
       </ion-item>
     </div>
-    <h3 id="home-heading7" style="color:#000000;">Gemerkte Videos</h3>
-    <div class="list card" id="home-card27">
-      <ion-item class="item-thumbnail-left" id="home-list-item56" ui-sref="men.video()">
-        <img src="img/JG0W1siQEq7kxb7sKYoQ_oberschenkelbruch.jpg">
-        <h2>OP-Vorbereitung: Oberschenkelbrüche</h2>
-        <p>#Oberschenkel #Bruch #OP #kinder</p>
-      </ion-item>
-      <ion-item class="item-thumbnail-left" id="home-list-item57" ui-sref="men.video()">
-        <img src="img/zbKHTuNTBqlhAtpidbLK_elle_gebrochen.jpg">
-        <h2>OP-Vorbereitung: gebrochene Elle</h2>
-        <p>#Elle #Bruch #OP #Kinder</p>
-      </ion-item>
-      <ion-item class="item-icon-right" id="home-list-item75" ui-sref="men.videos()">mehr
-        <i class="icon ion-ios-arrow-forward"></i>
-      </ion-item>
-    </div>
+
+    <button id="home-button13" class="button button-stable button-block" onclick="launchnavigator.navigate('Universiätsklinikum Heidelberg');" >Navigation zum Klinikum</button>
+
   </ion-content>
 </ion-view>

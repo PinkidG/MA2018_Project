@@ -3,9 +3,9 @@
     <h2 id="frage-heading15" style="color:#000000;">{{topicTitle}}</h2>
     <ion-list id="frage-list18">
       <ion-item class="item-avatar" id="frage-list-item104" ng-repeat="item in topicEntries">
-        <img src="img/js8VEmmjQ5uMDmfgeVW2_arzt.jpg">
+        <img src="img/patient.png">
         <h2>{{item.user.profile.firstName}} {{item.user.profile.lastName}}</h2>
-        <p style="white-space:normal;">{{item.message}}</p>
+        <p  ng-bind-html="item.message | linky:'_self':urls:{ schemeMatches: true, wwwMatches: true, tldMatches: true }" style="white-space:normal;"></p>
       </ion-item>
     </ion-list>
     <button id="frage-button5" class="button button-stable button-block" ui-sref="men.frageEintragNeu({topicId: {{myTopicId}}})">Neuer Eintrag</button>

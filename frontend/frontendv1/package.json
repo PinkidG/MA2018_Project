@@ -19,18 +19,25 @@
   },
   "dependencies": {
     "angular-elastic": "^2.5.1",
+    "angular-linky": "^1.2.2",
+    "autolinker": "^1.7.0",
     "branch-cordova-sdk": "^3.0.0",
     "cordova-browser": "^5.0.3",
     "cordova-ios": "4.5.4",
+    "cordova-plugin-actionsheet": "^2.3.3",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-dialogs": "^2.0.1",
+    "cordova-plugin-inappbrowser": "^3.0.0",
     "cordova-plugin-ionic-keyboard": "^2.1.2",
     "cordova-plugin-ionic-webview": "^1.2.1",
     "cordova-plugin-share": "^0.1.3",
     "cordova-plugin-touch-id": "^3.3.1",
     "cordova-plugin-urlhandler": "^0.7.2",
-    "cordova-plugin-whitelist": "^1.3.3"
+    "cordova-plugin-whitelist": "^1.3.3",
+    "cordova-universal-links-plugin": "^1.2.1",
+    "nl.madebymark.share": "~0.1.1",
+    "uk.co.workingedge.phonegap.plugin.launchnavigator": "^4.2.1"
   },
   "cordova": {
     "plugins": {
@@ -47,7 +54,12 @@
         "URL_SCHEME": "branchnewmed"
       },
       "cordova-plugin-camera": {},
-      "nl.madebymark.share": {}
+      "nl.madebymark.share": {},
+      "uk.co.workingedge.phonegap.plugin.launchnavigator": {
+        "LOCATION_USAGE_DESCRIPTION": "This app requires access to your location for navigation purposes"
+      },
+      "cordova-plugin-inappbrowser": {},
+      "cordova-universal-links-plugin": {}
     },
     "platforms": [
       "browser",

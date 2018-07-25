@@ -5,6 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
+
+
+
 angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'app.directives','app.services', 'app.constants', 'monospaced.elastic'])
 
 
@@ -43,9 +46,10 @@ angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'a
 
       // Branch
       $ionicPlatform.on("deviceready", function() {
-        branchInit();
+        universalLinks.subscribe(null, handleOpenURL);
 
       });
+
 
       $ionicPlatform.on("resume", function() {
         $ionicPlatform.ready(function() {
@@ -135,7 +139,18 @@ angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'a
 });
 
 function handleOpenURL(url) {
-  let urlObject = new URL(url);
+
+  var useThis;
+  if (url.url){
+    useThis = url.url;
+  }
+  else{
+    useThis = url;
+  }
+
+
+
+  let urlObject = new URL(useThis);
   let topicId = urlObject.searchParams.get("topicId");
   let videoId = urlObject.searchParams.get("videoId");
 

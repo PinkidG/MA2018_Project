@@ -76,7 +76,7 @@ console.log("Video Post requested")
 
             stream.on('error', function() {
                 console.log('Could not write file to memory.');
-                res.status(400).send({
+                return res.status(400).send({
                     message: 'Problem saving the file. Please try again.'
                 });
             });
@@ -92,21 +92,27 @@ console.log("Video Post requested")
             // If video is unique, create video
             let video = new Video({
                 title: fileName,
-                userId: userId,
-                video: buffer,
+                userId: userId
             });
 
             video.save(function (err) {
                 if (err) {
-                    return next(err);
+			console.log(err)
+			
+                     return res.status(400).send({
+                    	message: 'Video save error. Video Save.'
+                	});
                 }
                 user.videos.push(video);
                 user.save(function (err) {
                     if (err) {
-                        return next(err);
+			console.log(err)
+                        return res.status(400).send({
+                    	message: 'Video save error. User Save.'
+                	});
                     }
                 });
-                res.status(200).json({
+                return res.status(200).json({
                     video: setVideoInfo(video)
                 });
             });

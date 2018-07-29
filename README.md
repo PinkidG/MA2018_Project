@@ -14,7 +14,7 @@ Link: [Repository](https://github.com/PinkidG/MA2018_Project "Link to GitHub")
 
 ## Anwendung
 
-Die mobile Anwendung soll verschieden Funktionen bieten, die im folgenden aufgelistet und erläutert werden. Der Titel der App lautet: _&lt;Name&gt;_. Die Anwendung soll auf allen mobilen Plattformen laufen. Zu Testzwecken wird bei der Entwicklung der Einsatz auf iOS, Android und einem Webbrowser überprüft und sichergestellt.
+Die mobile Anwendung soll verschieden Funktionen bieten, die im folgenden aufgelistet und erläutert werden. Der Titel der App lautet: NewMed. Die Anwendung soll auf allen mobilen Plattformen laufen. Zu Testzwecken wird bei der Entwicklung der Einsatz auf iOS, Android und einem Webbrowser überprüft und sichergestellt.
 
 #### Idee
 

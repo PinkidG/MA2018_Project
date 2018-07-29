@@ -1,7 +1,12 @@
+//*********************************
+// DiaryEntry-Controller
+// NewMed - Backend
+// Copyright 2018 - DHBW (WWI15SEB)
+//*********************************
+
 "use strict";
 const DiaryEntry = require('../models/diaryEntry'),
     User = require('../models/user');
-
 
 function setDiaryEntryInfo(request) {
     return {
@@ -32,9 +37,9 @@ function setUserInfo(request) {
 }
 
 //========================================
-// Add Entry
+// Add a diaryentry
 //========================================
-exports.register = function(req, res, next) {
+exports.register = function (req, res, next) {
     const message = req.body.message;
     const status = req.body.status;
     const title = req.body.title;
@@ -43,14 +48,25 @@ exports.register = function(req, res, next) {
 
     // Return error if no message or status is provided
     if (!message) {
-        return res.status(422).send({ error: 'You must enter a message.' });
+        return res.status(422).send({
+            error: 'You must enter a message.'
+        });
     } else if (!status) {
-        return res.status(422).send({ error: 'You must enter a status.' });
+        return res.status(422).send({
+            error: 'You must enter a status.'
+        });
     } else if (!title) {
-        return res.status(422).send({ error: 'YOu must enter a title.' });
+        return res.status(422).send({
+            error: 'YOu must enter a title.'
+        });
     }
 
-    User.findOne({ userId: user.userId }).populate({path: 'diaryEntries', select: '-_id -__v'}).exec(function(err, topic) {
+    User.findOne({
+        userId: user.userId
+    }).populate({
+        path: 'diaryEntries',
+        select: '-_id -__v'
+    }).exec(function (err, topic) {
         if (err) {
             return res.status(403).send({
                 error: 'Request error!.',
@@ -86,13 +102,17 @@ exports.register = function(req, res, next) {
     });
 };
 
-exports.getAll = function(req, res) {
+//========================================
+// Get all diaryentries of user
+//========================================
+exports.getAll = function (req, res) {
 
     const id = req.user.userId;
 
+    // Only Doctors and Admins can check diaryentries for other users
     if (req.user.role === "Doctor" || req.user.role === "Admin") {
 
-        DiaryEntry.find(function(err, result) {
+        DiaryEntry.find(function (err, result) {
 
             if (err) {
                 return res.status(403).send({
@@ -103,7 +123,7 @@ exports.getAll = function(req, res) {
 
             let array = [];
 
-            result.forEach(function(element) {
+            result.forEach(function (element) {
                 array.push(setDiaryEntryInfo(element))
             });
 
@@ -114,8 +134,12 @@ exports.getAll = function(req, res) {
         })
 
     } else {
-
-        DiaryEntry.find({ userId: id }).populate({path: 'diaryEntries', select: '-_id -__v'}).exec(function(err, result) {
+        DiaryEntry.find({
+            userId: id
+        }).populate({
+            path: 'diaryEntries',
+            select: '-_id -__v'
+        }).exec(function (err, result) {
             if (err) {
                 return res.status(403).send({
                     error: 'Request error!.',
@@ -125,7 +149,9 @@ exports.getAll = function(req, res) {
 
             // If no entry exist
             if (!result) {
-                return res.status(422).send({error: 'There is no entry in the diary'});
+                return res.status(422).send({
+                    error: 'There is no entry in the diary'
+                });
             }
 
             let array = [];

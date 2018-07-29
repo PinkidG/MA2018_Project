@@ -1,3 +1,9 @@
+//*********************************
+// Illness-Controller
+// NewMed - Backend
+// Copyright 2018 - DHBW (WWI15SEB)
+//*********************************
+
 "use strict"
 const Illness = require('../models/illness'),
     Treatment = require('../models/treatment');
@@ -12,23 +18,30 @@ function setIllnessInfo(request) {
 }
 
 //========================================
-// Add Illness
+// Add illness to user
 //========================================
-exports.register = function(req, res, next) {
+exports.register = function (req, res, next) {
     const name = req.body.name;
     const description = req.body.description;
 
+    // Only doctors and admins are allowed to add illness to user
     if (req.user.role === "Doctor" || req.user.role === "Admin") {
         // Return error if no name provided
         if (!name) {
-            return res.status(422).send({ error: 'You must enter an illness name.' });
+            return res.status(422).send({
+                error: 'You must enter an illness name.'
+            });
         }
         // Return error if description not provided
         if (!description) {
-            return res.status(422).send({ error: 'You must enter a description.' });
+            return res.status(422).send({
+                error: 'You must enter a description.'
+            });
         }
 
-        Illness.findOne({ name: name }, function(err, existingIllness) {
+        Illness.findOne({
+            name: name
+        }, function (err, existingIllness) {
             if (err) {
                 return res.status(403).send({
                     error: 'Request error!.',
@@ -36,34 +49,43 @@ exports.register = function(req, res, next) {
                 });
             }
 
-        // If illness is not unique, return error
-        if (existingIllness) {
-            return res.status(422).send({ error: 'That illness is already created.' });
-        }
+            // If illness is not unique, return error
+            if (existingIllness) {
+                return res.status(422).send({
+                    error: 'That illness is already created.'
+                });
+            }
 
-        // If illness is unique, create illness
-        let illness = new Illness({
-            name: name,
-            description: description
-        });
+            // If illness is unique, create illness
+            let illness = new Illness({
+                name: name,
+                description: description
+            });
 
-        illness.save(function(err, illness) {
-            if (err) { return next(err); }
-            let illnessInfo = setIllnessInfo(illness);
-            res.status(201).json({
-                illness: illnessInfo
+            illness.save(function (err, illness) {
+                if (err) {
+                    return next(err);
+                }
+                let illnessInfo = setIllnessInfo(illness);
+                res.status(201).json({
+                    illness: illnessInfo
+                });
             });
         });
-        });
     } else {
-        return res.status(422).send({ error: 'Unauthorized' });
+        return res.status(422).send({
+            error: 'Unauthorized'
+        });
     }
 };
 
 
-exports.getAll = function(req, res, next) {
+//========================================
+// Get all illnesses 
+//========================================
+exports.getAll = function (req, res, next) {
 
-    Illness.find(function(err, result) {
+    Illness.find(function (err, result) {
 
         if (err) {
             return res.status(403).send({
@@ -74,7 +96,7 @@ exports.getAll = function(req, res, next) {
 
         let array = [];
 
-        result.forEach(function(element) {
+        result.forEach(function (element) {
             array.push(setIllnessInfo(element))
         });
 
@@ -85,14 +107,20 @@ exports.getAll = function(req, res, next) {
     })
 };
 
-exports.getById = function(req, res, next) {
+
+//========================================
+// Add illness by ID
+//========================================
+exports.getById = function (req, res, next) {
 
     const id = req.params.id;
 
-    Illness.findOne({ illnessId: id }).populate({
+    Illness.findOne({
+        illnessId: id
+    }).populate({
         path: 'treatments',
         select: '-_id -illnesses -__v'
-    }).exec(function(err, illness) {
+    }).exec(function (err, illness) {
         if (err) {
             return res.status(403).send({
                 error: 'Request error!.',
@@ -101,7 +129,9 @@ exports.getById = function(req, res, next) {
         }
 
         if (illness == null) {
-            return res.status(422).send({ error: 'Illness not found.' });
+            return res.status(422).send({
+                error: 'Illness not found.'
+            });
         }
         // If illness is not unique, return error
         res.status(200).json({
@@ -110,12 +140,18 @@ exports.getById = function(req, res, next) {
     });
 };
 
-exports.addTreatment = function(req, res) {
+
+//========================================
+// Add treatment to illness
+//========================================
+exports.addTreatment = function (req, res) {
 
     const id = req.params.treatmentId;
     const illid = req.params.id;
 
-    Treatment.findOne({ treatmentId: id }, function(err, treatment) {
+    Treatment.findOne({
+        treatmentId: id
+    }, function (err, treatment) {
         if (err) {
             return res.status(403).send({
                 error: 'Request error!.',
@@ -124,10 +160,14 @@ exports.addTreatment = function(req, res) {
         }
 
         if (treatment == null) {
-            return res.status(422).send({ error: 'Treatment not found.' });
+            return res.status(422).send({
+                error: 'Treatment not found.'
+            });
         }
 
-        Illness.findOne({ illnessId: illid }, function(err, illness) {
+        Illness.findOne({
+            illnessId: illid
+        }, function (err, illness) {
             if (err) {
                 return res.status(403).send({
                     error: 'Request error!.',
@@ -136,25 +176,27 @@ exports.addTreatment = function(req, res) {
             }
 
             if (illness == null) {
-                return res.status(422).send({ error: 'Illness not found.' });
-            }
-
-        illness.treatments.push(treatment);
-
-        illness.save(function(err, illness) {
-            if (err) {
-                return res.status(503).send({
-                    error: 'Save error!',
-                    description: err.message
+                return res.status(422).send({
+                    error: 'Illness not found.'
                 });
             }
 
-            let illnessInfo = setIllnessInfo(illness);
+            illness.treatments.push(treatment);
 
-            res.status(201).json({
-                illness: illnessInfo
+            illness.save(function (err, illness) {
+                if (err) {
+                    return res.status(503).send({
+                        error: 'Save error!',
+                        description: err.message
+                    });
+                }
+
+                let illnessInfo = setIllnessInfo(illness);
+
+                res.status(201).json({
+                    illness: illnessInfo
+                });
             });
-        });
         });
     });
 };

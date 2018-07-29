@@ -1,3 +1,9 @@
+//*********************************
+// Authentication-Controller
+// NewMed - Backend
+// Copyright 2018 - DHBW (WWI15SEB)
+//*********************************
+
 "use strict"
 const jwt = require('jsonwebtoken'),
     User = require('../models/user'),
@@ -10,7 +16,6 @@ function generateToken(user) {
 }
 
 // Set user info from request
-
 function setUserInfo(request) {
     return {
         _id: request._id,
@@ -32,7 +37,7 @@ function setUserInfo(request) {
 //========================================
 // Login Route
 //========================================
-exports.login = function(req, res, next) {
+exports.login = function (req, res, next) {
 
     let userInfo = setUserInfo(req.user);
 
@@ -46,7 +51,7 @@ exports.login = function(req, res, next) {
 //========================================
 // Registration Route
 //========================================
-exports.register = function(req, res, next) {
+exports.register = function (req, res, next) {
     // Check for registration errors
     const email = req.body.email;
     const role = req.body.role;
@@ -58,42 +63,63 @@ exports.register = function(req, res, next) {
 
     // Return error if no email provided
     if (!email) {
-        return res.status(422).send({ error: 'You must enter an email address.' });
+        return res.status(422).send({
+            error: 'You must enter an email address.'
+        });
     }
 
     // Return error if full name not provided
     if (!firstName || !lastName) {
-        return res.status(422).send({ error: 'You must enter your full name.' });
+        return res.status(422).send({
+            error: 'You must enter your full name.'
+        });
     }
 
     // Return error if no password provided
     if (!password) {
-        return res.status(422).send({ error: 'You must enter a password.' });
+        return res.status(422).send({
+            error: 'You must enter a password.'
+        });
     }
 
     // Return error if role is not provided
     if (!role) {
-        return res.status(422).send({ error: 'You must enter a role'});
+        return res.status(422).send({
+            error: 'You must enter a role'
+        });
     }
 
-    User.findOne({ email: email }, function(err, existingUser) {
-        if (err) { return next(err); }
+    User.findOne({
+        email: email
+    }, function (err, existingUser) {
+        if (err) {
+            return next(err);
+        }
 
         // If user is not unique, return error
         if (existingUser) {
-            return res.status(422).send({ error: 'That email address is already in use.' });
+            return res.status(422).send({
+                error: 'That email address is already in use.'
+            });
         }
 
         // If email is unique and password was provided, create account
         let user = new User({
             email: email,
             password: password,
-            profile: { firstName: firstName, lastName: lastName, dateOfBirth: dateOfBirth, gender: gender },
+            profile: {
+                firstName: firstName,
+                lastName: lastName,
+                dateOfBirth: dateOfBirth,
+                gender: gender
+            },
             role: role
         });
 
-        user.save(function(err, user) {
-            if (err) { return next(err); }
+        user.save(function (err, user) {
+            if (err) {
+                return next(err);
+            }
 
             let userInfo = setUserInfo(user);
 
@@ -105,13 +131,15 @@ exports.register = function(req, res, next) {
     });
 };
 
-exports.roleAuthorization = function(role) {
-    return function(req, res, next) {
+exports.roleAuthorization = function (role) {
+    return function (req, res, next) {
         const user = req.user;
 
-        User.findById(user.id, function(err, foundUser) {
+        User.findById(user.id, function (err, foundUser) {
             if (err) {
-                res.status(422).json({ error: 'No user was found.' });
+                res.status(422).json({
+                    error: 'No user was found.'
+                });
                 return next(err);
             }
 
@@ -120,7 +148,9 @@ exports.roleAuthorization = function(role) {
                 return next();
             }
 
-            res.status(401).json({ error: 'You are not authorized to view this content.' });
+            res.status(401).json({
+                error: 'You are not authorized to view this content.'
+            });
             return next('Unauthorized');
         })
     }

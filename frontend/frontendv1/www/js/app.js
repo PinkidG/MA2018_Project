@@ -53,7 +53,7 @@ angular.module('app', ['ionic','ngMaterial', 'app.controllers', 'app.routes', 'a
 
       $ionicPlatform.on("resume", function() {
         $ionicPlatform.ready(function() {
-          branchInit();
+          $state.go('login');
         });
 
 

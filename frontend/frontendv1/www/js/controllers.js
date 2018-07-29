@@ -117,7 +117,7 @@ function ($scope, $ionicPlatform, AuthService, UserService, checkPlatform , shar
     });
   };
 
-
+ $scope.checkForTouchID();
 
 
   $scope.login = function (ev) {
@@ -716,7 +716,28 @@ function ($scope, checkPlatform, TopicService, $mdDialog, $ionicLoading) {
                   xhr.onload = function()
                   {
                     blob = xhr.response
-                    VideoService.uploadVideo(blob, results.input1);
+                    $ionicLoading.show()
+                    VideoService.uploadVideo(blob, results.input1).then(function (obj) {
+
+                      if(obj.error){
+                        if ( !checkPlatform.isBrowser() ) {
+                          navigator.notification.confirm(obj.error, function(buttonIndex) {}, "Upload-Fehler", ["Erneut versuchen"]);
+                        } else {
+                          let confirm = $mdDialog.alert()
+                            .title('Upload-Fehler')
+                            .textContent(obj.error)
+                            .ariaLabel('Lucky day')
+                            .ok("Erneut versuchen");
+                          $mdDialog.show(confirm);
+                        }
+                      }
+                      else{
+                        $ionicLoading.hide();
+                        $state.transitionTo($state.current, $stateParams, { reload: true, inherit: false, notify: true });
+                      }
+
+                      $ionicLoading.hide()
+                    });
                   }
                   xhr.send()
                 }

@@ -218,7 +218,7 @@ angular.module('app.services', [])
         $http.get(APIConnector.getAPIEndpoint().url + '/videoById/'+id).then(function(result) {
           if (result.data.video && result.data.user) {
 
-            let video = result.data.video
+            let video = result.data.video;
               let title = video.title.replace('.mp4','').replace('.mov','').trim();
               let id = video.id;
               let userId = video.userId;
@@ -237,7 +237,7 @@ angular.module('app.services', [])
 
             resolve(videoObject);
           } else {
-            reject(result.data.msg);
+            reject({error: "Upload fehlgeschlaen!"});
           }
         }).catch((err) => {
           reject(err);

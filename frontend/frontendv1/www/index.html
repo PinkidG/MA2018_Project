@@ -85,7 +85,7 @@
       e = e ||  window.event;
       var element = e.target || e.srcElement;
 
-      if (element.tagName == 'A' && element.href != "") {
+      if (element.tagName === 'A' && element.href !== "" && !element.href.startsWith('http://localhost:8080')) {
         window.open(element.href, "_system");
         return false; // prevent default action and stop event propagation
       }

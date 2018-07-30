@@ -4,7 +4,7 @@
 
 Im Rahmen der Vorlesung _Mobile Applikationen_ des Studienfachs Wirtschaftsinformatik an der DHBW Mannheim soll eine mobile Applikation mit einem relevanten Business-Usecase entwickelt werden.
 
-Die Idee unseres Teams umfasst die Entwicklung einer Anwendung für das Universitätsklinikum Heidelberg. In Absprache mit dem Oberarzt Dr. med. Giovanni Frongia, der maßgeblich an der Konzeptionierung beteiligt ist,  haben wir verschiedene Usecases evaluiert und für eine prototypische Implementierung zusammengesucht.
+Die Idee unseres Teams umfasst die Entwicklung einer Anwendung für das Universitätsklinikum Heidelberg. In Absprache mit dem Oberarzt Dr. med. Giovanni Frongia, der maßgeblich an der Konzeptionierung beteiligt ist,  haben wir verschiedene Usecases evaluiert und für eine prototypische Implementierung zusammengestellt.
 
 #### Inhalt
 
@@ -16,11 +16,11 @@ Link: [Repository](https://github.com/PinkidG/MA2018_Project "Link to GitHub")
 
 ## Anwendung
 
-Die mobile Anwendung soll verschieden Funktionen bieten, die im folgenden aufgelistet und erläutert werden. Der Titel der App lautet: NewMed. Die Anwendung soll auf allen mobilen Plattformen laufen. Zu Testzwecken wird bei der Entwicklung der Einsatz auf iOS, Android und einem Webbrowser überprüft und sichergestellt.
+Die mobile Applikation soll verschiedene Funktionen bieten, die im folgenden aufgelistet und erläutert werden. Der Titel der App lautet: **NewMed**. Die Anwendung soll auf allen mobilen Plattformen laufen. Zu Testzwecken wird bei der Entwicklung der Einsatz auf iOS, Android und einem Webbrowser überprüft und sichergestellt.
 
 ### Idee
 
-Der Alltag für Ärzte besteht aus der häufigen Wiederholung von Informationsgesprächen und Beratungsterminen. Um diesen Prozess zu vereinfachen, soll eine mobile Anwendung die Kommunikation zwischen Ärzten und ihren Patienten erleichtern und beschleunigen. Dafür sollen Informationstexte und -videos bereitgestellt werden, die direkt auf den Einzelfall des Patienten eingehen. Die meisten Menschen besitzen bereits ein Smartphone, daher wären für den Einsatz der App keine weiteren Vorraussetzungen zu erfüllen.
+Der Alltag für Ärzte besteht aus häufigen Wiederholungen von Informationsgesprächen und Beratungsterminen. Um diesen Prozess zu vereinfachen, soll eine mobile Anwendung die Kommunikation zwischen Ärzten und ihren Patienten erleichtern und beschleunigen. Dafür sollen Informationstexte und -videos bereitgestellt werden, die direkt auf den Einzelfall des Patienten eingehen. Die meisten Menschen besitzen bereits ein Smartphone, daher wären für den Einsatz der App keine weiteren Vorraussetzungen zu erfüllen.
 
 
 ### Funktionen der Anwendung
@@ -28,12 +28,12 @@ Der Alltag für Ärzte besteht aus der häufigen Wiederholung von Informationsge
 | Funktion | Beschreibung|
 | ------------------------------------ | ----------------------------------------------------------------------- |
 | _Benutzer- / Rollenverwaltung_       | Sowohl Ärzte als auch Patienten können sich in der App anmelden. Je nach Benutzergruppe stehen ihnen verschieden Funktionen zur Verfügung, wie die administrative Verwaltung von Fragen. Auch eine Authentisierung beim Starten der App muss erfolgen. |
-| _Videobotschaften (Videoplattform)_  | Verschieden Informationsvideos sollen von Ärzten direkt erstellt und versendet werden können. Diese stehen zur Aufklärung für alle Nutzer zur Verfügung.                                                                                               |
+| _Videobotschaften (Videoplattform)_  | Verschiedene Informationsvideos sollen von Ärzten direkt erstellt und versendet werden können. Diese stehen zur Aufklärung für alle Nutzer zur Verfügung.                                                                                               |
 | _Frage- und Antwortforum_            | Nutzer können medizinische Fragen über ein Forum stellen. Diese werden von Ärzten des Uni-Klinikums beantwortet. Außerdem ist eine Suchfunktion für bereits gestellte ähnliche Fragen verfügbar. |
 | _Patientendatei (Patiententagebuch)_ | Patienten sind in der Lage Informationen in ein Profil einzutragen, welches mit Ärzten geteilt werden kann. Neben gesundheitlichen/körperlichen Angaben können auch Verläufe von Krankheiten oder Genesungen dokumentiert werden.|
 
 
-Zusätzlich zu den genannten Funktionen stehen weiter Features im Backlog, die bei frühzeitigem Erreichen der Ziele ebenfalls umgesetzt werden könnten. Dazu zählt eine direkte und private Nachrichtenkommunikation mit Ärzten sowie eine Kalendarimplementierung, die eine eine selbständige Terminplanung von Patienten erlaubt.
+Zusätzlich zu den genannten Funktionen stehen weitere Features im Backlog, die bei einem frühzeitigen Erreichen der Ziele ebenfalls umgesetzt werden könnten. Dazu zählt eine direkte und private Nachrichtenkommunikation mit Ärzten sowie eine Kalendarimplementierung, die eine eine selbständige Terminplanung von Patienten erlaubt.
 
 ### Technischer Aufbau
 
@@ -44,14 +44,14 @@ Die Applikation besteht aus einer Client-Server-Architektur. Die einzelnen Infor
 
 * * *
 
-## Präsentation des Resultats
+## Präsentation
 
 Das Resultat dieses Projekts wird in einer HTML-Präsentation wiedergegeben. Die dafür notwendigen Inhalte stehen ebenfalls in diesem Repository zur Verfügung.
 
 -   Link zu der HTML-Datei: [HTML-Datei](https://github.com/PinkidG/MA2018_Project/blob/master/additional%20files/presentation/Slides.html "Link to html")
 -   Link zu Videos: [Videos](https://github.com/PinkidG/MA2018_Project/tree/master/additional%20files/videos "Link to videos")
 
-Außerdem wurde mithile von slides.com eine live Presentation erstellt. Dise kann unter dem folgendem Link erreicht werden:
+Außerdem wurde mithilfe von "<a href="slides.com">Slides</a>" eine live Presentation erstellt. Dise kann unter dem folgendem Link erreicht werden:
 
 [HTML-Preview](https://htmlpreview.github.io/?https://github.com/PinkidG/MA2018_Project/blob/master/additional%20files/presentation/Slides.html "Link to HTML-Preview")
 
@@ -72,12 +72,12 @@ Kontakt per Mail: [ma_projekt@icloud.com](mailto:ma_projekt@icloud.com "Link to 
 ### Timeline
 
 -   _02. Februar_ : Konzeptbesprechung mit Dr. Frongia
--   _09. Februar_ : Brainstorm für Entwicklungsstack
+-   _09. Februar_ : Brainstorming für Entwicklungsstack
 -   _18. April_ : Kick-Off-Meeting für Entwicklung
 -   _Ende Mai_ : Mock-ups und Server-Kommunikation fertig
 -   _Ende Juni_: Erster Prototyp für mobile Applikation fertig
 -   _Bis Ende Juli_: Feature-Implementierung
--   **_Anfang August_**: Vorraussichtliches Ende des Projekts für die DHBW
+-   **_Anfang August_**: Voraussichtliches Ende des Projekts für die DHBW
 
 ### Lizenzen
 

@@ -23,7 +23,7 @@ Die mobile Anwendung soll verschieden Funktionen bieten, die im folgenden aufgel
 Der Alltag für Ärzte besteht aus der häufigen Wiederholung von Informationsgesprächen und Beratungsterminen. Um diesen Prozess zu vereinfachen, soll eine mobile Anwendung die Kommunikation zwischen Ärzten und ihren Patienten erleichtern und beschleunigen. Dafür sollen Informationstexte und -videos bereitgestellt werden, die direkt auf den Einzelfall des Patienten eingehen. Die meisten Menschen besitzen bereits ein Smartphone, daher wären für den Einsatz der App keine weiteren Vorraussetzungen zu erfüllen.
 
 
-### Funktionen der Amwendung
+### Funktionen der Anwendung
 
 | Funktion | Beschreibung|
 | ------------------------------------ | ----------------------------------------------------------------------- |
@@ -31,9 +31,9 @@ Der Alltag für Ärzte besteht aus der häufigen Wiederholung von Informationsge
 | _Videobotschaften (Videoplattform)_  | Verschieden Informationsvideos sollen von Ärzten direkt erstellt und versendet werden können. Diese stehen zur Aufklärung für alle Nutzer zur Verfügung.                                                                                               |
 | _Frage- und Antwortforum_            | Nutzer können medizinische Fragen über ein Forum stellen. Diese werden von Ärzten des Uni-Klinikums beantwortet. Außerdem ist eine Suchfunktion für bereits gestellte ähnliche Fragen verfügbar. |
 | _Patientendatei (Patiententagebuch)_ | Patienten sind in der Lage Informationen in ein Profil einzutragen, welches mit Ärzten geteilt werden kann. Neben gesundheitlichen/körperlichen Angaben können auch Verläufe von Krankheiten oder Genesungen dokumentiert werden.|
-|
 
-Zusätzlich zu den genannten Funktionen stehen weiter Features im Backlog, die bei frühzeitigem Erreichen der Ziele ebenfalls umgesetzt werden können. Dazu zählt eine direkte und private Nachrichtenkommunikation mit Ärzten sowie eine Kalendarimplementierung, die eine eine selbständige Terminplanung von Patienten erlaubt.
+
+Zusätzlich zu den genannten Funktionen stehen weiter Features im Backlog, die bei frühzeitigem Erreichen der Ziele ebenfalls umgesetzt werden könnten. Dazu zählt eine direkte und private Nachrichtenkommunikation mit Ärzten sowie eine Kalendarimplementierung, die eine eine selbständige Terminplanung von Patienten erlaubt.
 
 ### Technischer Aufbau
 
@@ -67,7 +67,7 @@ Mitglieder:
 -   Philipp Pinkernelle (SAP)
 -   Philipp Reichel (SAP)
 
-Kontakt per Mail: <mailto:ma_projekt@icloud.com>
+Kontakt per Mail: [ma_projekt@icloud.com](mailto:ma_projekt@icloud.com "Link to mail")
 
 ### Timeline
 
@@ -83,4 +83,4 @@ Kontakt per Mail: <mailto:ma_projekt@icloud.com>
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 
-Der Sourcecode ist unter <a href="">Apache License 2.0</a> lizensiert.
+Der Sourcecode ist unter <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a> lizensiert.

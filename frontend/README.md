@@ -3,8 +3,28 @@
 Die Applikation wurde mit **Cordova** entwickelt. Dieses Framework zur Entwicklung hybrider Mobilanwednungen stellt eine plattformübergreifende Funktionalität sicher. Als grafische Oberfläche verwenden wir **Ionic** (Version 1).
 
 ## Bilder
+Hier sind ein paar Screenshots der App zu sehen:
+
+<img src="Screenshots/IMG_0006.PNG" alt="drawing" width="200px"/>
+<img src="Screenshots/IMG_0007.PNG" alt="drawing" width="200px"/>
+<img src="Screenshots/IMG_0008.PNG" alt="drawing" width="200px"/>
+<img src="Screenshots/IMG_0009.PNG" alt="drawing" width="200px"/>
+<img src="Screenshots/IMG_0010.PNG" alt="drawing" width="200px"/>
+<img src="Screenshots/IMG_0011.PNG" alt="drawing" width="200px"/>
+
 
 ## Installation 
+
+Damit die App getestet werden kann, müssen folgende Pakete installiert sein:
+-   Ionic (`npm install -g ionic`)
+-   Cordova (`npm install -g cordova`)
+-   iOS-Deploy (`npm install -g ios-deploy`) (mögliche Installationsprobleme: <a href="https://github.com/ios-control/ios-deploy/issues/346">Github-Issue</a>, nur für Deployment auf echtem iOS-Device notwendig)
+-    Bower (`npm install -g bower`)
+
+
+
+
+
 
 ## Inhalt
 

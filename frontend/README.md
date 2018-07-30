@@ -86,7 +86,7 @@ Außerdem werden hier die wichtigsten verwendeten Plugins aufgezählt.:
 |<a href="https://github.com/markmarijnissen/cordova-plugin-share">cordova-plugin-share</a>| Verwendung der Share-Extension auf mobilen Geräten (iOS/Android) |
 
 
-Weitere Plugins sind in der <a href="SourceCode/config.xml">config.xml</a> aufgelistet. Es gelten die Lizenzen der jeweiligen Plugins.
+Weitere Plugins sind in der <a href="Sourcecode/config.xml">config.xml</a> aufgelistet. Es gelten die Lizenzen der jeweiligen Plugins.
 
 ### Deep-Links
 

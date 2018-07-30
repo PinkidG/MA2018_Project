@@ -5,14 +5,14 @@ Die Applikation wurde mit **Cordova** entwickelt. Dieses Framework zur Entwicklu
 ## Bilder
 Hier sind ein paar Screenshots der App zu sehen:
 
-<img src="Screenshots/IMG_0006.PNG" alt="drawing" width="200px"/>
-<img src="Screenshots/IMG_0007.PNG" alt="drawing" width="200px"/>
-<img src="Screenshots/IMG_0008.PNG" alt="drawing" width="200px"/>
-<img src="Screenshots/IMG_0009.PNG" alt="drawing" width="200px"/>
-<img src="Screenshots/IMG_0010.PNG" alt="drawing" width="200px"/>
-<img src="Screenshots/IMG_0011.PNG" alt="drawing" width="200px"/>
+<img align="left" src="Screenshots/IMG_0006.PNG" width="200px" title="Login" hspace="20" border="3"/>
+<img align="left" src="Screenshots/IMG_0007.PNG" width="200px" title="Patient" hspace="20" border="3"/>
+<img align="left" src="Screenshots/IMG_0008.PNG" width="200px" title="Video" hspace="20" border="3"/>
+<img align="left" src="Screenshots/IMG_0009.PNG" width="200px" title="Share" hspace="20" border="3"/>
+<img align="left" src="Screenshots/IMG_0010.PNG" width="200px" title="Frage" hspace="20" border="3"/>
+<img align="left" src="Screenshots/IMG_0011.PNG" width="200px" title="Arzt" hspace="20" border="3"/>
 
-
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 ## Installation 
 
 Damit die App getestet werden kann, müssen folgende Pakete installiert sein:
@@ -22,11 +22,33 @@ Damit die App getestet werden kann, müssen folgende Pakete installiert sein:
 -    Bower (`npm install -g bower`)
 
 
+Anschließend kann die App kompiliert werden. Dazu müssen die folgenden Schritte im 'Sourcecode'-Ordner ausgeführt werden:
+1.  `npm install`
+2.  `cordova plugins add cordova-plugin-share` (Plugin wird nicht richtig gespeichert)
+3.  `cordova prepare`
+4.  `bower install`
 
+Um die App zu starten stehen anschließend folgende Befehle zur Verfügung:
 
+-   Auf iOS Gerät (empfohlen):
+    - `ionic cordova run ios --prod`
+    - Getestet unter iOS 11.4
+    - Bietet die beste Experience
+    - Auch im Simulator möglich
+    - Eventuell müssen Zertifikatsprobleme manuell behoben werden (siehe <a href="https://cordova.apache.org/docs/en/2.5.0/guide/getting-started/ios/#deploy-to-the-device">hier</a>)
+-   Im Browser mit Ionic-Lab:
+    - `ionic serve -p 8080 -l`
+    - Eingeschränkter Funktionsumfang
+-   Reine Browser-Darstellung (Nicht Empfohlen):
+    -   `ionic serve -p 8080`
+    - Eingeschränkter Funktionsumfang
+    - Eventuell grafisch-fehlerhaft Darstellung
 
+Anmerkung: Die App wurde nicht unter Android getestet. Die grundlegenden Funktionalitäten sollten aber zur Verfügung stehen.
 
 ## Inhalt
+
+
 
 ## Lizenz
 

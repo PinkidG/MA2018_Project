@@ -5,14 +5,31 @@ Die Applikation wurde mit **Cordova** entwickelt. Dieses Framework zur Entwicklu
 ## Bilder
 Hier sind ein paar Screenshots der App zu sehen:
 
-<img align="left" src="Screenshots/IMG_0006.PNG" width="200px" title="Login" hspace="20" border="3"/>
-<img align="left" src="Screenshots/IMG_0007.PNG" width="200px" title="Patient" hspace="20" border="3"/>
-<img align="left" src="Screenshots/IMG_0008.PNG" width="200px" title="Video" hspace="20" border="3"/>
-<img align="left" src="Screenshots/IMG_0009.PNG" width="200px" title="Share" hspace="20" border="3"/>
-<img align="left" src="Screenshots/IMG_0010.PNG" width="200px" title="Frage" hspace="20" border="3"/>
-<img align="left" src="Screenshots/IMG_0011.PNG" width="200px" title="Arzt" hspace="20" border="3"/>
+<table>
+    <tr>
+        <td>
+            <img align="left" src="Screenshots/IMG_0006.PNG" width="200px" title="Login" hspace="20"/>
+        </td>
+        <td>
+            <img align="left" src="Screenshots/IMG_0007.PNG" width="200px" title="Patient" hspace="20"/>
+        </td>
+        <td>
+            <img align="left" src="Screenshots/IMG_0008.PNG" width="200px" title="Video" hspace="20"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img align="left" src="Screenshots/IMG_0009.PNG" width="200px" title="Share" hspace="20"/>
+        </td>
+        <td>
+            <img align="left" src="Screenshots/IMG_0010.PNG" width="200px" title="Frage" hspace="20"/>
+        </td>
+        <td>
+            <img align="left" src="Screenshots/IMG_0011.PNG" width="200px" title="Arzt" hspace="20"/>
+        </td>
+    </tr>
+</table>
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 ## Installation 
 
 Damit die App getestet werden kann, müssen folgende Pakete installiert sein:
@@ -48,7 +65,37 @@ Anmerkung: Die App wurde nicht unter Android getestet. Die grundlegenden Funktio
 
 ## Inhalt
 
+Hier ist eine Auflistung der wichtigsten Code-Elemente:
+-   <a href="Sourcecode/www/js/app.js">app.js</a>: Startpunkt der Anwendung, enthält die Konfiguration von Ionic
+-   <a href="Sourcecode/www/js/controllers.js">controllers.js</a>: Enthält alle View-Controller, Funktionen der Oberfläche
+-   <a href="Sourcecode/www/js/services.js">services.js</a>: Kommunikationsschnittstellen mit dem Backend
+-   <a href="Sourcecode/www/js/constants.js">constants.js</a>: Konstanten der Backend-API-URL
+-   <a href="Sourcecode/www/js/routes.js">routes.js</a>: Routen der Views der Anwenung
+-   <a href="Sourcecode/www/templates">HTML-Templates</a>: Ordner mit allen HTML-Templates der Anwendung
 
+Außerdem werden hier die wichtigsten verwendeten Plugins aufgezählt.:
+
+| Name | Beschreibung|
+|-|-|
+|<a href="https://github.com/apache/cordova-plugin-dialogs">cordova-plugin-dialogs</a>| Darstellung von Popups als native Elemente (iOS/Android)|
+|<a href="https://github.com/EddyVerbruggen/cordova-plugin-touch-id">cordova-plugin-touch-id</a>| Plugin für die Nutzung von Touch-ID und Face-ID unter iOS|
+|<a href="https://github.com/apache/cordova-plugin-camera">cordova-plugin-camera</a>| Zugriff auf die Kamera-Galerie der App (iOS/Android)|
+|<a href="https://github.com/dpa99c/phonegap-launch-navigator">phonegap-launch-navigator</a>| Navigator starten|
+|<a href="https://github.com/nordnet/cordova-universal-links-plugin">cordova-universal-links-plugin</a>| Erlaubt die Nutzung von Deep-Links (in Verbindung mit <a href="https://branch.io/">Branch</a>) |
+|<a href="https://github.com/nordnet/cordova-universal-links-plugin">cordova-universal-links-plugin</a>| Erlaubt die Nutzung von Deep-Links (in Verbindung mit <a href="https://branch.io/">Branch</a>). Mehr Informationen weiter unten. |
+|<a href="https://github.com/markmarijnissen/cordova-plugin-share">cordova-plugin-share</a>| Verwendung der Share-Extension auf mobilen Geräten (iOS/Android) |
+
+
+Weitere Plugins sind in der <a href="SourceCode/config.xml">config.xml</a> aufgelistet. Es gelten die Lizenzen der jeweiligen Plugins.
+
+### Deep-Links
+
+Mit der App ist es möglich einen Link für Fragen und Videos zu erstellen. Diese können anschließend über eine Share-Extension an andere Kontakte oder Nutzer in der Nähe gesendet werden. Die Links können auch direkt als Antwort einer Frage eingefügt werden. Ein Nutzer, der auf den Link klickt und die App installiert hat, wird umgehend zu der entsprechenden Ressource weitergeleitet.
+
+Die Links wurden mithilfe von <a href="https://branch.io/">Branch</a> erstellt und weisen folgende Struktur auf:
+`http://newmeddhbw.app.link?topicId=17` bzw. `http://newmeddhbw.app.link?videoId=19`
+
+Stehen die Ressourcen der angegebenen Id nicht zur Verfügung, erhält der Nutzer eine Fehlermeldung in der App.
 
 ## Lizenz
 

@@ -63,6 +63,12 @@ Um die App zu starten stehen anschließend folgende Befehle zur Verfügung:
 
 Anmerkung: Die App wurde nicht unter Android getestet. Die grundlegenden Funktionalitäten sollten aber zur Verfügung stehen.
 
+### Konfiguration
+Es besteht die Möglichkeit, die Anwendung mit einem lokalem Backend-Server zu testen (nur im Browser). Defür muss in der <a href="Sourcecode/www/js/services.js">services.js</a>-Datei die Variable `let USELOCASERVER = false;` auf `true`gesetzt werden. 
+
+Gleichzeitig kann der API-Endpoint (lokal als auch online) in der <a href="Sourcecode/www/js/constants.js">constants.js</a> geändert werden.
+
+
 ## Inhalt
 
 Hier ist eine Auflistung der wichtigsten Code-Elemente:

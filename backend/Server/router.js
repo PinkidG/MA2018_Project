@@ -41,7 +41,7 @@ module.exports = function(app) {
         authRoutes = express.Router();
 
     //=========================
-    // Auth Routes
+    // All API-Routes
     //=========================
 
     // Set auth routes as subgroup/middleware to apiRoutes

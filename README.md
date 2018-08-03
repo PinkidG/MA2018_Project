@@ -44,7 +44,7 @@ Die Applikation besteht aus einer Client-Server-Architektur. Die einzelnen Infor
 
 * * *
 
-## Präsentation
+## Präsentation und Videos
 
 Das Resultat dieses Projekts wird in einer HTML-Präsentation wiedergegeben. Die dafür notwendigen Inhalte stehen ebenfalls in diesem Repository zur Verfügung.
 
@@ -54,6 +54,8 @@ Das Resultat dieses Projekts wird in einer HTML-Präsentation wiedergegeben. Die
 Außerdem wurde mithilfe von "<a href="slides.com">Slides</a>" eine live Presentation erstellt. Dise kann unter dem folgendem Link erreicht werden:
 
 [HTML-Preview](https://htmlpreview.github.io/?https://github.com/PinkidG/MA2018_Project/blob/master/additional%20files/presentation/Slides.html "Link to HTML-Preview")
+
+Die einzelnen Funktionen der Anwendung sind auch in einer einzelnen Videodatei dokumentiert. Dieses kann [hier](https://github.com/PinkidG/MA2018_Project/blob/master/additional%20files/videos/NewMed%20-%20DHBW_Projekt.mp4 "Link to main-video") angesehen werden. Das Video beinhaltet die selben Information wie die in der HTML-Präsentation vorgestellten Funktionen.
 
 
 ## Das Team

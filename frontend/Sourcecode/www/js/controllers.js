@@ -817,7 +817,6 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
   //========================================
   // Patientlist controller
   //========================================
-
   .controller('patientenCtrl', function ($scope, sharedProperties, UserService, $ionicLoading) {
     $ionicLoading.show();
     $scope.user = sharedProperties.getProperty();
@@ -829,6 +828,9 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
 
   })
 
+  //========================================
+  // Add new patient controller
+  //========================================
   .controller('neuenPatientenZuweisenCtrl',
     function ($scope, $state, UserService, checkPlatform, $mdDialog, $ionicLoading) {
 
@@ -873,7 +875,7 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
                 });
                 break;
               case 2:
-                console.log("Cancel")
+                console.log("Cancel");
                 break;
             }
           }, "Hinzufügen", ["Ja", "Nein"]);
@@ -906,18 +908,21 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
       }
     })
 
+  //========================================
+  // Settings-controller
+  //========================================
   .controller('accountCtrl',
     function ($scope, $state, sharedProperties, checkPlatform, $mdDialog, UserService, $ionicLoading) {
 
-      $ionicLoading.show()
+      $ionicLoading.show();
       $scope.user = sharedProperties.getProperty();
       UserService.refreshUser($scope.user.userId).then(function (ruser) {
         sharedProperties.setProperty(ruser);
         $scope.user = sharedProperties.getProperty();
         $scope.date = new Date($scope.user.dateOfBirth);
-      })
+      });
       $scope.date = new Date($scope.user.dateOfBirth);
-      $ionicLoading.hide()
+      $ionicLoading.hide();
 
       $scope.save = function () {
 
@@ -958,7 +963,7 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
                   $state.go('login');
                 }, function (errMsg) {
                   navigator.notification.confirm(errMsg.statusText, function (buttonIndex) {}, "Fehler", ["Erneut versuchen"]);
-                })
+                });
                 break;
               case 2:
                 break;
@@ -994,8 +999,10 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
       };
     })
 
+  //========================================
+  // App controller
+  //========================================
   .controller('AppCtrl',
-
     function ($scope, $state, $ionicPopup, AuthService, AUTH_EVENTS, $location) {
       var path = $location.path();
       $scope.options = $scope.options || {};
@@ -1016,4 +1023,4 @@ angular.module('app.controllers', ['ngCordova', 'ionic', 'ngMaterial', 'monospac
           template: 'Sorry, You have to login again.'
         });
       });
-    })
+    });
